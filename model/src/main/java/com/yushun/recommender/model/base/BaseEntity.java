@@ -13,21 +13,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BaseEntity implements Serializable {
-    @ApiModelProperty(value = "ID")
+    @ApiModelProperty(value = "User id")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "create time")
+    @ApiModelProperty(value = "Created time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField("create_time")
     private Date createTime;
 
-    @ApiModelProperty(value = "last modified time")
+    @ApiModelProperty(value = "Last modified time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField("update_time")
     private Date updateTime;
 
-    @ApiModelProperty(value = "is deleted")
+    @ApiModelProperty(value = "Is deleted")
     @TableLogic
     @TableField("is_deleted")
     private Integer isDeleted;
