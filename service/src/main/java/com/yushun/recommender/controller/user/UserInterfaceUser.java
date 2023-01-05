@@ -1,12 +1,12 @@
 package com.yushun.recommender.controller.user;
 
+import com.yushun.recommender.common.helper.JwtHelper;
 import com.yushun.recommender.common.result.Result;
 
-import com.yushun.recommender.model.user.User;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.yushun.recommender.model.user.user.User;
+import com.yushun.recommender.vo.user.user.UserAuthVo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -21,8 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/authentication")
 public class UserInterfaceUser {
-    @GetMapping("/login")
+    @PostMapping("/googleLogin")
     public Result login(User user) {
-        return Result.ok("123").message("Successfully login");
+        String token = JwtHelper.createToken(user.getEmail(), user.getUsername());
+
+        UserAuthVo userAuthVo = new UserAuthVo();
+        BeanUtils.copyProperties(user, userAuthVo);
+        userAuthVo.setToken(token);
+
+        return Result.ok(userAuthVo).message("Successfully login");
     }
 }

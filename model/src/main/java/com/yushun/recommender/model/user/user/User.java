@@ -1,4 +1,4 @@
-package com.yushun.recommender.model.user;
+package com.yushun.recommender.model.user.user;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
