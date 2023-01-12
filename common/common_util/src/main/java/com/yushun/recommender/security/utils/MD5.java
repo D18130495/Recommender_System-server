@@ -1,15 +1,15 @@
-package com.yushun.recommender.common.utils;
+package com.yushun.recommender.security.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
  * <p>
- * MD5 encryption
+ * MD5 Encryption
  * </p>
  *
  * @author yushun zeng
- * @since 2022-1-4
+ * @since 2023-1-4
  */
 
 public final class MD5 {

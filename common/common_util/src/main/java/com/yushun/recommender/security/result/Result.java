@@ -1,8 +1,8 @@
-package com.yushun.recommender.common.result;
+package com.yushun.recommender.security.result;
 
 /**
  * <p>
- * return result
+ * Return Result
  * </p>
  *
  * @author yushun zeng
@@ -37,7 +37,7 @@ public class Result<T> {
         return result;
     }
 
-    public static<T> Result<T> ok(){
+    public static <T> Result<T> ok(){
         return Result.ok(null);
     }
 

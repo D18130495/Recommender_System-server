@@ -1,8 +1,8 @@
-package com.yushun.recommender.common.result;
+package com.yushun.recommender.security.result;
 
 /**
  * <p>
- * return result enum
+ * Return Result Enum
  * </p>
  *
  * @author yushun zeng

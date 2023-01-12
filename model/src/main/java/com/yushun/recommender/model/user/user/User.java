@@ -43,6 +43,10 @@ public class User extends BaseEntity implements Serializable {
     @TableField("policy")
     private String policy;
 
+    @ApiModelProperty(value = "S represent system login, G represent google login")
+    @TableField("type")
+    private String type;
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
@@ -87,5 +91,13 @@ public class User extends BaseEntity implements Serializable {
 
     public void setPolicy(String policy) {
         this.policy = policy;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

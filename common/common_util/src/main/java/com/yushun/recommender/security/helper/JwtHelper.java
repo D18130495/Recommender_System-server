@@ -1,4 +1,4 @@
-package com.yushun.recommender.common.helper;
+package com.yushun.recommender.security.helper;
 
 import io.jsonwebtoken.*;
 import org.springframework.util.StringUtils;
@@ -7,11 +7,11 @@ import java.util.Date;
 
 /**
  * <p>
- * JWT generator
+ * JWT Generator
  * </p>
  *
  * @author yushun zeng
- * @since 2022-1-4
+ * @since 2023-1-4
  */
 
 public class JwtHelper {

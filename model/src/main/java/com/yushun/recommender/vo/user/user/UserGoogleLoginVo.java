@@ -4,35 +4,22 @@ import com.baomidou.mybatisplus.annotation.TableField;
 
 /**
  * <p>
- * user sign in return data
+ * User Google Login Vo
  * </p>
  *
  * @author yushun zeng
- * @since 2022-1-4
+ * @since 2023-1-5
  */
 
-public class UserAuthVo {
+public class UserGoogleLoginVo {
     @TableField("email")
     private String email;
-
-    @Override
-    public String toString() {
-        return "UserAuthVo{" +
-                "email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", token='" + token + '\'' +
-                '}';
-    }
 
     @TableField("username")
     private String username;
 
     @TableField("avatar")
     private String avatar;
-
-    @TableField("token")
-    private String token;
 
     public String getEmail() {
         return email;
@@ -56,13 +43,5 @@ public class UserAuthVo {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }
