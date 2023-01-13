@@ -25,7 +25,6 @@ import java.io.IOException;
  */
 
 public class JwtTokenAuthenticationFilter extends GenericFilterBean {
-
     private JwtTokenProvider jwtToken;
 
     public JwtTokenAuthenticationFilter(JwtTokenProvider jwtToken) {
@@ -40,10 +39,11 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
 
         try {
             String token = jwtToken.resolveToken(request);
-            if (token != null && jwtToken.validateToken(token)) {
+
+            if(token != null && jwtToken.validateToken(token)) {
                 Authentication auth = jwtToken.getAuthentication(token);
 
-                if (auth != null) {
+                if(auth != null) {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }
@@ -51,6 +51,7 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("Invalid token");
             response.getWriter().flush();
+
             return;
         }
 

@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>
- * Spring Security Test
+ * JWT Rule
  * </p>
  *
  * @author yushun zeng

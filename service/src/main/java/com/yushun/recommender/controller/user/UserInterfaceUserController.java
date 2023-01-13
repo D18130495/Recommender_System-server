@@ -4,15 +4,21 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yushun.recommender.security.helper.JwtHelper;
 import com.yushun.recommender.security.result.Result;
 
-import com.yushun.recommender.model.user.user.User;
+import com.yushun.recommender.model.common.User;
+import com.yushun.recommender.security.user.UserRepository;
+import com.yushun.recommender.security.utils.JwtTokenProvider;
 import com.yushun.recommender.service.user.UserInterfaceUserService;
 import com.yushun.recommender.vo.user.user.UserGoogleLoginVo;
 import com.yushun.recommender.vo.user.user.UserReturnVo;
 import com.yushun.recommender.vo.user.user.UserSystemRegisterVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -31,6 +37,15 @@ public class UserInterfaceUserController {
     @Autowired
     private UserInterfaceUserService userInterfaceUserService;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    UserRepository userRepository;
+
     @PostMapping("/systemRegister")
     public Result systemRegister(UserSystemRegisterVo userSystemRegisterVo) {
         System.out.println(userSystemRegisterVo);
@@ -41,7 +56,12 @@ public class UserInterfaceUserController {
     @PostMapping("/googleLogin")
     public Result googleLogin(UserGoogleLoginVo userGoogleLoginVo) {
         // generate token
-        String token = JwtHelper.createToken(userGoogleLoginVo.getEmail(), userGoogleLoginVo.getUsername());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userGoogleLoginVo.getEmail(), userGoogleLoginVo.getEmail()));
+
+        String token = jwtTokenProvider.createToken(userGoogleLoginVo.getEmail(),
+                userRepository.findByUsername(userGoogleLoginVo.getEmail())
+                        .orElseThrow(() -> new UsernameNotFoundException("User " + userGoogleLoginVo.getEmail() + "not found")).getRoles()
+        );
 
         // form return data
         UserReturnVo userReturnVo = new UserReturnVo();
@@ -60,6 +80,7 @@ public class UserInterfaceUserController {
             BeanUtils.copyProperties(userGoogleLoginVo, storeUser);
             storeUser.setPolicy("F");
             storeUser.setType("G");
+            storeUser.setRoles(Collections.singletonList("ROLE_USER"));
             storeUser.setCreateTime(new Date());
             storeUser.setUpdateTime(new Date());
             storeUser.setIsDeleted(0);

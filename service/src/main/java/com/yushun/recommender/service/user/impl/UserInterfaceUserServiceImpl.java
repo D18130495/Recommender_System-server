@@ -2,7 +2,7 @@ package com.yushun.recommender.service.user.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yushun.recommender.mapper.user.UserInterfaceUserMapper;
-import com.yushun.recommender.model.user.user.User;
+import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.service.user.UserInterfaceUserService;
 import org.springframework.stereotype.Service;
 

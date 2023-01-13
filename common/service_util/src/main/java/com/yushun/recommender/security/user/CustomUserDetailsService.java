@@ -1,4 +1,4 @@
-package com.yushun.recommender.security.users;
+package com.yushun.recommender.security.user;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * <p>
- * Spring Security Test
+ * User Details Service Load User
  * </p>
  *
  * @author yushun zeng
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
-
     private UserRepository users;
 
     public CustomUserDetailsService(UserRepository users) {

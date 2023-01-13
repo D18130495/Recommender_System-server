@@ -1,4 +1,4 @@
-package com.yushun.recommender.mapper.user;
+package com.yushun.recommender.security.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yushun.recommender.model.common.User;
@@ -7,15 +7,15 @@ import org.springframework.stereotype.Repository;
 
 /**
  * <p>
- * User Interface User Mapper
+ * User Mapper
  * </p>
  *
  * @author yushun zeng
- * @since 2023-1-5
+ * @since 2023-1-13
  */
 
 @Repository
 @Mapper
-public interface UserInterfaceUserMapper extends BaseMapper<User> {
+public interface UserMapper extends BaseMapper<User> {
 
 }

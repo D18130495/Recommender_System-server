@@ -1,13 +1,22 @@
-package com.yushun.recommender.model.user.user;
+package com.yushun.recommender.model.common;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yushun.recommender.model.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * <p>
@@ -18,8 +27,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2022-12-30
  */
 
-@TableName("ui_user")
-public class User extends BaseEntity implements Serializable {
+@TableName(value = "com_user", autoResultMap = true)
+public class User extends BaseEntity implements Serializable, UserDetails {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "username")
@@ -47,21 +56,23 @@ public class User extends BaseEntity implements Serializable {
     @TableField("type")
     private String type;
 
+    @TableField(value = "role", typeHandler = JacksonTypeHandler.class)
+    private List<String> roles = new ArrayList<>();
+
+    public User() {}
+
+    public User(String username, String password, List<String> roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    @JsonIgnore
-    public String getPassword() {
-        return password;
     }
 
     @JsonProperty
@@ -99,5 +110,49 @@ public class User extends BaseEntity implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
+    }
+
+    @Override
+    @JsonIgnore
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
