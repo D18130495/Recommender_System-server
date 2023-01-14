@@ -13,11 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 /**
  * <p>
@@ -56,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers("/auth/login").permitAll()
-                .antMatchers("/authentication").permitAll()
+                .antMatchers("/authentication/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/user").hasRole("USER")
                 .antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
                 .anyRequest().authenticated()

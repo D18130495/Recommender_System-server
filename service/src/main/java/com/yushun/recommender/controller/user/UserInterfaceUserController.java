@@ -1,7 +1,6 @@
 package com.yushun.recommender.controller.user;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.yushun.recommender.security.helper.JwtHelper;
 import com.yushun.recommender.security.result.Result;
 
 import com.yushun.recommender.model.common.User;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -38,23 +38,100 @@ public class UserInterfaceUserController {
     private UserInterfaceUserService userInterfaceUserService;
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @PostMapping("/userSystemRegister")
     public Result userSystemRegister(UserSystemRegisterVo userSystemRegisterVo) {
-        System.out.println(userSystemRegisterVo);
+        // find if the email is first time be used to sign up
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", userSystemRegisterVo.getEmail());
 
-        return Result.fail().message("Successfully register");
+        User findUser = userInterfaceUserService.getOne(userWrapper);
+
+        if(findUser == null) {
+            BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
+            String cryptPassword = bcryptPasswordEncoder.encode(userSystemRegisterVo.getPassword());
+
+            // form return data
+            UserReturnVo userReturnVo = new UserReturnVo();
+            BeanUtils.copyProperties(userSystemRegisterVo, userReturnVo);
+
+            // create new system user
+            User storeSystemUser = new User();
+            BeanUtils.copyProperties(userSystemRegisterVo, storeSystemUser);
+            storeSystemUser.setPassword(cryptPassword);
+            storeSystemUser.setPolicy("F");
+            storeSystemUser.setType("S");
+            storeSystemUser.setRoles(Collections.singletonList("ROLE_USER"));
+            storeSystemUser.setCreateTime(new Date());
+            storeSystemUser.setUpdateTime(new Date());
+            storeSystemUser.setIsDeleted(0);
+
+            boolean save = userInterfaceUserService.save(storeSystemUser);
+
+            if(!save) return Result.fail().message("Register failed with server error");
+
+            // add user for spring security
+            userRepository.addSystemUser(new User(userSystemRegisterVo.getUsername(),
+                    cryptPassword,
+                    userSystemRegisterVo.getEmail()));
+
+            // generate token
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userSystemRegisterVo.getEmail(), cryptPassword));
+
+            String token = jwtTokenProvider.createToken(userSystemRegisterVo.getEmail(),
+                    userRepository.findByUsername(userSystemRegisterVo.getEmail())
+                            .orElseThrow(() -> new UsernameNotFoundException("User " + userSystemRegisterVo.getEmail() + "not found")).getRoles()
+            );
+
+            userReturnVo.setToken(token);
+
+            return Result.ok(userReturnVo).message("Successfully register");
+        }else {
+            return Result.fail().message("Email address already been used for register with Google");
+        }
     }
 
     @PostMapping("/googleLogin")
     public Result googleLogin(UserGoogleLoginVo userGoogleLoginVo) {
+        // form return data
+        UserReturnVo userReturnVo = new UserReturnVo();
+        BeanUtils.copyProperties(userGoogleLoginVo, userReturnVo);
+
+        // find if the user is sign up with Google or first time sign in
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", userGoogleLoginVo.getEmail());
+
+        User findUser = userInterfaceUserService.getOne(userWrapper);
+
+        if(findUser == null) {
+            // create new google user
+            User storeGoogleUser = new User();
+            BeanUtils.copyProperties(userGoogleLoginVo, storeGoogleUser);
+            storeGoogleUser.setPolicy("F");
+            storeGoogleUser.setType("G");
+            storeGoogleUser.setRoles(Collections.singletonList("ROLE_USER"));
+            storeGoogleUser.setCreateTime(new Date());
+            storeGoogleUser.setUpdateTime(new Date());
+            storeGoogleUser.setIsDeleted(0);
+
+            boolean save = userInterfaceUserService.save(storeGoogleUser);
+
+            if(!save) return Result.fail().message("Login failed with server error");
+        }else if(findUser.getType().equals("S")) {
+            return Result.fail().message("Email address already been used for register with System");
+        }
+
+        // add user for spring security
+        userRepository.addGoogleUser(new User(userGoogleLoginVo.getUsername(),
+                userGoogleLoginVo.getEmail()));
+
         // generate token
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userGoogleLoginVo.getEmail(), userGoogleLoginVo.getEmail()));
 
@@ -63,32 +140,7 @@ public class UserInterfaceUserController {
                         .orElseThrow(() -> new UsernameNotFoundException("User " + userGoogleLoginVo.getEmail() + "not found")).getRoles()
         );
 
-        // form return data
-        UserReturnVo userReturnVo = new UserReturnVo();
-        BeanUtils.copyProperties(userGoogleLoginVo, userReturnVo);
         userReturnVo.setToken(token);
-
-        // find if the user is first time sign in
-        QueryWrapper userWrapper = new QueryWrapper();
-        userWrapper.eq("email", userGoogleLoginVo.getEmail());
-
-        User findUser = userInterfaceUserService.getOne(userWrapper);
-
-        if(findUser == null) {
-            // create new google user
-            User storeUser = new User();
-            BeanUtils.copyProperties(userGoogleLoginVo, storeUser);
-            storeUser.setPolicy("F");
-            storeUser.setType("G");
-            storeUser.setRoles(Collections.singletonList("ROLE_USER"));
-            storeUser.setCreateTime(new Date());
-            storeUser.setUpdateTime(new Date());
-            storeUser.setIsDeleted(0);
-
-            boolean save = userInterfaceUserService.save(storeUser);
-
-            if(!save) return Result.fail().message("Login failed");
-        }
 
         return Result.ok(userReturnVo).message("Successfully login");
     }

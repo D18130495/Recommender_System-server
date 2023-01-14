@@ -61,6 +61,17 @@ public class User extends BaseEntity implements Serializable, UserDetails {
 
     public User() {}
 
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+
     public User(String username, String password, List<String> roles) {
         this.username = username;
         this.password = password;

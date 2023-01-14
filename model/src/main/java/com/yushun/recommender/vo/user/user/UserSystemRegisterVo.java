@@ -15,15 +15,6 @@ public class UserSystemRegisterVo {
     @TableField("username")
     private String username;
 
-    @Override
-    public String toString() {
-        return "UserSystemRegisterVo{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
-
     @TableField("email")
     private String email;
 

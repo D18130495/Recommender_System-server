@@ -15,16 +15,6 @@ public class UserReturnVo {
     @TableField("email")
     private String email;
 
-    @Override
-    public String toString() {
-        return "UserAuthVo{" +
-                "email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", token='" + token + '\'' +
-                '}';
-    }
-
     @TableField("username")
     private String username;
 

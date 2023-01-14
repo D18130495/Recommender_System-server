@@ -3,6 +3,7 @@ package com.yushun.recommender.security.user;
 import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -23,28 +24,37 @@ public class UserRepository {
     private static final Map<String, User> allUsers = new HashMap<>();
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private UserService userService;
 
     @PostConstruct
     protected void init() {
-        allUsers.put("admin", new User("admin", passwordEncoder.encode("123456"), Collections.singletonList("ROLE_ADMIN")));
+//        allUsers.put("admin", new User("admin", passwordEncoder.encode("123456"), Collections.singletonList("ROLE_ADMIN")));
 
         for(User user:userService.list()) {
             if(user.getRoles().isEmpty()) user.setRoles(Collections.singletonList("ROLE_USER"));
 
             if(user.getPassword() == null) {
                 allUsers.put(user.getEmail(), new User(user.getUsername(),
-                        passwordEncoder.encode(user.getEmail()),
+                        user.getEmail(),
                         Collections.singletonList(user.getRoles().get(0))));
             }else {
                 allUsers.put(user.getEmail(), new User(user.getUsername(),
-                        passwordEncoder.encode(user.getPassword()),
+                        user.getPassword(),
                         Collections.singletonList(user.getRoles().get(0))));
             }
         }
+    }
+
+    public void addSystemUser(User user) {
+        allUsers.put(user.getEmail(), new User(user.getUsername(),
+                user.getPassword(),
+                Collections.singletonList("ROLE_USER")));
+    }
+
+    public void addGoogleUser(User user) {
+        allUsers.put(user.getEmail(), new User(user.getUsername(),
+                user.getEmail(),
+                Collections.singletonList("ROLE_USER")));
     }
 
     public Optional<User> findByUsername(String username) {

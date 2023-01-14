@@ -57,23 +57,6 @@ public class Result<T> {
         return build(data, ResultCodeEnum.SUCCESS);
     }
 
-    public static<T> Result<T> noPermission(){
-        return Result.noPermission(null);
-    }
-
-    /**
-     * permission denied
-     * @param data
-     * @param <T>
-     * @return
-     */
-    public static<T> Result<T> noPermission(T data) {
-        Result<T> result = build(data);
-
-        return build(data, ResultCodeEnum.PERMISSION);
-    }
-
-
     public static<T> Result<T> fail(){
         return Result.fail(null);
     }
@@ -88,6 +71,22 @@ public class Result<T> {
         Result<T> result = build(data);
 
         return build(data, ResultCodeEnum.FAIL);
+    }
+
+    public static<T> Result<T> noPermission(){
+        return Result.noPermission(null);
+    }
+
+    /**
+     * permission denied
+     * @param data
+     * @param <T>
+     * @return
+     */
+    public static<T> Result<T> noPermission(T data) {
+        Result<T> result = build(data);
+
+        return build(data, ResultCodeEnum.PERMISSION);
     }
 
     public Result<T> message(String msg) {
