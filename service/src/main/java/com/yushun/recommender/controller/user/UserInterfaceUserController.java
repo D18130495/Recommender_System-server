@@ -46,8 +46,8 @@ public class UserInterfaceUserController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("/systemRegister")
-    public Result systemRegister(UserSystemRegisterVo userSystemRegisterVo) {
+    @PostMapping("/userSystemRegister")
+    public Result userSystemRegister(UserSystemRegisterVo userSystemRegisterVo) {
         System.out.println(userSystemRegisterVo);
 
         return Result.fail().message("Successfully register");

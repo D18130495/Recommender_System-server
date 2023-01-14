@@ -18,8 +18,10 @@ public class Result<T> {
 
     protected static <T> Result<T> build(T data) {
         Result<T> result = new Result<T>();
+
         if (data != null)
             result.setData(data);
+
         return result;
     }
 
@@ -27,6 +29,7 @@ public class Result<T> {
         Result<T> result = build(body);
         result.setCode(resultCodeEnum.getCode());
         result.setMessage(resultCodeEnum.getMessage());
+
         return result;
     }
 
@@ -34,6 +37,7 @@ public class Result<T> {
         Result<T> result = build(null);
         result.setCode(code);
         result.setMessage(message);
+
         return result;
     }
 
@@ -49,8 +53,26 @@ public class Result<T> {
      */
     public static<T> Result<T> ok(T data){
         Result<T> result = build(data);
+
         return build(data, ResultCodeEnum.SUCCESS);
     }
+
+    public static<T> Result<T> noPermission(){
+        return Result.noPermission(null);
+    }
+
+    /**
+     * permission denied
+     * @param data
+     * @param <T>
+     * @return
+     */
+    public static<T> Result<T> noPermission(T data) {
+        Result<T> result = build(data);
+
+        return build(data, ResultCodeEnum.PERMISSION);
+    }
+
 
     public static<T> Result<T> fail(){
         return Result.fail(null);
@@ -62,18 +84,21 @@ public class Result<T> {
      * @param <T>
      * @return
      */
-    public static<T> Result<T> fail(T data){
+    public static<T> Result<T> fail(T data) {
         Result<T> result = build(data);
+
         return build(data, ResultCodeEnum.FAIL);
     }
 
-    public Result<T> message(String msg){
+    public Result<T> message(String msg) {
         this.setMessage(msg);
+
         return this;
     }
 
-    public Result<T> code(Integer code){
+    public Result<T> code(Integer code) {
         this.setCode(code);
+
         return this;
     }
 
@@ -81,6 +106,7 @@ public class Result<T> {
         if(this.getCode().intValue() == ResultCodeEnum.SUCCESS.getCode().intValue()) {
             return true;
         }
+
         return false;
     }
 

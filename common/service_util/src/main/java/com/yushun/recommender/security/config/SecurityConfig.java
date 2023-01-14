@@ -1,5 +1,6 @@
 package com.yushun.recommender.security.config;
 
+import com.yushun.recommender.security.handler.CustomAccessDeniedHandler;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 /**
  * <p>
@@ -47,14 +54,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers("/auth/login").permitAll()
-                .antMatchers("/authentication/googleLogin").permitAll()
+                .antMatchers("/authentication").permitAll()
                 .antMatchers(HttpMethod.GET, "/user").hasRole("USER")
                 .antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtSecurityConfig(jwtTokenProvider));
+                .apply(new JwtSecurityConfig(jwtTokenProvider))
+                .and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler());
     }
 
-
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
 }
