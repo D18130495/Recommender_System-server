@@ -9,6 +9,7 @@ import com.yushun.recommender.security.utils.JwtTokenProvider;
 import com.yushun.recommender.service.user.UserInterfaceUserService;
 import com.yushun.recommender.vo.user.user.UserGoogleLoginVo;
 import com.yushun.recommender.vo.user.user.UserReturnVo;
+import com.yushun.recommender.vo.user.user.UserSystemLoginVo;
 import com.yushun.recommender.vo.user.user.UserSystemRegisterVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import java.util.Date;
 
 /**
  * <p>
- * Welcome Controller
+ * User Authentication Controller
  * </p>
  *
  * @author yushun zeng
@@ -33,7 +34,7 @@ import java.util.Date;
 @CrossOrigin
 @RestController
 @RequestMapping("/authentication")
-public class UserInterfaceUserController {
+public class UserInterfaceUserAuthController {
     @Autowired
     private UserInterfaceUserService userInterfaceUserService;
 
@@ -45,6 +46,47 @@ public class UserInterfaceUserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @PostMapping("/userSystemLogin")
+    public Result userSystemLogin(UserSystemLoginVo userSystemLoginVo) {
+        // find user
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", userSystemLoginVo.getEmail());
+
+        User findUser = userInterfaceUserService.getOne(userWrapper);
+
+        if(findUser == null) {
+            return Result.fail().message("Email has not been registered");
+        }else if(findUser.getType().equals("G")) {
+            return Result.fail().message("Email registered with Google");
+        }
+
+        // compare the password
+        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
+        boolean isMatch = bcryptPasswordEncoder.matches(userSystemLoginVo.getPassword(), findUser.getPassword());
+
+        if(!isMatch) {
+            return Result.fail().message("Incorrect password");
+        }else {
+            // form return data
+            UserReturnVo userReturnVo = new UserReturnVo();
+            BeanUtils.copyProperties(userSystemLoginVo, userReturnVo);
+            userReturnVo.setUsername(findUser.getUsername());
+            userReturnVo.setAvatar(findUser.getAvatar());
+
+            // generate token
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userSystemLoginVo.getEmail(), findUser.getPassword()));
+
+            String token = jwtTokenProvider.createToken(userSystemLoginVo.getEmail(),
+                    userRepository.findByUsername(userSystemLoginVo.getEmail())
+                            .orElseThrow(() -> new UsernameNotFoundException("User " + userSystemLoginVo.getEmail() + "not found")).getRoles()
+            );
+
+            userReturnVo.setToken(token);
+
+            return Result.ok(userReturnVo).message("Successfully login");
+        }
+    }
 
     @PostMapping("/userSystemRegister")
     public Result userSystemRegister(UserSystemRegisterVo userSystemRegisterVo) {
@@ -92,7 +134,9 @@ public class UserInterfaceUserController {
 
             userReturnVo.setToken(token);
 
-            return Result.ok(userReturnVo).message("Successfully register");
+            return Result.ok(userReturnVo).message("Successfully registered, will automatically login with in 3 second");
+        }else if(findUser.getType().equals("S")) {
+            return Result.fail().message("Email address already been used for register with System");
         }else {
             return Result.fail().message("Email address already been used for register with Google");
         }

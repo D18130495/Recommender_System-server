@@ -25,7 +25,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
@@ -52,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers("/auth/login").permitAll()
                 .antMatchers("/authentication/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/detail/tokenLoginRefresh").permitAll()
                 .antMatchers(HttpMethod.GET, "/user").hasRole("USER")
                 .antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
                 .anyRequest().authenticated()
