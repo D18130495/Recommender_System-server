@@ -1,6 +1,8 @@
 package com.yushun.recommender.controller.user;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.gson.Gson;
+import com.yushun.recommender.security.exception.JwtAuthenticationException;
 import com.yushun.recommender.security.result.Result;
 
 import com.yushun.recommender.model.common.User;
@@ -187,5 +189,51 @@ public class UserInterfaceUserAuthController {
         userReturnVo.setToken(token);
 
         return Result.ok(userReturnVo).message("Successfully login");
+    }
+
+    @GetMapping("/tokenLoginRefresh")
+    public Result getUserDetailByToken(@RequestParam String token) {
+        try {
+            // check if the token valid
+            boolean isValidToken = jwtTokenProvider.validateToken(token);
+
+            if(isValidToken) {
+                String userEmail = jwtTokenProvider.getUsername(token);
+
+                // find user
+                QueryWrapper userWrapper = new QueryWrapper();
+                userWrapper.eq("email", userEmail);
+
+                User findUser = userInterfaceUserService.getOne(userWrapper);
+
+                if(findUser == null) {
+                    return Result.fail().message("Can not find user");
+                }
+
+                // form return data
+                UserReturnVo userReturnVo = new UserReturnVo();
+                BeanUtils.copyProperties(findUser, userReturnVo);
+
+                // generate token
+                if(findUser.getType().equals("G")) {
+                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, userEmail));
+                }else {
+                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, findUser.getPassword()));
+                }
+
+                String newToken = jwtTokenProvider.createToken(userEmail,
+                        userRepository.findByUsername(userEmail)
+                                .orElseThrow(() -> new UsernameNotFoundException("User " + userEmail + "not found")).getRoles()
+                );
+
+                userReturnVo.setToken(newToken);
+
+                return Result.ok(userReturnVo).message("Successfully refresh login time");
+            }
+        }catch(JwtAuthenticationException e) {
+            return Result.invalidToken();
+        }
+
+        return Result.invalidToken();
     }
 }

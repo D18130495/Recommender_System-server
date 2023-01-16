@@ -12,9 +12,8 @@ package com.yushun.recommender.security.result;
 public enum ResultCodeEnum {
     SUCCESS(200,"Success"),
     FAIL(201, "Fail"),
-    PERMISSION(403, "Permission Denied"),
-
-    LOGIN_AUTH(208, "Not login");
+    INVALID_TOKEN(202, "Invalid token or expired"),
+    PERMISSION(403, "Permission Denied");
 
     private Integer code;
     private String message;

@@ -73,6 +73,22 @@ public class Result<T> {
         return build(data, ResultCodeEnum.FAIL);
     }
 
+    public static<T> Result<T> invalidToken(){
+        return Result.invalidToken(null);
+    }
+
+    /**
+     * token expired
+     * @param data
+     * @param <T>
+     * @return
+     */
+    public static<T> Result<T> invalidToken(T data) {
+        Result<T> result = build(data);
+
+        return build(data, ResultCodeEnum.INVALID_TOKEN);
+    }
+
     public static<T> Result<T> noPermission(){
         return Result.noPermission(null);
     }

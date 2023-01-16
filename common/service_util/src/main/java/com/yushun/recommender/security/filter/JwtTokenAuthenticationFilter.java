@@ -1,6 +1,8 @@
 package com.yushun.recommender.security.filter;
 
+import com.google.gson.Gson;
 import com.yushun.recommender.security.exception.JwtAuthenticationException;
+import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -34,8 +36,8 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
             throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) res;
+        HttpServletRequest request = (HttpServletRequest)req;
+        HttpServletResponse response = (HttpServletResponse)res;
 
         try {
             String token = jwtToken.resolveToken(request);
@@ -48,8 +50,11 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
                 }
             }
         }catch(JwtAuthenticationException e) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("Invalid token");
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+            response.getWriter().println(new Gson().toJson(Result.invalidToken()));
             response.getWriter().flush();
 
             return;
