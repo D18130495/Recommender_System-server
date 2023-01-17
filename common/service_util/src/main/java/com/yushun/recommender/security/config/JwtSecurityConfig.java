@@ -1,7 +1,7 @@
 package com.yushun.recommender.security.config;
 
 import com.yushun.recommender.security.filter.JwtTokenAuthenticationFilter;
-import com.yushun.recommender.security.utils.JwtAuthenticationEntryPoint;
+import com.yushun.recommender.security.handler.CustomAuthenticationEntryPoint;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +29,7 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
         JwtTokenAuthenticationFilter customFilter = new JwtTokenAuthenticationFilter(jwtTokenProvider);
 
         http.exceptionHandling()
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
                 .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }

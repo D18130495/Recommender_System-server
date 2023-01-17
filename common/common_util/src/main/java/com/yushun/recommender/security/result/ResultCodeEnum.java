@@ -13,7 +13,8 @@ public enum ResultCodeEnum {
     SUCCESS(200,"Success"),
     FAIL(201, "Fail"),
     INVALID_TOKEN(202, "Invalid token or expired"),
-    PERMISSION(403, "Permission Denied");
+    NOT_AUTHENTICATED(401, "Not authenticated"),
+    PERMISSION_DENIED(403, "Permission denied");
 
     private Integer code;
     private String message;

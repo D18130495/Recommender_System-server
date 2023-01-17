@@ -89,8 +89,24 @@ public class Result<T> {
         return build(data, ResultCodeEnum.INVALID_TOKEN);
     }
 
-    public static<T> Result<T> noPermission(){
-        return Result.noPermission(null);
+    public static<T> Result<T> notAuthenticated(){
+        return Result.notAuthenticated(null);
+    }
+
+    /**
+     * not authenticated
+     * @param data
+     * @param <T>
+     * @return
+     */
+    public static<T> Result<T> notAuthenticated(T data) {
+        Result<T> result = build(data);
+
+        return build(data, ResultCodeEnum.NOT_AUTHENTICATED);
+    }
+
+    public static<T> Result<T> permissionDenied(){
+        return Result.permissionDenied(null);
     }
 
     /**
@@ -99,10 +115,10 @@ public class Result<T> {
      * @param <T>
      * @return
      */
-    public static<T> Result<T> noPermission(T data) {
+    public static<T> Result<T> permissionDenied(T data) {
         Result<T> result = build(data);
 
-        return build(data, ResultCodeEnum.PERMISSION);
+        return build(data, ResultCodeEnum.PERMISSION_DENIED);
     }
 
     public Result<T> message(String msg) {

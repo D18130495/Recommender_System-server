@@ -1,6 +1,7 @@
 package com.yushun.recommender.security.config;
 
 import com.yushun.recommender.security.handler.CustomAccessDeniedHandler;
+import com.yushun.recommender.security.handler.CustomAuthenticationEntryPoint;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -58,11 +59,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .apply(new JwtSecurityConfig(jwtTokenProvider))
                 .and()
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+                .exceptionHandling()
+                .authenticationEntryPoint(customAuthenticationEntryPoint())
+                .accessDeniedHandler(accessDeniedHandler());
     }
 
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return new CustomAccessDeniedHandler();
+    }
+
+    @Bean
+    public CustomAuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint();
     }
 }
