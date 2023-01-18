@@ -21,6 +21,9 @@ public class UserDetailReturnVo {
     @TableField("avatar")
     private String avatar;
 
+    @TableField("policy")
+    private String policy;
+
     public String getEmail() {
         return email;
     }
@@ -43,5 +46,13 @@ public class UserDetailReturnVo {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getPolicy() {
+        return policy;
+    }
+
+    public void setPolicy(String policy) {
+        this.policy = policy;
     }
 }

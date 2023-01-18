@@ -192,7 +192,7 @@ public class UserInterfaceUserAuthController {
     }
 
     @GetMapping("/tokenLoginRefresh")
-    public Result getUserDetailByToken(@RequestParam String token) {
+    public Result getUserDetailByToken(@RequestParam("token") String token) {
         try {
             // check if the token valid
             boolean isValidToken = jwtTokenProvider.validateToken(token);
