@@ -7,6 +7,7 @@ import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
 import com.yushun.recommender.service.user.UserInterfaceUserService;
 import com.yushun.recommender.vo.user.user.UserDetailReturnVo;
+import com.yushun.recommender.vo.user.user.UserReturnVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -144,7 +145,10 @@ public class UserInterfaceUserDetailController {
         boolean isUpdate = userInterfaceUserService.update(findUser, userWrapper);
 
         if(isUpdate) {
-            return Result.ok(findUser).message("Successfully updated avatar");
+            UserReturnVo userReturnVo = new UserReturnVo();
+            BeanUtils.copyProperties(findUser, userReturnVo);
+
+            return Result.ok(userReturnVo).message("Successfully updated avatar");
         }else {
             return Result.fail().message("Failed to update avatar");
         }
