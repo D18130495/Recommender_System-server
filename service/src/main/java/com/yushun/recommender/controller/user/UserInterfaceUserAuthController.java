@@ -1,14 +1,13 @@
 package com.yushun.recommender.controller.user;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.gson.Gson;
 import com.yushun.recommender.security.exception.JwtAuthenticationException;
 import com.yushun.recommender.security.result.Result;
 
 import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.security.user.UserRepository;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
-import com.yushun.recommender.service.user.UserInterfaceUserService;
+import com.yushun.recommender.service.UserService;
 import com.yushun.recommender.vo.user.user.UserGoogleLoginVo;
 import com.yushun.recommender.vo.user.user.UserReturnVo;
 import com.yushun.recommender.vo.user.user.UserSystemLoginVo;
@@ -38,7 +37,7 @@ import java.util.Date;
 @RequestMapping("/authentication")
 public class UserInterfaceUserAuthController {
     @Autowired
-    private UserInterfaceUserService userInterfaceUserService;
+    private UserService userService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -55,7 +54,7 @@ public class UserInterfaceUserAuthController {
         QueryWrapper userWrapper = new QueryWrapper();
         userWrapper.eq("email", userSystemLoginVo.getEmail());
 
-        User findUser = userInterfaceUserService.getOne(userWrapper);
+        User findUser = userService.getOne(userWrapper);
 
         if(findUser == null) {
             return Result.fail().message("Email has not been registered");
@@ -96,7 +95,7 @@ public class UserInterfaceUserAuthController {
         QueryWrapper userWrapper = new QueryWrapper();
         userWrapper.eq("email", userSystemRegisterVo.getEmail());
 
-        User findUser = userInterfaceUserService.getOne(userWrapper);
+        User findUser = userService.getOne(userWrapper);
 
         if(findUser == null) {
             BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -117,7 +116,7 @@ public class UserInterfaceUserAuthController {
             storeSystemUser.setUpdateTime(new Date());
             storeSystemUser.setIsDeleted(0);
 
-            boolean save = userInterfaceUserService.save(storeSystemUser);
+            boolean save = userService.save(storeSystemUser);
 
             if(!save) return Result.fail().message("Register failed with server error");
 
@@ -154,7 +153,7 @@ public class UserInterfaceUserAuthController {
         QueryWrapper userWrapper = new QueryWrapper();
         userWrapper.eq("email", userGoogleLoginVo.getEmail());
 
-        User findUser = userInterfaceUserService.getOne(userWrapper);
+        User findUser = userService.getOne(userWrapper);
 
         if(findUser == null) {
             // create new google user
@@ -167,7 +166,7 @@ public class UserInterfaceUserAuthController {
             storeGoogleUser.setUpdateTime(new Date());
             storeGoogleUser.setIsDeleted(0);
 
-            boolean save = userInterfaceUserService.save(storeGoogleUser);
+            boolean save = userService.save(storeGoogleUser);
 
             if(!save) return Result.fail().message("Login failed with server error");
         }else if(findUser.getType().equals("S")) {
@@ -204,7 +203,7 @@ public class UserInterfaceUserAuthController {
                 QueryWrapper userWrapper = new QueryWrapper();
                 userWrapper.eq("email", userEmail);
 
-                User findUser = userInterfaceUserService.getOne(userWrapper);
+                User findUser = userService.getOne(userWrapper);
 
                 if(findUser == null) {
                     return Result.fail().message("Can not find user");

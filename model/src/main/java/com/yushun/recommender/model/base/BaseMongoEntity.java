@@ -1,11 +1,7 @@
 package com.yushun.recommender.model.base;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModelProperty;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,41 +10,32 @@ import java.util.Map;
 
 /**
  * <p>
- * MySQL Base Model
+ * MongoDB Base Model
  * </p>
  *
  * @author yushun zeng
- * @since 2022-12-30
+ * @since 2023-1-22
  */
 
-public class BaseEntity implements Serializable {
-    @ApiModelProperty(value = "User id")
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+public class BaseMongoEntity implements Serializable {
+    @MongoId
+    private String id;
 
-    @ApiModelProperty(value = "Created time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @TableField("create_time")
     private Date createTime;
 
-    @ApiModelProperty(value = "Last modified time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @TableField("update_time")
     private Date updateTime;
 
-    @ApiModelProperty(value = "Is deleted")
-    @TableLogic
-    @TableField("is_deleted")
+    // 0: not delete, 1: deleted
     private Integer isDeleted;
 
-    @TableField(exist = false)
+    @Transient
     private Map<String,Object> param = new HashMap<>();
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

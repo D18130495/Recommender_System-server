@@ -5,7 +5,7 @@ import com.yushun.recommender.minio.utils.MinioUtils;
 import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
-import com.yushun.recommender.service.user.UserInterfaceUserService;
+import com.yushun.recommender.service.UserService;
 import com.yushun.recommender.vo.user.user.UserDetailReturnVo;
 import com.yushun.recommender.vo.user.user.UserReturnVo;
 import org.springframework.beans.BeanUtils;
@@ -32,7 +32,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserInterfaceUserDetailController {
     @Autowired
-    private UserInterfaceUserService userInterfaceUserService;
+    private UserService userInterfaceUserService;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;

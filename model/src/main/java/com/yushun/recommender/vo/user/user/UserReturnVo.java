@@ -21,6 +21,9 @@ public class UserReturnVo {
     @TableField("avatar")
     private String avatar;
 
+    @TableField("policy")
+    private String policy;
+
     @TableField("token")
     private String token;
 
@@ -46,6 +49,14 @@ public class UserReturnVo {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getPolicy() {
+        return policy;
+    }
+
+    public void setPolicy(String policy) {
+        this.policy = policy;
     }
 
     public String getToken() {

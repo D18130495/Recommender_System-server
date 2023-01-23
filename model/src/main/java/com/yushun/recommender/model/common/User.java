@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * <p>
- * user
+ * User Model
  * </p>
  *
  * @author yushun zeng

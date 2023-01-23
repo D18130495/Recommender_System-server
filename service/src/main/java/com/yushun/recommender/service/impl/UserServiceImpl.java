@@ -1,9 +1,9 @@
-package com.yushun.recommender.service.user.impl;
+package com.yushun.recommender.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yushun.recommender.mapper.user.UserInterfaceUserMapper;
 import com.yushun.recommender.model.common.User;
-import com.yushun.recommender.service.user.UserInterfaceUserService;
+import com.yushun.recommender.service.UserService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +16,6 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class UserInterfaceUserServiceImpl extends ServiceImpl<UserInterfaceUserMapper, User> implements UserInterfaceUserService {
+public class UserServiceImpl extends ServiceImpl<UserInterfaceUserMapper, User> implements UserService {
 
 }

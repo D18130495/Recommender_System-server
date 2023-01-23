@@ -16,6 +16,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface SecurityUserMapper extends BaseMapper<User> {
 
 }

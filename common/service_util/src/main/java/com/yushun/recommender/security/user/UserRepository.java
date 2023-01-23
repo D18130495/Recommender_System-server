@@ -1,10 +1,8 @@
 package com.yushun.recommender.security.user;
 
 import com.yushun.recommender.model.common.User;
-import com.yushun.recommender.security.service.UserService;
+import com.yushun.recommender.security.service.SecurityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -24,7 +22,7 @@ public class UserRepository {
     private static final Map<String, User> allUsers = new HashMap<>();
 
     @Autowired
-    private UserService userService;
+    private SecurityUserService userService;
 
     @PostConstruct
     protected void init() {

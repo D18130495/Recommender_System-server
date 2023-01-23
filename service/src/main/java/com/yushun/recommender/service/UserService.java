@@ -1,15 +1,15 @@
-package com.yushun.recommender.security.service;
+package com.yushun.recommender.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yushun.recommender.model.common.User;
 
 /**
  * <p>
- * User Service
+ * User Interface User Service
  * </p>
  *
  * @author yushun zeng
- * @since 2023-1-13
+ * @since 2023-1-5
  */
 
 public interface UserService extends IService<User> {
