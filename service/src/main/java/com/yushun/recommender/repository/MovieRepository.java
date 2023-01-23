@@ -1,9 +1,7 @@
 package com.yushun.recommender.repository;
 
-import com.yushun.recommender.model.common.MongoEntity.Movie.Movie;
+import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
 import org.springframework.data.mongodb.repository.MongoRepository;
-
-import java.util.List;
 
 /**
  * <p>

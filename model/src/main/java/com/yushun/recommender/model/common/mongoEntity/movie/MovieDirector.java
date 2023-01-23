@@ -1,4 +1,4 @@
-package com.yushun.recommender.model.common.MongoEntity.Movie;
+package com.yushun.recommender.model.common.mongoEntity.movie;
 
 /**
  * <p>

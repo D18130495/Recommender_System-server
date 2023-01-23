@@ -1,6 +1,6 @@
 package com.yushun.recommender.service;
 
-import com.yushun.recommender.model.common.MongoEntity.Movie.Movie;
+import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ import java.util.List;
  */
 
 public interface MovieService {
-//    List<Movie> getRandomMovie();
+    List<Movie> getRandomMovie();
 }

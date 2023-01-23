@@ -1,4 +1,4 @@
-package com.yushun.recommender.model.common.MongoEntity.Movie;
+package com.yushun.recommender.model.common.mongoEntity.movie;
 
 import com.yushun.recommender.model.base.BaseMongoEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
