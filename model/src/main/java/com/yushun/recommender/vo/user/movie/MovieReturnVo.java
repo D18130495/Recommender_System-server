@@ -27,7 +27,7 @@ public class MovieReturnVo {
 
     private String url;
 
-    private String genres;
+    private List<String> genres;
 
     private String movieImage;
 
@@ -37,7 +37,7 @@ public class MovieReturnVo {
 
     private List<MovieActor> actor;
 
-    private String rate;
+    private float rate;
 
     public Integer getMovieId() {
         return movieId;
@@ -87,11 +87,11 @@ public class MovieReturnVo {
         this.url = url;
     }
 
-    public String getGenres() {
+    public List<String> getGenres() {
         return genres;
     }
 
-    public void setGenres(String genres) {
+    public void setGenres(List<String> genres) {
         this.genres = genres;
     }
 
@@ -127,11 +127,11 @@ public class MovieReturnVo {
         this.actor = actor;
     }
 
-    public String getRate() {
+    public float getRate() {
         return rate;
     }
 
-    public void setRate(String rate) {
+    public void setRate(float rate) {
         this.rate = rate;
     }
 }

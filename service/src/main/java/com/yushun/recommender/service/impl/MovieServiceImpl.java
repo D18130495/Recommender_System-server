@@ -34,7 +34,7 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> getRandomMovie() {
         // aggregate and find results
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.sample(5)
+                Aggregation.sample(6)
         );
 
         AggregationResults<Movie> results = mongoTemplate.aggregate(aggregation, Movie.class, Movie.class);

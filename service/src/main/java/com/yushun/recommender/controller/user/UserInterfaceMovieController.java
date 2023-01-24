@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,16 +43,26 @@ public class UserInterfaceMovieController {
 
         // result variable
         List<MovieReturnVo> movieReturnList;
-        MovieReturnVo movieReturnVo = new MovieReturnVo();
 
         // form result
-        movieReturnList = movieList.stream().map(movie -> {
-            BeanUtils.copyProperties(movie, movieReturnVo);
-            movieReturnVo.setRate((String)movie.getParam().get("rate"));
-
-            return movieReturnVo;
-        }).collect(Collectors.toList());
+        movieReturnList = movieList.stream().map(this::formMovieResult).collect(Collectors.toList());
 
         return Result.ok(movieReturnList);
+    }
+
+    public MovieReturnVo formMovieResult(Movie movie) {
+        MovieReturnVo movieReturnVo = new MovieReturnVo();
+
+        BeanUtils.copyProperties(movie, movieReturnVo);
+
+        // parse genres
+        if(!movie.getGenres().isEmpty()) {
+            String[] genreList = movie.getGenres().split("[ | ]");
+            movieReturnVo.setGenres(new ArrayList<>(Arrays.asList(genreList)));
+        }
+
+        movieReturnVo.setRate(Float.parseFloat((String)movie.getParam().get("rate")));
+
+        return movieReturnVo;
     }
 }
