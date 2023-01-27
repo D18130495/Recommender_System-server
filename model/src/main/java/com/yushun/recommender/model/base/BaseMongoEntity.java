@@ -1,5 +1,6 @@
 package com.yushun.recommender.model.base;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
@@ -21,9 +22,9 @@ public class BaseMongoEntity implements Serializable {
     @MongoId
     private String id;
 
-    private Date createTime;
+    private String createTime;
 
-    private Date updateTime;
+    private String updateTime;
 
     // 0: not delete, 1: deleted
     private Integer isDeleted;
@@ -39,19 +40,19 @@ public class BaseMongoEntity implements Serializable {
         this.id = id;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

@@ -25,11 +25,15 @@ public class MovieReturnVo {
 
     private String year;
 
-    private String url;
+    private String imdbUrl;
+
+    private String tmdbUrl;
 
     private List<String> genres;
 
     private String movieImage;
+
+    private String movieVideo;
 
     private String description;
 
@@ -79,12 +83,20 @@ public class MovieReturnVo {
         this.year = year;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImdbUrl() {
+        return imdbUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImdbUrl(String imdbUrl) {
+        this.imdbUrl = imdbUrl;
+    }
+
+    public String getTmdbUrl() {
+        return tmdbUrl;
+    }
+
+    public void setTmdbUrl(String tmdbUrl) {
+        this.tmdbUrl = tmdbUrl;
     }
 
     public List<String> getGenres() {
@@ -101,6 +113,14 @@ public class MovieReturnVo {
 
     public void setMovieImage(String movieImage) {
         this.movieImage = movieImage;
+    }
+
+    public String getMovieVideo() {
+        return movieVideo;
+    }
+
+    public void setMovieVideo(String movieVideo) {
+        this.movieVideo = movieVideo;
     }
 
     public String getDescription() {
