@@ -1,17 +1,16 @@
 package com.yushun.recommender.controller.user;
 
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
+import com.yushun.recommender.model.common.mongoEntity.movie.MovieRate;
 import com.yushun.recommender.repository.MovieRepository;
 import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.service.MovieService;
 import com.yushun.recommender.vo.user.movie.MovieReturnVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +47,30 @@ public class UserInterfaceMovieController {
         movieReturnList = movieList.stream().map(this::formMovieResult).collect(Collectors.toList());
 
         return Result.ok(movieReturnList);
+    }
+
+    @GetMapping("/getMovieByMovieId/{movieId}")
+    public Result getMovieByMovieId(@PathVariable Integer movieId) {
+        // find movie
+        Movie movie = movieRepository.findByMovieId(movieId);
+
+        if(movie == null) {
+            return Result.fail().message("Can not find this movie");
+        }else {
+            // calculate average rate value
+            float total = 0;
+
+            for(MovieRate movieRate: movie.getRate()) {
+                total = total + movieRate.getRating();
+            }
+
+            DecimalFormat decimalFormat =new DecimalFormat("#.0");
+            movie.getParam().put("rate", decimalFormat.format(total / movie.getRate().size()));
+        }
+
+        MovieReturnVo movieReturnVo = formMovieResult(movie);
+
+        return Result.ok(movieReturnVo).message("Successfully find movie");
     }
 
     public MovieReturnVo formMovieResult(Movie movie) {

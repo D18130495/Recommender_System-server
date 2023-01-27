@@ -12,7 +12,7 @@ package com.yushun.recommender.model.common.mongoEntity.movie;
 public class MovieRate {
     private Integer userId;
 
-    private Integer rating;
+    private Float rating;
 
     private String tags;
 
@@ -24,11 +24,11 @@ public class MovieRate {
         this.userId = userId;
     }
 
-    public Integer getRating() {
+    public Float getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Float rating) {
         this.rating = rating;
     }
 
