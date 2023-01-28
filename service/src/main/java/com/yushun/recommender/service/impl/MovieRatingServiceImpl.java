@@ -22,6 +22,7 @@ import java.util.Date;
 
 @Service
 public class MovieRatingServiceImpl extends ServiceImpl<MovieRatingMapper, MovieRating> implements MovieRatingService {
+
     @Override
     public MovieRatingReturnVo getMovieRating(Integer movieId, String email) {
         // find rating
