@@ -84,6 +84,7 @@ public class UserInterfaceUserAuthController {
             );
 
             userReturnVo.setToken(token);
+            userReturnVo.setPolicy(findUser.getPolicy());
 
             return Result.ok(userReturnVo).message("Successfully login");
         }
@@ -109,7 +110,7 @@ public class UserInterfaceUserAuthController {
             User storeSystemUser = new User();
             BeanUtils.copyProperties(userSystemRegisterVo, storeSystemUser);
             storeSystemUser.setPassword(cryptPassword);
-            storeSystemUser.setPolicy("F");
+            storeSystemUser.setPolicy("U");
             storeSystemUser.setType("S");
             storeSystemUser.setRoles(Collections.singletonList("ROLE_USER"));
             storeSystemUser.setCreateTime(new Date());
@@ -134,6 +135,7 @@ public class UserInterfaceUserAuthController {
             );
 
             userReturnVo.setToken(token);
+            userReturnVo.setPolicy("U");
 
             return Result.ok(userReturnVo).message("Successfully registered, will automatically login with in 3 second");
         }else if(findUser.getType().equals("S")) {
@@ -159,7 +161,7 @@ public class UserInterfaceUserAuthController {
             // create new google user
             User storeGoogleUser = new User();
             BeanUtils.copyProperties(userGoogleLoginVo, storeGoogleUser);
-            storeGoogleUser.setPolicy("F");
+            storeGoogleUser.setPolicy("U");
             storeGoogleUser.setType("G");
             storeGoogleUser.setRoles(Collections.singletonList("ROLE_USER"));
             storeGoogleUser.setCreateTime(new Date());
@@ -186,6 +188,7 @@ public class UserInterfaceUserAuthController {
         );
 
         userReturnVo.setToken(token);
+        userReturnVo.setPolicy(findUser.getPolicy());
 
         return Result.ok(userReturnVo).message("Successfully login");
     }
