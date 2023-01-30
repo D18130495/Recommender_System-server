@@ -1,19 +1,24 @@
 package com.yushun.recommender.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
 import com.yushun.recommender.model.common.mongoEntity.movie.MovieRate;
+import com.yushun.recommender.model.user.MovieFavourite;
+import com.yushun.recommender.model.user.MovieRating;
 import com.yushun.recommender.repository.MovieRepository;
+import com.yushun.recommender.service.MovieFavouriteService;
+import com.yushun.recommender.service.MovieRatingService;
 import com.yushun.recommender.service.MovieService;
+import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.text.DecimalFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +37,12 @@ public class MovieServiceImpl implements MovieService {
 
     @Autowired
     private MovieRepository movieRepository;
+
+    @Autowired
+    private MovieFavouriteService movieFavouriteService;
+
+    @Autowired
+    private MovieRatingService movieRatingService;
 
     @Override
     public List<Movie> getRandomMovie() {
@@ -57,6 +68,54 @@ public class MovieServiceImpl implements MovieService {
         }
 
         return movieList;
+    }
+
+    @Override
+    public List<MovieLikeListReturnVo> getMovieLikeList(String email) {
+        // find user movie like list movieId
+        QueryWrapper movieLikeListWrapper = new QueryWrapper();
+        movieLikeListWrapper.eq("email", email);
+        movieLikeListWrapper.eq("favourite", "T");
+
+        List<MovieFavourite> findMovieLikeList = movieFavouriteService.list(movieLikeListWrapper);
+
+        if(findMovieLikeList != null) {
+            // return list
+            ArrayList<MovieLikeListReturnVo> movieLikeListReturnVoList = new ArrayList<>();
+
+            // find movie detail
+            for(MovieFavourite movieFavourite: findMovieLikeList) {
+                Movie movie = movieRepository.findByMovieId(movieFavourite.getMovieId());
+
+                // form movie detail
+                if(movie != null) {
+                    MovieLikeListReturnVo movieLikeListReturnVo = new MovieLikeListReturnVo();
+                    movieLikeListReturnVo.setMovieId(movieFavourite.getMovieId());
+                    movieLikeListReturnVo.setTitle(movie.getTitle());
+                    movieLikeListReturnVo.setGenres(movie.getGenres());
+                    movieLikeListReturnVo.setDirector(movie.getDirector());
+                    movieLikeListReturnVo.setActor(movie.getActor());
+
+                    // form rating data
+                    // find user rating for this movie
+                    QueryWrapper movieRatingWrapper = new QueryWrapper();
+                    movieRatingWrapper.eq("email", email);
+                    movieRatingWrapper.eq("movieId", movie.getMovieId());
+
+                    MovieRating findMovieRating = movieRatingService.getOne(movieRatingWrapper);
+
+                    if(findMovieRating != null) movieLikeListReturnVo.setRating(findMovieRating.getRating());
+
+                    movieLikeListReturnVo.setUpdateDate(movieFavourite.getUpdateTime());
+
+                    movieLikeListReturnVoList.add(movieLikeListReturnVo);
+                }
+            }
+
+            return movieLikeListReturnVoList;
+        }else {
+            return null;
+        }
     }
 
 //    @Override

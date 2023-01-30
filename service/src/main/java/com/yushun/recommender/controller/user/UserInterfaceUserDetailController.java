@@ -5,7 +5,9 @@ import com.yushun.recommender.minio.utils.MinioUtils;
 import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
+import com.yushun.recommender.service.MovieService;
 import com.yushun.recommender.service.UserService;
+import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
 import com.yushun.recommender.vo.user.user.UserDetailReturnVo;
 import com.yushun.recommender.vo.user.user.UserReturnVo;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
+
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +36,10 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserInterfaceUserDetailController {
     @Autowired
-    private UserService userInterfaceUserService;
+    private UserService userService;
+
+    @Autowired
+    private MovieService movieService;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -54,7 +61,7 @@ public class UserInterfaceUserDetailController {
         QueryWrapper userWrapper = new QueryWrapper();
         userWrapper.eq("email", userEmail);
 
-        User findUser = userInterfaceUserService.getOne(userWrapper);
+        User findUser = userService.getOne(userWrapper);
 
         if(findUser == null) {
             return Result.fail().message("Can not find user");
@@ -73,7 +80,7 @@ public class UserInterfaceUserDetailController {
         QueryWrapper userWrapper = new QueryWrapper();
         userWrapper.eq("email", email);
 
-        User findUser = userInterfaceUserService.getOne(userWrapper);
+        User findUser = userService.getOne(userWrapper);
 
         if(findUser == null) {
             return Result.fail().message("Can not find user");
@@ -93,7 +100,7 @@ public class UserInterfaceUserDetailController {
         QueryWrapper userWrapper = new QueryWrapper();
         userWrapper.eq("email", user.getEmail());
 
-        User findUser = userInterfaceUserService.getOne(userWrapper);
+        User findUser = userService.getOne(userWrapper);
 
         if(findUser == null) {
             return Result.fail().message("Can not find user");
@@ -109,7 +116,7 @@ public class UserInterfaceUserDetailController {
 
         findUser.setUpdateTime(new Date());
 
-        boolean isUpdate = userInterfaceUserService.update(findUser, userWrapper);
+        boolean isUpdate = userService.update(findUser, userWrapper);
 
         if(isUpdate) {
             return Result.ok(findUser).message("Successfully updated user");
@@ -132,7 +139,7 @@ public class UserInterfaceUserDetailController {
         QueryWrapper userWrapper = new QueryWrapper();
         userWrapper.eq("email", userEmail);
 
-        User findUser = userInterfaceUserService.getOne(userWrapper);
+        User findUser = userService.getOne(userWrapper);
 
         if(findUser == null) {
             return Result.fail().message("Can not find user");
@@ -142,7 +149,7 @@ public class UserInterfaceUserDetailController {
 
         findUser.setUpdateTime(new Date());
 
-        boolean isUpdate = userInterfaceUserService.update(findUser, userWrapper);
+        boolean isUpdate = userService.update(findUser, userWrapper);
 
         if(isUpdate) {
             UserReturnVo userReturnVo = new UserReturnVo();
@@ -152,5 +159,12 @@ public class UserInterfaceUserDetailController {
         }else {
             return Result.fail().message("Failed to update avatar");
         }
+    }
+
+    @GetMapping("/getUserLikeList")
+    public Result getUserLikeList(@PathParam("email") String email) {
+        List<MovieLikeListReturnVo> movieLikeList = movieService.getMovieLikeList(email);
+
+        return Result.ok(movieLikeList);
     }
 }

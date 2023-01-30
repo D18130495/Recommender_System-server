@@ -1,6 +1,7 @@
 package com.yushun.recommender.service;
 
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
+import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ import java.util.List;
 
 public interface MovieService {
     List<Movie> getRandomMovie();
+
+    List<MovieLikeListReturnVo> getMovieLikeList(String email);
 }
