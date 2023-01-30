@@ -1,7 +1,6 @@
 package com.yushun.recommender.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
 import com.yushun.recommender.model.common.mongoEntity.movie.MovieRate;
 import com.yushun.recommender.model.user.MovieFavourite;
@@ -11,6 +10,7 @@ import com.yushun.recommender.service.MovieFavouriteService;
 import com.yushun.recommender.service.MovieRatingService;
 import com.yushun.recommender.service.MovieService;
 import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
+import com.yushun.recommender.vo.user.movie.MovieRatingListReturnVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -113,6 +113,42 @@ public class MovieServiceImpl implements MovieService {
             }
 
             return movieLikeListReturnVoList;
+        }else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<MovieRatingListReturnVo> getMovieRatingList(String email) {
+        // find user rated movie list
+        QueryWrapper movieRatingListWrapper = new QueryWrapper();
+        movieRatingListWrapper.eq("email", email);
+
+        List<MovieRating> findMovieRatingList = movieRatingService.list(movieRatingListWrapper);
+
+        if(findMovieRatingList != null) {
+            // return list
+            ArrayList<MovieRatingListReturnVo> movieRatingListReturnVoList = new ArrayList<>();
+
+            // find movie detail
+            for(MovieRating movieRating: findMovieRatingList) {
+                Movie movie = movieRepository.findByMovieId(movieRating.getMovieId());
+
+                // form movie detail
+                if(movie != null) {
+                    MovieRatingListReturnVo movieRatingListReturnVo = new MovieRatingListReturnVo();
+                    movieRatingListReturnVo.setMovieId(movieRating.getMovieId());
+                    movieRatingListReturnVo.setTitle(movie.getTitle());
+                    movieRatingListReturnVo.setRating(movieRating.getRating());
+                    movieRatingListReturnVo.setDirector(movie.getDirector());
+                    movieRatingListReturnVo.setActor(movie.getActor());
+                    movieRatingListReturnVo.setUpdateDate(movieRating.getUpdateTime());
+
+                    movieRatingListReturnVoList.add(movieRatingListReturnVo);
+                }
+            }
+
+            return movieRatingListReturnVoList;
         }else {
             return null;
         }

@@ -8,6 +8,7 @@ import com.yushun.recommender.security.utils.JwtTokenProvider;
 import com.yushun.recommender.service.MovieService;
 import com.yushun.recommender.service.UserService;
 import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
+import com.yushun.recommender.vo.user.movie.MovieRatingListReturnVo;
 import com.yushun.recommender.vo.user.user.UserDetailReturnVo;
 import com.yushun.recommender.vo.user.user.UserReturnVo;
 import org.springframework.beans.BeanUtils;
@@ -161,10 +162,17 @@ public class UserInterfaceUserDetailController {
         }
     }
 
-    @GetMapping("/getUserLikeList")
-    public Result getUserLikeList(@PathParam("email") String email) {
+    @GetMapping("/getMovieLikeList")
+    public Result getMovieLikeList(@PathParam("email") String email) {
         List<MovieLikeListReturnVo> movieLikeList = movieService.getMovieLikeList(email);
 
         return Result.ok(movieLikeList);
+    }
+
+    @GetMapping("/getMovieRatingList")
+    public Result getMovieRatingList(@PathParam("email") String email) {
+        List<MovieRatingListReturnVo> movieRatingList = movieService.getMovieRatingList(email);
+
+        return Result.ok(movieRatingList);
     }
 }
