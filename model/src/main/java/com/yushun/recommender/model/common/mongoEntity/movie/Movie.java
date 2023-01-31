@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * <p>
- * Movie Model
+ * MongoDB Movie Model
  * </p>
  *
  * @author yushun zeng

@@ -38,13 +38,13 @@ public class UserInterfaceMovieController {
     @GetMapping("/getRandomMovieList")
     public Result getRandomMovieList() {
         // initial random movie list
-        List<Movie> movieList = movieService.getRandomMovie();
+        List<Movie> randomMovieList = movieService.getRandomMovie();
 
         // result variable
         List<MovieReturnVo> movieReturnList;
 
         // form result
-        movieReturnList = movieList.stream().map(this::formMovieResult).collect(Collectors.toList());
+        movieReturnList = randomMovieList.stream().map(this::formMovieResult).collect(Collectors.toList());
 
         return Result.ok(movieReturnList);
     }
