@@ -24,7 +24,7 @@ import java.util.Date;
 public class MovieRatingServiceImpl extends ServiceImpl<MovieRatingMapper, MovieRating> implements MovieRatingService {
 
     @Override
-    public MovieRatingReturnVo getMovieRating(Integer movieId, String email) {
+    public MovieRatingReturnVo getUserMovieRating(Integer movieId, String email) {
         // find rating
         QueryWrapper movieRatingWrapper = new QueryWrapper();
         movieRatingWrapper.eq("movieId", movieId);
@@ -44,7 +44,7 @@ public class MovieRatingServiceImpl extends ServiceImpl<MovieRatingMapper, Movie
     }
 
     @Override
-    public boolean addOrUpdateMovieRating(MovieRating movieRating) {
+    public boolean addOrUpdateUserMovieRating(MovieRating movieRating) {
         // find rating
         QueryWrapper movieRatingWrapper = new QueryWrapper();
         movieRatingWrapper.eq("movieId", movieRating.getMovieId());

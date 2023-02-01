@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/movie/rating")
 public class UserInterfaceMovieRatingController {
     @Autowired
-    private MovieRatingService userRatingService;
+    private MovieRatingService movieRatingService;
 
-    @GetMapping("/getMovieRating")
-    public Result getMovieRating(@RequestParam("movieId") Integer movieId,
+    @GetMapping("/getUserMovieRating")
+    public Result getUserMovieRating(@RequestParam("movieId") Integer movieId,
                                  @RequestParam("email") String email) {
-        MovieRatingReturnVo existMovieRating = userRatingService.getMovieRating(movieId, email);
+        MovieRatingReturnVo existMovieRating = movieRatingService.getUserMovieRating(movieId, email);
 
         if(existMovieRating != null) {
             return Result.ok(existMovieRating).message("Successfully get movie rating");
@@ -35,12 +35,12 @@ public class UserInterfaceMovieRatingController {
         }
     }
 
-    @PostMapping("/addOrUpdateMovieRating")
-    public Result addOrUpdateMovieRating(@RequestBody MovieRating movieRate) {
-        if(userRatingService.addOrUpdateMovieRating(movieRate)) {
-            return Result.ok(movieRate).message("Successfully rating the movie");
+    @PostMapping("/addOrUpdateUserMovieRating")
+    public Result addOrUpdateUserMovieRating(@RequestBody MovieRating movieRating) {
+        if(movieRatingService.addOrUpdateUserMovieRating(movieRating)) {
+            return Result.ok(movieRating).message("Successfully rating the movie");
         }else {
-            return Result.fail(movieRate).message("Movie rating failed with server error");
+            return Result.fail().message("Movie rating failed with server error");
         }
     }
 }

@@ -1,20 +1,13 @@
 package com.yushun.recommender.controller.user;
 
 import com.yushun.recommender.model.common.mongoEntity.book.Book;
-import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
 import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.service.BookService;
 import com.yushun.recommender.vo.user.book.BookReturnVo;
-import com.yushun.recommender.vo.user.movie.MovieReturnVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +39,21 @@ public class UserInterfaceBookController {
         bookReturnList = randomBookList.stream().map(this::formBookResult).collect(Collectors.toList());
 
         return Result.ok(bookReturnList);
+    }
+
+    @GetMapping("/getBookByISBN/{isbn}")
+    public Result getBookByISBN(@PathVariable String isbn) {
+        // find book
+        Book book = bookService.getBookByISBN(isbn);
+
+        // form book return result
+        if(book != null) {
+            BookReturnVo bookReturnVo = formBookResult(book);
+
+            return Result.ok(bookReturnVo).message("Successfully find book");
+        }else {
+            return Result.fail().message("Can not find this book");
+        }
     }
 
     public BookReturnVo formBookResult(Book book) {

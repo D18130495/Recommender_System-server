@@ -15,4 +15,6 @@ import java.util.List;
 
 public interface BookService {
     List<Book> getRandomBook();
+
+    Book getBookByISBN(String isbn);
 }

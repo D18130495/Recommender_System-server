@@ -2,10 +2,13 @@ package com.yushun.recommender.service.impl;
 
 import com.yushun.recommender.model.common.mongoEntity.book.Book;
 import com.yushun.recommender.model.common.mongoEntity.book.BookRate;
-import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
 import com.yushun.recommender.model.common.mongoEntity.movie.MovieRate;
-import com.yushun.recommender.repository.MovieRepository;
+import com.yushun.recommender.repository.BookRepository;
+import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.service.BookService;
+import com.yushun.recommender.vo.user.book.BookReturnVo;
+import com.yushun.recommender.vo.user.movie.MovieReturnVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -30,7 +33,7 @@ public class BookServiceImpl implements BookService {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private MovieRepository movieRepository;
+    private BookRepository bookRepository;
 
     @Override
     public List<Book> getRandomBook() {
@@ -56,5 +59,27 @@ public class BookServiceImpl implements BookService {
         }
 
         return bookList;
+    }
+
+    @Override
+    public Book getBookByISBN(String isbn) {
+        // find book
+        Book book = bookRepository.findByISBN(isbn);
+
+        if(book == null) {
+            return null;
+        }else {
+            // calculate average rate value
+            float total = 0;
+
+            for(BookRate bookRate: book.getRate()) {
+                total = total + bookRate.getRating();
+            }
+
+            DecimalFormat decimalFormat =new DecimalFormat("#.0");
+            book.getParam().put("rate", decimalFormat.format(total / book.getRate().size()));
+        }
+
+        return book;
     }
 }
