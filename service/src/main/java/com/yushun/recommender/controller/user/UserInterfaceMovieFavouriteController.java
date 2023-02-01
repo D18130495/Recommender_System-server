@@ -4,7 +4,6 @@ import com.yushun.recommender.model.user.MovieFavourite;
 import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.service.MovieFavouriteService;
 import com.yushun.recommender.vo.user.movie.MovieFavouriteReturnVo;
-import com.yushun.recommender.vo.user.movie.MovieRatingReturnVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +22,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserInterfaceMovieFavouriteController {
     @Autowired
     private MovieFavouriteService movieFavouriteService;
-    @GetMapping("/getMovieFavourite")
-    public Result getMovieFavourite(@RequestParam("movieId") Integer movieId,
+
+    @GetMapping("/getUserMovieFavourite")
+    public Result getUserMovieFavourite(@RequestParam("movieId") Integer movieId,
                                     @RequestParam("email") String email) {
-        MovieFavouriteReturnVo existMovieFavourite = movieFavouriteService.getMovieFavourite(movieId, email);
+        MovieFavouriteReturnVo existMovieFavourite = movieFavouriteService.getUserMovieFavourite(movieId, email);
 
         if(existMovieFavourite != null) {
             return Result.ok(existMovieFavourite).message("Successfully get movie favourite");
@@ -36,10 +36,10 @@ public class UserInterfaceMovieFavouriteController {
     }
 
     @PostMapping("/likeOrUnlikeMovie")
-    public Result getMovieRating(@RequestBody MovieFavourite movieFavourite) {
-        String likeOrUnlike = movieFavouriteService.likeOrUnlikeMovie(movieFavourite);
+    public Result likeOrUnlikeMovie(@RequestBody MovieFavourite movieFavourite) {
+        String likeOrUnlikeMovie = movieFavouriteService.likeOrUnlikeMovie(movieFavourite);
 
-        switch (likeOrUnlike) {
+        switch(likeOrUnlikeMovie) {
             case "Liked":
                 return Result.ok().message("Successfully liked this movie");
             case "Unliked":

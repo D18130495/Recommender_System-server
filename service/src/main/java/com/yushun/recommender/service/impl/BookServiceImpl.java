@@ -2,13 +2,10 @@ package com.yushun.recommender.service.impl;
 
 import com.yushun.recommender.model.common.mongoEntity.book.Book;
 import com.yushun.recommender.model.common.mongoEntity.book.BookRate;
-import com.yushun.recommender.model.common.mongoEntity.movie.MovieRate;
 import com.yushun.recommender.repository.BookRepository;
-import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.service.BookService;
-import com.yushun.recommender.vo.user.book.BookReturnVo;
-import com.yushun.recommender.vo.user.movie.MovieReturnVo;
-import org.springframework.beans.BeanUtils;
+import com.yushun.recommender.vo.user.book.BookLikeListReturnVo;
+import com.yushun.recommender.vo.user.book.BookRatingListReturnVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -81,5 +78,15 @@ public class BookServiceImpl implements BookService {
         }
 
         return book;
+    }
+
+    @Override
+    public List<BookLikeListReturnVo> getUserBookLikeList(String email) {
+        return null;
+    }
+
+    @Override
+    public List<BookRatingListReturnVo> getUserBookRatingList(String email) {
+        return null;
     }
 }

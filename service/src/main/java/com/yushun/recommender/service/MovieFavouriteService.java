@@ -14,7 +14,7 @@ import com.yushun.recommender.vo.user.movie.MovieFavouriteReturnVo;
  */
 
 public interface MovieFavouriteService extends IService<MovieFavourite> {
-    MovieFavouriteReturnVo getMovieFavourite(Integer movieId, String email);
+    MovieFavouriteReturnVo getUserMovieFavourite(Integer movieId, String email);
 
     String likeOrUnlikeMovie(MovieFavourite movieFavourite);
 }

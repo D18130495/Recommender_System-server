@@ -22,9 +22,8 @@ import java.util.Date;
 
 @Service
 public class MovieFavouriteServiceImpl extends ServiceImpl<MovieFavouriteMapper, MovieFavourite> implements MovieFavouriteService {
-
     @Override
-    public MovieFavouriteReturnVo getMovieFavourite(Integer movieId, String email) {
+    public MovieFavouriteReturnVo getUserMovieFavourite(Integer movieId, String email) {
         // find favourite
         QueryWrapper movieFavouriteWrapper = new QueryWrapper();
         movieFavouriteWrapper.eq("movieId", movieId);
@@ -32,7 +31,7 @@ public class MovieFavouriteServiceImpl extends ServiceImpl<MovieFavouriteMapper,
 
         MovieFavourite findMovieFavourite = baseMapper.selectOne(movieFavouriteWrapper);
 
-        // return rating if exist
+        // return favourite if exist
         if(findMovieFavourite == null) {
             return null;
         }else {

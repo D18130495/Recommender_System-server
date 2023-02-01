@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yushun.recommender.mapper.BookRatingMapper;
 import com.yushun.recommender.model.user.BookRating;
-import com.yushun.recommender.model.user.MovieRating;
 import com.yushun.recommender.service.BookRatingService;
 import com.yushun.recommender.vo.user.book.BookRatingReturnVo;
-import com.yushun.recommender.vo.user.movie.MovieRatingReturnVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

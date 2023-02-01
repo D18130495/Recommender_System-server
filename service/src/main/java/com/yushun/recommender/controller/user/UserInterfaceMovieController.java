@@ -1,7 +1,6 @@
 package com.yushun.recommender.controller.user;
 
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
-import com.yushun.recommender.model.common.mongoEntity.movie.MovieRate;
 import com.yushun.recommender.repository.MovieRepository;
 import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.service.MovieService;
@@ -10,7 +9,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,25 +50,16 @@ public class UserInterfaceMovieController {
     @GetMapping("/getMovieByMovieId/{movieId}")
     public Result getMovieByMovieId(@PathVariable Integer movieId) {
         // find movie
-        Movie movie = movieRepository.findByMovieId(movieId);
+        Movie movie = movieService.getMovieByMovieId(movieId);
 
-        if(movie == null) {
-            return Result.fail().message("Can not find this movie");
+        // form book return result
+        if(movie != null) {
+            MovieReturnVo movieReturnVo = formMovieResult(movie);
+
+            return Result.ok(movieReturnVo).message("Successfully find movie");
         }else {
-            // calculate average rate value
-            float total = 0;
-
-            for(MovieRate movieRate: movie.getRate()) {
-                total = total + movieRate.getRating();
-            }
-
-            DecimalFormat decimalFormat =new DecimalFormat("#.0");
-            movie.getParam().put("rate", decimalFormat.format(total / movie.getRate().size()));
+            return Result.fail().message("Can not find this movie");
         }
-
-        MovieReturnVo movieReturnVo = formMovieResult(movie);
-
-        return Result.ok(movieReturnVo).message("Successfully find movie");
     }
 
     public MovieReturnVo formMovieResult(Movie movie) {

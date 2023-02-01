@@ -1,36 +1,36 @@
-package com.yushun.recommender.vo.user.movie;
+package com.yushun.recommender.vo.user.book;
 
 /**
  * <p>
- * Movie Favourite Return Vo
+ * Book Favourite Return Vo
  * </p>
  *
  * @author yushun zeng
- * @since 2023-1-28
+ * @since 2023-2-1
  */
 
-public class MovieFavouriteReturnVo {
-    private Integer movieId;
+public class BookFavouriteReturnVo {
+    private String isbn;
 
     private String email;
 
     private String favourite;
 
-    public MovieFavouriteReturnVo() {
+    public BookFavouriteReturnVo() {
     }
 
-    public MovieFavouriteReturnVo(Integer movieId, String email, String favourite) {
-        this.movieId = movieId;
+    public BookFavouriteReturnVo(String isbn, String email, String favourite) {
+        this.isbn = isbn;
         this.email = email;
         this.favourite = favourite;
     }
 
-    public Integer getMovieId() {
-        return movieId;
+    public String getIsbn() {
+        return isbn;
     }
 
-    public void setMovieId(Integer movieId) {
-        this.movieId = movieId;
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
     public String getEmail() {

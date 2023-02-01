@@ -5,8 +5,11 @@ import com.yushun.recommender.minio.utils.MinioUtils;
 import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
+import com.yushun.recommender.service.BookService;
 import com.yushun.recommender.service.MovieService;
 import com.yushun.recommender.service.UserService;
+import com.yushun.recommender.vo.user.book.BookLikeListReturnVo;
+import com.yushun.recommender.vo.user.book.BookRatingListReturnVo;
 import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
 import com.yushun.recommender.vo.user.movie.MovieRatingListReturnVo;
 import com.yushun.recommender.vo.user.user.UserDetailReturnVo;
@@ -41,6 +44,9 @@ public class UserInterfaceUserDetailController {
 
     @Autowired
     private MovieService movieService;
+
+    @Autowired
+    private BookService bookService;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -162,17 +168,31 @@ public class UserInterfaceUserDetailController {
         }
     }
 
-    @GetMapping("/getMovieLikeList")
-    public Result getMovieLikeList(@PathParam("email") String email) {
-        List<MovieLikeListReturnVo> movieLikeList = movieService.getMovieLikeList(email);
+    @GetMapping("/getUserMovieLikeList")
+    public Result getUserMovieLikeList(@PathParam("email") String email) {
+        List<MovieLikeListReturnVo> movieLikeList = movieService.getUserMovieLikeList(email);
 
         return Result.ok(movieLikeList);
     }
 
-    @GetMapping("/getMovieRatingList")
-    public Result getMovieRatingList(@PathParam("email") String email) {
-        List<MovieRatingListReturnVo> movieRatingList = movieService.getMovieRatingList(email);
+    @GetMapping("/getUserMovieRatingList")
+    public Result getUserMovieRatingList(@PathParam("email") String email) {
+        List<MovieRatingListReturnVo> movieRatingList = movieService.getUserMovieRatingList(email);
 
         return Result.ok(movieRatingList);
+    }
+
+    @GetMapping("/getUserBookLikeList")
+    public Result getUserBookLikeList(@PathParam("email") String email) {
+        List<BookLikeListReturnVo> bookLikeList = bookService.getUserBookLikeList(email);
+
+        return Result.ok(bookLikeList);
+    }
+
+    @GetMapping("/getUserBookRatingList")
+    public Result getUserBookRatingList(@PathParam("email") String email) {
+        List<BookRatingListReturnVo> bookRatingList = bookService.getUserBookRatingList(email);
+
+        return Result.ok(bookRatingList);
     }
 }

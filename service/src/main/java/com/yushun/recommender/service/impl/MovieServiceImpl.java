@@ -71,7 +71,29 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<MovieLikeListReturnVo> getMovieLikeList(String email) {
+    public Movie getMovieByMovieId(Integer movieId) {
+        // find book
+        Movie movie = movieRepository.findByMovieId(movieId);
+
+        if(movie == null) {
+            return null;
+        }else {
+            // calculate average rate value
+            float total = 0;
+
+            for(MovieRate movieRate: movie.getRate()) {
+                total = total + movieRate.getRating();
+            }
+
+            DecimalFormat decimalFormat =new DecimalFormat("#.0");
+            movie.getParam().put("rate", decimalFormat.format(total / movie.getRate().size()));
+        }
+
+        return movie;
+    }
+
+    @Override
+    public List<MovieLikeListReturnVo> getUserMovieLikeList(String email) {
         // find user movie like list movieId
         QueryWrapper movieLikeListWrapper = new QueryWrapper();
         movieLikeListWrapper.eq("email", email);
@@ -119,7 +141,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<MovieRatingListReturnVo> getMovieRatingList(String email) {
+    public List<MovieRatingListReturnVo> getUserMovieRatingList(String email) {
         // find user rated movie list
         QueryWrapper movieRatingListWrapper = new QueryWrapper();
         movieRatingListWrapper.eq("email", email);

@@ -18,7 +18,9 @@ import java.util.List;
 public interface MovieService {
     List<Movie> getRandomMovie();
 
-    List<MovieLikeListReturnVo> getMovieLikeList(String email);
+    Movie getMovieByMovieId(Integer movieId);
 
-    List<MovieRatingListReturnVo> getMovieRatingList(String email);
+    List<MovieLikeListReturnVo> getUserMovieLikeList(String email);
+
+    List<MovieRatingListReturnVo> getUserMovieRatingList(String email);
 }
