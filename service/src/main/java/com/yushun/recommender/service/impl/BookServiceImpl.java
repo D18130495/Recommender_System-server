@@ -1,11 +1,21 @@
 package com.yushun.recommender.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yushun.recommender.model.common.mongoEntity.book.Book;
 import com.yushun.recommender.model.common.mongoEntity.book.BookRate;
+import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
+import com.yushun.recommender.model.user.BookFavourite;
+import com.yushun.recommender.model.user.BookRating;
+import com.yushun.recommender.model.user.MovieFavourite;
+import com.yushun.recommender.model.user.MovieRating;
 import com.yushun.recommender.repository.BookRepository;
+import com.yushun.recommender.service.BookFavouriteService;
+import com.yushun.recommender.service.BookRatingService;
 import com.yushun.recommender.service.BookService;
 import com.yushun.recommender.vo.user.book.BookLikeListReturnVo;
 import com.yushun.recommender.vo.user.book.BookRatingListReturnVo;
+import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
+import com.yushun.recommender.vo.user.movie.MovieRatingListReturnVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -13,6 +23,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +42,12 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private BookFavouriteService bookFavouriteService;
+
+    @Autowired
+    private BookRatingService bookRatingService;
 
     @Override
     public List<Book> getRandomBook() {
@@ -81,12 +98,124 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Integer getUserLikeAndRatingBookCount(String email) {
+        int bookCount = 0;
+
+        // find user book like list
+        QueryWrapper bookLikeListWrapper = new QueryWrapper();
+        bookLikeListWrapper.eq("email", email);
+        bookLikeListWrapper.eq("favourite", "T");
+
+        List<BookFavourite> bookFavouriteList = bookFavouriteService.list(bookLikeListWrapper);
+
+        // find user book rating list
+        QueryWrapper bookRatingListWrapper = new QueryWrapper();
+        bookRatingListWrapper.eq("email", email);
+
+        List<BookRating> bookRatingList = bookRatingService.list(bookRatingListWrapper);
+
+        if(bookFavouriteList == null && bookRatingList == null) {
+            return 0;
+        }else if(bookFavouriteList == null && bookRatingList != null) {
+            return bookFavouriteList.size();
+        }else if(bookFavouriteList != null && bookRatingList == null) {
+            return bookFavouriteList.size();
+        }else {
+            bookCount = bookFavouriteList.size() + bookRatingList.size();
+
+            for(BookRating bookRating:bookRatingList) {
+                for(BookFavourite bookFavourite:bookFavouriteList) {
+                    if(bookRating.getIsbn().equals(bookFavourite.getIsbn())) {
+                        bookCount -= 1;
+                    }
+                }
+            }
+
+            return bookCount;
+        }
+    }
+
+    @Override
     public List<BookLikeListReturnVo> getUserBookLikeList(String email) {
-        return null;
+        // find user book like list
+        QueryWrapper bookLikeListWrapper = new QueryWrapper();
+        bookLikeListWrapper.eq("email", email);
+        bookLikeListWrapper.eq("favourite", "T");
+
+        List<BookFavourite> findBookLikeList = bookFavouriteService.list(bookLikeListWrapper);
+
+        if(findBookLikeList != null) {
+            // return list
+            ArrayList<BookLikeListReturnVo> bookLikeListReturnVoList = new ArrayList<>();
+
+            // find book detail
+            for(BookFavourite bookFavourite: findBookLikeList) {
+                Book book = bookRepository.findByISBN(bookFavourite.getIsbn());
+
+                // form book detail
+                if(book != null) {
+                    BookLikeListReturnVo bookLikeListReturnVo = new BookLikeListReturnVo();
+                    bookLikeListReturnVo.setIsbn(book.getISBN());
+                    bookLikeListReturnVo.setTitle(book.getTitle());
+                    bookLikeListReturnVo.setAuthor(book.getAuthor());
+                    bookLikeListReturnVo.setYear(book.getYear());
+                    bookLikeListReturnVo.setPublisher(book.getPublisher());
+
+                    // form rating data
+                    // find user rating for this book
+                    QueryWrapper bookRatingWrapper = new QueryWrapper();
+                    bookRatingWrapper.eq("email", email);
+                    bookRatingWrapper.eq("isbn", book.getISBN());
+
+                    BookRating findBookRating = bookRatingService.getOne(bookRatingWrapper);
+
+                    if(findBookRating != null) bookLikeListReturnVo.setRating(findBookRating.getRating());
+
+                    bookLikeListReturnVo.setUpdateDate(bookFavourite.getUpdateTime());
+
+                    bookLikeListReturnVoList.add(bookLikeListReturnVo);
+                }
+            }
+
+            return bookLikeListReturnVoList;
+        }else {
+            return null;
+        }
     }
 
     @Override
     public List<BookRatingListReturnVo> getUserBookRatingList(String email) {
-        return null;
+        // find user rated book list
+        QueryWrapper bookRatingListWrapper = new QueryWrapper();
+        bookRatingListWrapper.eq("email", email);
+
+        List<BookRating> findBookRatingList = bookRatingService.list(bookRatingListWrapper);
+
+        if(findBookRatingList != null) {
+            // return list
+            ArrayList<BookRatingListReturnVo> bookRatingListReturnVoList = new ArrayList<>();
+
+            // find movie detail
+            for(BookRating bookRating: findBookRatingList) {
+                Book book = bookRepository.findByISBN(bookRating.getIsbn());
+
+                // form book detail
+                if(book != null) {
+                    BookRatingListReturnVo bookRatingListReturnVo = new BookRatingListReturnVo();
+                    bookRatingListReturnVo.setIsbn(bookRating.getIsbn());
+                    bookRatingListReturnVo.setTitle(book.getTitle());
+                    bookRatingListReturnVo.setRating(bookRating.getRating());
+                    bookRatingListReturnVo.setAuthor(book.getAuthor());
+                    bookRatingListReturnVo.setPublisher(book.getPublisher());
+                    bookRatingListReturnVo.setUpdateDate(bookRating.getUpdateTime());
+
+                    bookRatingListReturnVoList.add(bookRatingListReturnVo);
+                }
+            }
+
+            return bookRatingListReturnVoList;
+        }else {
+            return null;
+        }
     }
 }

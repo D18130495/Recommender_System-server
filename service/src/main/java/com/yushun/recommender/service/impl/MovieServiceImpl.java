@@ -93,6 +93,44 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    public Integer getUserLikeAndRatingMovieCount(String email) {
+        int movieCount = 0;
+
+        // find user movie like list
+        QueryWrapper movieLikeListWrapper = new QueryWrapper();
+        movieLikeListWrapper.eq("email", email);
+        movieLikeListWrapper.eq("favourite", "T");
+
+        List<MovieFavourite> movieFavouriteList = movieFavouriteService.list(movieLikeListWrapper);
+
+        // find user movie rating list
+        QueryWrapper movieRatingListWrapper = new QueryWrapper();
+        movieRatingListWrapper.eq("email", email);
+
+        List<MovieRating> movieRatingList = movieRatingService.list(movieRatingListWrapper);
+
+        if(movieFavouriteList == null && movieRatingList == null) {
+            return 0;
+        }else if(movieFavouriteList == null && movieRatingList != null) {
+            return movieRatingList.size();
+        }else if(movieFavouriteList != null && movieRatingList == null) {
+            return movieFavouriteList.size();
+        }else {
+            movieCount = movieFavouriteList.size() + movieRatingList.size();
+
+            for(MovieRating movieRating:movieRatingList) {
+                for(MovieFavourite movieFavourite:movieFavouriteList) {
+                    if(movieRating.getMovieId().equals(movieFavourite.getMovieId())) {
+                        movieCount -= 1;
+                    }
+                }
+            }
+
+            return movieCount;
+        }
+    }
+
+    @Override
     public List<MovieLikeListReturnVo> getUserMovieLikeList(String email) {
         // find user movie like list movieId
         QueryWrapper movieLikeListWrapper = new QueryWrapper();

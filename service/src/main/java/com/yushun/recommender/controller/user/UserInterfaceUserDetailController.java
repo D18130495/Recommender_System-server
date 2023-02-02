@@ -168,6 +168,20 @@ public class UserInterfaceUserDetailController {
         }
     }
 
+    @GetMapping("/getUserLikeAndRatingMovieCount")
+    public Result getUserLikeAndRatingMovieCount(@PathParam("email") String email) {
+        int movieLikeCount = movieService.getUserLikeAndRatingMovieCount(email);
+
+        return Result.ok(movieLikeCount);
+    }
+
+    @GetMapping("/getUserLikeAndRatingBookCount")
+    public Result getUserLikeAndRatingBookCount(@PathParam("email") String email) {
+        int bookLikeCount = bookService.getUserLikeAndRatingBookCount(email);
+
+        return Result.ok(bookLikeCount);
+    }
+
     @GetMapping("/getUserMovieLikeList")
     public Result getUserMovieLikeList(@PathParam("email") String email) {
         List<MovieLikeListReturnVo> movieLikeList = movieService.getUserMovieLikeList(email);

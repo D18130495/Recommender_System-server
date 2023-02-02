@@ -20,6 +20,8 @@ public interface MovieService {
 
     Movie getMovieByMovieId(Integer movieId);
 
+    Integer getUserLikeAndRatingMovieCount(String email);
+
     List<MovieLikeListReturnVo> getUserMovieLikeList(String email);
 
     List<MovieRatingListReturnVo> getUserMovieRatingList(String email);

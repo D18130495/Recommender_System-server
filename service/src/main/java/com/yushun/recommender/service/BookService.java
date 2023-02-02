@@ -20,6 +20,8 @@ public interface BookService {
 
     Book getBookByISBN(String isbn);
 
+    Integer getUserLikeAndRatingBookCount(String email);
+
     List<BookLikeListReturnVo> getUserBookLikeList(String email);
 
     List<BookRatingListReturnVo> getUserBookRatingList(String email);
