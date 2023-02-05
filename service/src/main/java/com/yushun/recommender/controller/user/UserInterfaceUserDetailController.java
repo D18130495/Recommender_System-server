@@ -82,7 +82,7 @@ public class UserInterfaceUserDetailController {
     }
 
     @GetMapping("/getUserDetailByEmail")
-    public Result getUserDetailByEmail(@RequestParam("email") String email) {
+    public Result getUserDetailByEmail(@PathParam("email") String email) {
         // find user
         QueryWrapper userWrapper = new QueryWrapper();
         userWrapper.eq("email", email);
