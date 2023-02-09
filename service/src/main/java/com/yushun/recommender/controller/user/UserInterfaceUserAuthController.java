@@ -85,6 +85,7 @@ public class UserInterfaceUserAuthController {
 
             userReturnVo.setToken(token);
             userReturnVo.setPolicy(findUser.getPolicy());
+            userReturnVo.setType(findUser.getType());
 
             return Result.ok(userReturnVo).message("Successfully login");
         }
@@ -136,6 +137,7 @@ public class UserInterfaceUserAuthController {
 
             userReturnVo.setToken(token);
             userReturnVo.setPolicy("U");
+            userReturnVo.setType("S");
 
             return Result.ok(userReturnVo).message("Successfully registered, will automatically login with in 3 second");
         }else if(findUser.getType().equals("S")) {
@@ -189,6 +191,7 @@ public class UserInterfaceUserAuthController {
 
         userReturnVo.setToken(token);
         userReturnVo.setPolicy(findUser.getPolicy());
+        userReturnVo.setType("G");
 
         return Result.ok(userReturnVo).message("Successfully login");
     }

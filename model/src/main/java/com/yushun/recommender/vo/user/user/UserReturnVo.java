@@ -24,6 +24,9 @@ public class UserReturnVo {
     @TableField("policy")
     private String policy;
 
+    @TableField("type")
+    private String type;
+
     @TableField("token")
     private String token;
 
@@ -57,6 +60,14 @@ public class UserReturnVo {
 
     public void setPolicy(String policy) {
         this.policy = policy;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getToken() {

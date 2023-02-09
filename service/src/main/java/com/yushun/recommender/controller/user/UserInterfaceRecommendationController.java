@@ -37,9 +37,21 @@ public class UserInterfaceRecommendationController {
 
     @GetMapping("/getRecommendMovieListByItemCF")
     public Result getRecommendMovieListByItemCF(@PathParam("email") String email) {
+        List<Movie> recommendedMovie = new ArrayList<>();
 
+        recommendedMovie = recommendationService.getMovieRecommendationData_byMovie_itemCF(email);
 
-        return Result.ok();
+        // result variable
+        List<MovieReturnVo> movieReturnList;
+
+        if(recommendedMovie != null) {
+            // form result
+            movieReturnList = recommendedMovie.stream().map(this::formMovieResult).collect(Collectors.toList());
+        }else {
+            movieReturnList = null;
+        }
+
+        return Result.ok(movieReturnList);
     }
 
     @GetMapping("/getRecommendMovieListByUserCF")

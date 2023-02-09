@@ -40,12 +40,12 @@ public class UserInterfaceBookFavouriteController {
         String likeOrUnlikeBook = bookFavouriteService.likeOrUnlikeBook(bookFavourite);
 
         switch(likeOrUnlikeBook) {
-            case "Liked":
+            case "Favourite":
                 return Result.ok().message("Successfully liked this book");
-            case "Unliked":
+            case "Don't like":
                 return Result.ok().message("Successfully unliked this book");
-            case "Bad operation":
-                return Result.fail().message("Failed to like or unlike this book");
+            case "Normal":
+                return Result.ok().message("Successfully marked as normal");
             default:
                 return Result.fail().message("Book like or unlike failed with server error");
         }

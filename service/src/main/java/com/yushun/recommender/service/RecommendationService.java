@@ -15,6 +15,10 @@ import java.util.List;
  */
 
 public interface RecommendationService {
+    List<Movie> getMovieRecommendationData_byMovie_itemCF(String email);
+
+    List<Book> getBookRecommendationData_byBook_itemCF(String email);
+
     List<Movie> getMovieRecommendationData_byMovie_userCF(String email, String type);
 
     List<Movie> getMovieRecommendationData_byBook_userCF(String email, String type);

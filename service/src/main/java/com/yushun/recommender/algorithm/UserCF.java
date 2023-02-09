@@ -1,10 +1,7 @@
 package com.yushun.recommender.algorithm;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -16,16 +13,16 @@ import java.util.stream.Collectors;
  */
 
 public class UserCF {
-    Map<String,Integer> itemIDMap = new HashMap<String,Integer>();// itemId list
-    Map<Integer,String> idToItemMap = new HashMap<Integer,String>();// fake id to the item real id
-    Map<String,Integer> userIDMap = new HashMap<String,Integer>();// userId list
-    Map<Integer,String> idToUserMap = new HashMap<Integer,String>();// fake id to the user real name
-    Map<String,HashMap<String,Double>> userMap = new HashMap<String,HashMap<String, Double>>(); // user rate for the item
+    static Map<String,Integer> itemIDMap = new HashMap<String,Integer>();// itemId list
+    static Map<Integer,String> idToItemMap = new HashMap<Integer,String>();// fake id to the item real id
+    static Map<String,Integer> userIDMap = new HashMap<String,Integer>();// userId list
+    static Map<Integer,String> idToUserMap = new HashMap<Integer,String>();// fake id to the user real name
+    static Map<String,HashMap<String,Double>> userMap = new HashMap<String,HashMap<String, Double>>(); // user rate for the item
 
-    double[][] simMatrix; // user sim matrix
-    int TOP_K = 20;  // top sim user
+    static double[][] simMatrix; // user sim matrix
+    static int TOP_K = 20;  // top sim user
 
-    public List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
+    public static List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
         userDistance();
 
@@ -39,16 +36,8 @@ public class UserCF {
         return simUserList(email);
     }
 
-    public void readData(List<UserRatingItemVo> itemList, String type) throws IOException {
-        String uiFile = "";
-
-        if(type.equals("movie")) {
-            uiFile = "movie2.txt";
-        }else if(type.equals("book")) {
-            uiFile = "book2.txt";
-        }
-
-        BufferedReader bfr_ui = new BufferedReader(new InputStreamReader(Files.newInputStream(new File(uiFile).toPath()), StandardCharsets.UTF_8));
+    public static void readData(List<UserRatingItemVo> itemList, String type) throws IOException {
+        BufferedReader bufferedReader = CFUtils.readFile2(type);
         String line;
         String[] SplitLine;
 
@@ -56,8 +45,9 @@ public class UserCF {
         int userId = 0; // fake user id
 
         // for default
-        while((line = bfr_ui.readLine()) != null) {
+        while((line = bufferedReader.readLine()) != null) {
             SplitLine = line.split(" ");
+
             // initial item map
             if(!itemIDMap.containsKey(SplitLine[1])) {
                 itemIDMap.put(SplitLine[1], itemId);
@@ -116,7 +106,7 @@ public class UserCF {
     }
 
     // user sim
-    public void userDistance() {
+    public static void userDistance() {
         // initial sim matrix
         simMatrix = new double[userMap.size()][userMap.size()];
 
@@ -156,7 +146,7 @@ public class UserCF {
         }
     }
 
-    public List<String> simUserList(String email) {
+    public static List<String> simUserList(String email) {
         // put the user sim in the map. and sort, find the top k sim user
         for(int i = 0; i < userMap.size(); i++) {
             Map<Integer,Double> simMap = new HashMap<Integer,Double>();
@@ -165,7 +155,7 @@ public class UserCF {
             for(int j = 0;j<userMap.size();j++) {
                 simMap.put(j, simMatrix[i][j]);
             }
-            simMap = sortMapByValues(simMap);
+            simMap = CFUtils.sortMapByValues(simMap);
 
             // find top k sim user
             int userCount = 0;
@@ -173,7 +163,7 @@ public class UserCF {
             ArrayList<Integer> simUserList = new ArrayList<Integer>();
 
             for(Map.Entry<Integer, Double> entry : simMap.entrySet()) {
-                if(userCount < TOP_K) {
+                if(userCount < 60) {
                     simUserList.add(entry.getKey());
                 }
 
@@ -195,7 +185,7 @@ public class UserCF {
     }
 
 
-    public List<String> simUserItemList(String email) {
+    public static List<String> simUserItemList(String email) {
         // put the user sim in the map. and sort, find the top k sim user
         for(int i = 0; i < userMap.size(); i++) {
             Map<Integer,Double> simMap = new HashMap<Integer,Double>();
@@ -204,7 +194,7 @@ public class UserCF {
             for(int j = 0;j<userMap.size();j++) {
                 simMap.put(j, simMatrix[i][j]);
             }
-            simMap = sortMapByValues(simMap);
+            simMap = CFUtils.sortMapByValues(simMap);
 
             // find top k sim user
             int userCount = 0;
@@ -277,7 +267,7 @@ public class UserCF {
             List<String> simUserItemListResult = new ArrayList();
 
             // sort result
-            preRatingMap = sortMapByValues(preRatingMap);
+            preRatingMap = CFUtils.sortMapByValues(preRatingMap);
 
             // top k items
             int recCount = 0;
@@ -292,13 +282,5 @@ public class UserCF {
             return simUserItemListResult;
         }
         return null;
-    }
-
-    // sort map
-    public static <K extends Comparable, V extends Comparable> Map<K, V> sortMapByValues(Map<K, V> aMap) {
-        HashMap<K, V> finalOut = new LinkedHashMap<>();
-        aMap.entrySet().stream().sorted((p1, p2) -> p2.getValue().compareTo(p1.getValue())).collect(Collectors.toList())
-                .forEach(ele -> finalOut.put(ele.getKey(), ele.getValue()));
-        return finalOut;
     }
 }

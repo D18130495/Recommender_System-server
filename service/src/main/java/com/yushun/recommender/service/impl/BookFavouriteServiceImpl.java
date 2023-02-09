@@ -32,16 +32,18 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
         BookFavourite findBookFavourite = baseMapper.selectOne(bookFavouriteWrapper);
 
         // return favourite if exist
-        if(findBookFavourite == null) {
+        if (findBookFavourite == null) {
             return null;
-        }else {
+        } else {
             BookFavouriteReturnVo bookFavouriteReturnVo = new BookFavouriteReturnVo();
             BeanUtils.copyProperties(findBookFavourite, bookFavouriteReturnVo);
 
-            if(bookFavouriteReturnVo.getFavourite().equals("T")) {
+            if (bookFavouriteReturnVo.getFavourite().equals("T")) {
+                bookFavouriteReturnVo.setFavourite("3");
+            } else if (bookFavouriteReturnVo.getFavourite().equals("F")) {
                 bookFavouriteReturnVo.setFavourite("1");
-            }else {
-                bookFavouriteReturnVo.setFavourite("0");
+            } else {
+                bookFavouriteReturnVo.setFavourite("2");
             }
 
             return bookFavouriteReturnVo;
@@ -58,40 +60,68 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
         BookFavourite findBookFavourite = baseMapper.selectOne(bookFavouriteWrapper);
 
         // add new rating or update rating
-        if(findBookFavourite == null && bookFavourite.getFavourite().equals("0")) {
-            BookFavourite newBookFavourite = new BookFavourite();
+        if (findBookFavourite == null) { // add new record
+            switch (bookFavourite.getFavourite()) {
+                case "1": { // do not like
+                    BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "1");
 
-            BeanUtils.copyProperties(bookFavourite, newBookFavourite);
-            newBookFavourite.setFavourite("T");
-            newBookFavourite.setCreateTime(new Date());
-            newBookFavourite.setUpdateTime(new Date());
-            newBookFavourite.setIsDeleted(0);
+                    int insert = baseMapper.insert(newBookFavourite);
 
-            int insert = baseMapper.insert(newBookFavourite);
+                    return insert > 0 ? "Don't like" : "Error";
+                }
+                case "2": { // normal
+                    BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "2");
 
-            return insert > 0 ? "Liked" : "Error";
-        }else if(findBookFavourite == null && bookFavourite.getFavourite().equals("1")) {
-            return "Bad operation";
-        }else if(findBookFavourite != null) {
-            if(findBookFavourite.getFavourite().equals("F") && bookFavourite.getFavourite().equals("0")) {
-                findBookFavourite.setFavourite("T");
-                findBookFavourite.setUpdateTime(new Date());
+                    int insert = baseMapper.insert(newBookFavourite);
 
-                int update = baseMapper.update(findBookFavourite, bookFavouriteWrapper);
+                    return insert > 0 ? "Normal" : "Error";
+                }
+                case "3": { // like
+                    BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "3");
 
-                return update > 0? "Liked":"Error";
-            }else if(findBookFavourite.getFavourite().equals("T") && bookFavourite.getFavourite().equals("1")) {
-                findBookFavourite.setFavourite("F");
-                findBookFavourite.setUpdateTime(new Date());
+                    int insert = baseMapper.insert(newBookFavourite);
 
-                int update = baseMapper.update(findBookFavourite, bookFavouriteWrapper);
+                    return insert > 0 ? "Favourite" : "Error";
+                }
+            }
+        } else {
+            switch (bookFavourite.getFavourite()) {
+                case "1": { // do not like
+                    findBookFavourite.setFavourite("F");
 
-                return update > 0? "Unliked":"Error";
-            }else {
-                return "Bad operation";
+                    int update = baseMapper.update(findBookFavourite, bookFavouriteWrapper);
+
+                    return update > 0 ? "Don't like" : "Error";
+                }
+                case "2": { // normal
+                    findBookFavourite.setFavourite("N");
+
+                    int update = baseMapper.update(findBookFavourite, bookFavouriteWrapper);
+
+                    return update > 0 ? "Normal" : "Error";
+                }
+                case "3": { // like
+                    findBookFavourite.setFavourite("T");
+
+                    int update = baseMapper.update(findBookFavourite, bookFavouriteWrapper);
+
+                    return update > 0 ? "Favourite" : "Error";
+                }
             }
         }
 
-        return "Bad operation";
+        return "Error";
+    }
+
+    public BookFavourite addNewBookFavourite(BookFavourite bookFavourite, String favourite) {
+        BookFavourite newBookFavourite = new BookFavourite();
+
+        BeanUtils.copyProperties(bookFavourite, newBookFavourite);
+        newBookFavourite.setFavourite(favourite);
+        newBookFavourite.setCreateTime(new Date());
+        newBookFavourite.setUpdateTime(new Date());
+        newBookFavourite.setIsDeleted(0);
+
+        return newBookFavourite;
     }
 }
