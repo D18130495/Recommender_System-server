@@ -36,6 +36,13 @@ public class CFUtils {
         return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
     }
 
+    // read file
+    public static BufferedReader readSimBooks() throws IOException {
+        String file = "itemSimilarity.txt";
+
+        return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
+    }
+
     // sort map
     public static <K extends Comparable, V extends Comparable> Map<K, V> sortMapByValues(Map<K, V> aMap) {
         HashMap<K, V> finalOut = new LinkedHashMap<>();

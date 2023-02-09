@@ -63,21 +63,21 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
         if (findBookFavourite == null) { // add new record
             switch (bookFavourite.getFavourite()) {
                 case "1": { // do not like
-                    BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "1");
+                    BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "F");
 
                     int insert = baseMapper.insert(newBookFavourite);
 
                     return insert > 0 ? "Don't like" : "Error";
                 }
                 case "2": { // normal
-                    BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "2");
+                    BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "N");
 
                     int insert = baseMapper.insert(newBookFavourite);
 
                     return insert > 0 ? "Normal" : "Error";
                 }
                 case "3": { // like
-                    BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "3");
+                    BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "T");
 
                     int insert = baseMapper.insert(newBookFavourite);
 

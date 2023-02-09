@@ -1,6 +1,7 @@
 package com.yushun.recommender.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.yushun.recommender.algorithm.CFUtils;
 import com.yushun.recommender.algorithm.FindUserLikedItem;
 import com.yushun.recommender.algorithm.UserCF;
 import com.yushun.recommender.algorithm.UserRatingItemVo;
@@ -18,6 +19,7 @@ import com.yushun.recommender.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -143,6 +145,71 @@ public class RecommendationServiceImpl implements RecommendationService {
         }catch (Exception e) {
             System.out.println(e);
         }
+        return null;
+    }
+
+    @Override
+    public List<Book> getMoviesLikeThis(String movieId) {
+        return null;
+    }
+
+    @Override
+    public List<Book> getBooksLikeThis(String isbn) {
+        try {
+            BufferedReader bufferedReader = CFUtils.readSimBooks();
+
+            String line;
+            String[] SplitLine;
+
+            List<Book> booksLikeThis = new ArrayList<>();
+
+            Random ran = new Random();
+            int[] arr = new int[12];
+
+            for(int i = 0; i < arr.length; i++) {
+                arr[i] = ran.nextInt(20) + 1;
+
+                for(int j = 0; j < i; j++){
+                    if(arr[i] == arr[j]) {
+                        i--;
+                        break;
+                    }
+                }
+            }
+
+            while((line = bufferedReader.readLine()) != null) {
+                SplitLine = line.split(" ");
+
+                if(SplitLine[0].equals("y" + isbn)) {
+                    int j = 0;
+
+                    for(int i = 0; i < 6; i++) {
+                        Book simBook = bookRepository.findByISBN(SplitLine[arr[j]].substring(1));
+
+                        j = j + 1;
+
+                        if(simBook == null) {
+                            i = i - 1;
+                            continue;
+                        }
+
+                        float total = 0;
+
+                        for(BookRate bookRate: simBook.getRate()) {
+                            total = total + bookRate.getRating();
+                        }
+
+                        DecimalFormat decimalFormat =new DecimalFormat("#.0");
+                        simBook.getParam().put("rate", decimalFormat.format(total / simBook.getRate().size()));
+
+                        booksLikeThis.add(simBook);
+                    }
+                }
+            }
+
+            return booksLikeThis;
+        }catch (Exception e) {}
+
         return null;
     }
 

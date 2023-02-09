@@ -35,6 +35,23 @@ public class UserInterfaceRecommendationController {
     @Autowired
     private RecommendationService recommendationService;
 
+    @GetMapping("/getBooksLikeThis")
+    public Result getBooksLikeThis(@PathParam("isbn") String isbn) {
+        List<Book> booksLikeThis = recommendationService.getBooksLikeThis(isbn);
+
+        // result variable
+        List<BookReturnVo> bookReturnList;
+
+        if(booksLikeThis != null) {
+            // form result
+            bookReturnList = booksLikeThis.stream().map(this::formBookResult).collect(Collectors.toList());
+        }else {
+            bookReturnList = null;
+        }
+
+        return Result.ok(bookReturnList);
+    }
+
     @GetMapping("/getRecommendMovieListByItemCF")
     public Result getRecommendMovieListByItemCF(@PathParam("email") String email) {
         List<Movie> recommendedMovie = new ArrayList<>();

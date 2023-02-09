@@ -22,27 +22,27 @@ public class ItemCF {
     static Map<String, HashMap<String, Double>> userMap = new HashMap<>(); // user rated item list map
 
     static double[][] simMatrix; // item sim matrix
-    static int TOP_K = 60; // select sim item number
+    static int TOP_K = 20; // select sim item number
     static int TOP_N = 20; // top recommendation number
 
     //
     public static List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
-        item_similarity();
-        simItemList(email);
+        itemSimilarity();
 
         return null;
     }
 
     // use for scheduled task, to calculate the item similarity
-    public static void generateSimilarityItemTxt(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
+    public static void generateSimilarityItemTxt(List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
-        item_similarity();
+        itemSimilarity();
+        sameItemList();
     }
 
     // read all the data from MongoDB(default) and MySQL(system)
     public static void readData(List<UserRatingItemVo> itemList, String type) throws IOException {
-        BufferedReader bufferedReader = CFUtils.readFile(type);
+        BufferedReader bufferedReader = CFUtils.readFile2(type);
         String line;
         String[] SplitLine;
 
@@ -136,43 +136,46 @@ public class ItemCF {
         }
     }
 
-    public static void item_similarity() {
-        //初始化用户相似矩阵
+    public static void itemSimilarity() {
+        // initial item similarity matrix
         simMatrix = new double[itemMap.size()][itemMap.size()];
 
         int itemCount = 0;
 
-        //循环每个产品计算相似性:Jaccard 相似性
-        for(Map.Entry<String, HashMap<String, Double>> itemEntry_1 : itemMap.entrySet()) {
+        // loop each item and find similarity by Jaccard
+        for(Map.Entry<String, HashMap<String, Double>> itemEntry1 : itemMap.entrySet()) {
 
-            //获取为当前产品评分的所有用户
-            Set<String> ratedUserSet_1 = new HashSet<>();
-            for(Map.Entry<String, Double> userEntry : itemEntry_1.getValue().entrySet()) {
-                //将已评分用户存入set集合中
-                ratedUserSet_1.add(userEntry.getKey());
+            // get all the user who rated this item
+            Set<String> ratedUserSet1 = new HashSet<>();
+
+            for(Map.Entry<String, Double> userEntry : itemEntry1.getValue().entrySet()) {
+                // store all the rating user in the set
+                ratedUserSet1.add(userEntry.getKey());
             }
 
-            int ratedUserSize_1 = ratedUserSet_1.size();//第一个产品所有评论数
+            int ratedUserSize1 = ratedUserSet1.size(); // all rating for the first item
 
-            //循环其他产品
-            for(Map.Entry<String, HashMap<String, Double>> itemEntry_2 : itemMap.entrySet()) {
-                //首先判断第二个产品的id是否大于第一个，是的话再进行计算，避免重复计算
-                if(itemIDMap.get(itemEntry_2.getKey())>itemIDMap.get(itemEntry_1.getKey())) {
-                    //同样获取为当前产品评分的所有用户
-                    Set<String> ratedUserSet_2 = new HashSet<>();
-                    for(Map.Entry<String, Double> userEntry : itemEntry_2.getValue().entrySet()) {
-                        ratedUserSet_2.add(userEntry.getKey());
+            // loop other items
+            for(Map.Entry<String, HashMap<String, Double>> itemEntry2 : itemMap.entrySet()) {
+                // skip the calculated item
+                if(itemIDMap.get(itemEntry2.getKey()) > itemIDMap.get(itemEntry1.getKey())) {
+                    // get all the user who rated this item
+                    Set<String> ratedUserSet2 = new HashSet<>();
+
+                    for(Map.Entry<String, Double> userEntry : itemEntry2.getValue().entrySet()) {
+                        ratedUserSet2.add(userEntry.getKey());
                     }
-                    //通过jaccard相似度计算产品相似度
 
-                    int ratedUserSize_2 = ratedUserSet_2.size(); //第二个产品所有评论数
-                    int sameUerSize = CFUtils.interCount(ratedUserSet_1, ratedUserSet_2); //取两个集合的交集的数量
+                    int ratedUserSize2 = ratedUserSet2.size(); // all rating for the second item
 
-                    double similarity = sameUerSize / (ratedUserSize_1 + ratedUserSize_2 - sameUerSize);
-//                    double similarity = sameUerSize/(Math.sqrt(ratedUserSize_1 * ratedUserSize_2));
-                    //把相似性存入相似矩阵中
-                    simMatrix[itemIDMap.get(itemEntry_1.getKey())][itemIDMap.get(itemEntry_2.getKey())] = similarity;
-                    simMatrix[itemIDMap.get(itemEntry_2.getKey())][itemIDMap.get(itemEntry_1.getKey())] = similarity;
+                    // calculate item similarity by using Jaccard
+                    int sameUerSize = CFUtils.interCount(ratedUserSet1, ratedUserSet2); // get inter Set number count
+
+                    double similarity = sameUerSize / (ratedUserSize1 + ratedUserSize2 - sameUerSize);
+//                    double similarity = sameUerSize / (Math.sqrt(ratedUserSize1 * ratedUserSize2));
+                    // put sim in the matrix
+                    simMatrix[itemIDMap.get(itemEntry1.getKey())][itemIDMap.get(itemEntry2.getKey())] = similarity;
+                    simMatrix[itemIDMap.get(itemEntry2.getKey())][itemIDMap.get(itemEntry1.getKey())] = similarity;
                 }
             }
 
@@ -180,43 +183,48 @@ public class ItemCF {
         }
     }
 
-    //根据产品的相似性进行推荐
-    public static void simItemList(String email) throws IOException{
-        String resultFile = "item_similarity.txt";
+    public static void sameItemList() throws IOException{
+        String resultFile = "itemSimilarity.txt";
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(resultFile)),"UTF-8"));
 
-        //根据item相似度获取每个item最相似的TOP_K个产品
+        // base on the item same matrix to find top n same item
         Map<Integer, HashSet<Integer>> nearestItemMap = new HashMap<>();
 
         for(int i = 0; i < itemMap.size(); i++) {
             Map<Integer, Double> simMap = new HashMap<>();
-            for(int j = 0; j<itemMap.size(); j++) {
+
+            for(int j = 0; j < itemMap.size(); j++) {
                 simMap.put(j, simMatrix[i][j]);
             }
 
-            //对产品相似性进行排序
+            // sort the item map
             simMap = CFUtils.sortMapByValues(simMap);
 
             int simItemCount = 0;
+
             HashSet<Integer> nearestItemSet = new HashSet<>();
+
             for(Map.Entry<Integer, Double> entry : simMap.entrySet()) {
-                if(simItemCount<TOP_K) {
-                    nearestItemSet.add(entry.getKey()); //获取相似itemID存入集合中
+                if(simItemCount < TOP_K) {
+                    nearestItemSet.add(entry.getKey()); // get same item ID
                     simItemCount++;
-                }else
+                }else {
                     break;
+                }
             }
-            //相似物品结果存入map中
+
+            // put same item in the map
             nearestItemMap.put(i, nearestItemSet);
         }
 
+        // write the same item map to the itemSimilarity.txt
         for(Integer itemId:nearestItemMap.keySet()) {
-            bufferedWriter.append(idToItemMap.get(itemId) + ":");
+            bufferedWriter.append(idToItemMap.get(itemId) + " ");
 
             for(Integer simItemId:nearestItemMap.get(itemId)) {
-                bufferedWriter.append(simItemId + " ");
-                bufferedWriter.flush();
+                bufferedWriter.append(idToItemMap.get(simItemId) + " ");
             }
+
             bufferedWriter.newLine();
             bufferedWriter.flush();
         }
@@ -225,59 +233,5 @@ public class ItemCF {
         bufferedWriter.close();
 
         System.out.println("ok");
-
-
-        //循环每个用户，循环每个产品,计算用户对没有买过的产品的打分，取TOP_N得分最高的产品进行推荐
-        for(int i = 0; i < userMap.size(); i++) {
-            //获取当前用户所有评论过的产品
-            HashSet<Integer> currentUserSet = new HashSet<>();
-            Map<String,Double> preRatingMap = new HashMap<String,Double>();
-
-            for(Map.Entry<String, Double> entry :userMap.get(idToUserMap.get(i)).entrySet()) {
-                currentUserSet.add(itemIDMap.get(entry.getKey())); //将该用户评论过的产品以产品id的形式存入集合中
-            }
-
-            //循环每个产品
-            for(int j = 0;j<itemMap.size();j++) {
-                double preRating = 0;
-                double sumSim = 0;
-
-                //首先判断用户购买的列表中是否包含当前商品，如果包含直接跳过
-                if(currentUserSet.contains(j))
-                    continue;
-
-                //判断当前产品的近邻中是否包含这个产品
-                Set<Integer> interSet = CFUtils.interSet(currentUserSet, nearestItemMap.get(j));//获取当前用户的购买列表与产品相似品的交集
-
-                //如果交集为空，则该产品预测评分为0
-                if(!interSet.isEmpty()) {
-                    for(int item :interSet) {
-                        sumSim += simMatrix[j][item];
-                        preRating += simMatrix[j][item]* userMap.get(idToUserMap.get(i)).get(idToItemMap.get(item));
-
-                    }
-
-                    if(sumSim != 0) {
-                        preRating = preRating/sumSim; //如果相似性之和不为0计算得分，否则得分为0
-                    }else
-                        preRating = 0;
-                }else  //如果交集为空的话，直接评分为0
-                    preRating = 0;
-                preRatingMap.put(idToItemMap.get(j), preRating);
-            }
-            preRatingMap = CFUtils.sortMapByValues(preRatingMap);
-
-            if(!idToUserMap.get(i).equals(email)) continue;
-
-            //推荐TOP_N个产品
-            int recCount = 0;
-
-            for(Map.Entry<String, Double> entry : preRatingMap.entrySet()) {
-                if(recCount < TOP_N) {
-                    System.out.println(entry.getKey());
-                    recCount ++;
-                }
-            }
-        }
     }
 }
