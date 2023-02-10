@@ -60,7 +60,7 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
         BookFavourite findBookFavourite = baseMapper.selectOne(bookFavouriteWrapper);
 
         // add new rating or update rating
-        if (findBookFavourite == null) { // add new record
+        if(findBookFavourite == null) { // add new record
             switch (bookFavourite.getFavourite()) {
                 case "1": { // do not like
                     BookFavourite newBookFavourite = addNewBookFavourite(bookFavourite, "F");
@@ -84,7 +84,7 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
                     return insert > 0 ? "Favourite" : "Error";
                 }
             }
-        } else {
+        }else {
             switch (bookFavourite.getFavourite()) {
                 case "1": { // do not like
                     findBookFavourite.setFavourite("F");

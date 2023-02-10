@@ -38,10 +38,12 @@ public class MovieFavouriteServiceImpl extends ServiceImpl<MovieFavouriteMapper,
             MovieFavouriteReturnVo movieFavouriteReturnVo = new MovieFavouriteReturnVo();
             BeanUtils.copyProperties(findMovieFavourite, movieFavouriteReturnVo);
 
-            if(movieFavouriteReturnVo.getFavourite().equals("T")) {
+            if (movieFavouriteReturnVo.getFavourite().equals("T")) {
+                movieFavouriteReturnVo.setFavourite("3");
+            } else if (movieFavouriteReturnVo.getFavourite().equals("F")) {
                 movieFavouriteReturnVo.setFavourite("1");
-            }else {
-                movieFavouriteReturnVo.setFavourite("0");
+            } else {
+                movieFavouriteReturnVo.setFavourite("2");
             }
 
             return movieFavouriteReturnVo;
@@ -57,41 +59,68 @@ public class MovieFavouriteServiceImpl extends ServiceImpl<MovieFavouriteMapper,
 
         MovieFavourite findMovieFavourite = baseMapper.selectOne(movieFavouriteWrapper);
 
-        // add new rating or update rating
-        if(findMovieFavourite == null && movieFavourite.getFavourite().equals("0")) {
-            MovieFavourite newMovieFavourite = new MovieFavourite();
+        if (findMovieFavourite == null) { // add new record
+            switch (movieFavourite.getFavourite()) {
+                case "1": { // do not like
+                    MovieFavourite newMovieFavourite = addNewMovieFavourite(movieFavourite, "F");
 
-            BeanUtils.copyProperties(movieFavourite, newMovieFavourite);
-            newMovieFavourite.setFavourite("T");
-            newMovieFavourite.setCreateTime(new Date());
-            newMovieFavourite.setUpdateTime(new Date());
-            newMovieFavourite.setIsDeleted(0);
+                    int insert = baseMapper.insert(newMovieFavourite);
 
-            int insert = baseMapper.insert(newMovieFavourite);
+                    return insert > 0 ? "Don't like" : "Error";
+                }
+                case "2": { // normal
+                    MovieFavourite newMovieFavourite = addNewMovieFavourite(movieFavourite, "N");
 
-            return insert > 0 ? "Liked" : "Error";
-        }else if(findMovieFavourite == null && movieFavourite.getFavourite().equals("1")) {
-            return "Bad operation";
-        }else if(findMovieFavourite != null) {
-            if(findMovieFavourite.getFavourite().equals("F") && movieFavourite.getFavourite().equals("0")) {
-                findMovieFavourite.setFavourite("T");
-                findMovieFavourite.setUpdateTime(new Date());
+                    int insert = baseMapper.insert(newMovieFavourite);
 
-                int update = baseMapper.update(findMovieFavourite, movieFavouriteWrapper);
+                    return insert > 0 ? "Normal" : "Error";
+                }
+                case "3": { // like
+                    MovieFavourite newMovieFavourite = addNewMovieFavourite(movieFavourite, "T");
 
-                return update > 0? "Liked":"Error";
-            }else if(findMovieFavourite.getFavourite().equals("T") && movieFavourite.getFavourite().equals("1")) {
-                findMovieFavourite.setFavourite("F");
-                findMovieFavourite.setUpdateTime(new Date());
+                    int insert = baseMapper.insert(newMovieFavourite);
 
-                int update = baseMapper.update(findMovieFavourite, movieFavouriteWrapper);
+                    return insert > 0 ? "Favourite" : "Error";
+                }
+            }
+        } else {
+            switch (movieFavourite.getFavourite()) {
+                case "1": { // do not like
+                    findMovieFavourite.setFavourite("F");
 
-                return update > 0? "Unliked":"Error";
-            }else {
-                return "Bad operation";
+                    int update = baseMapper.update(findMovieFavourite, movieFavouriteWrapper);
+
+                    return update > 0 ? "Don't like" : "Error";
+                }
+                case "2": { // normal
+                    findMovieFavourite.setFavourite("N");
+
+                    int update = baseMapper.update(findMovieFavourite, movieFavouriteWrapper);
+
+                    return update > 0 ? "Normal" : "Error";
+                }
+                case "3": { // like
+                    findMovieFavourite.setFavourite("T");
+
+                    int update = baseMapper.update(findMovieFavourite, movieFavouriteWrapper);
+
+                    return update > 0 ? "Favourite" : "Error";
+                }
             }
         }
 
-        return "Bad operation";
+        return "Error";
+    }
+
+    public MovieFavourite addNewMovieFavourite(MovieFavourite movieFavourite, String favourite) {
+        MovieFavourite newMovieFavourite = new MovieFavourite();
+
+        BeanUtils.copyProperties(movieFavourite, newMovieFavourite);
+        newMovieFavourite.setFavourite(favourite);
+        newMovieFavourite.setCreateTime(new Date());
+        newMovieFavourite.setUpdateTime(new Date());
+        newMovieFavourite.setIsDeleted(0);
+
+        return newMovieFavourite;
     }
 }

@@ -40,14 +40,14 @@ public class UserInterfaceMovieFavouriteController {
         String likeOrUnlikeMovie = movieFavouriteService.likeOrUnlikeMovie(movieFavourite);
 
         switch(likeOrUnlikeMovie) {
-            case "Liked":
+            case "Favourite":
                 return Result.ok().message("Successfully liked this movie");
-            case "Unliked":
+            case "Don't like":
                 return Result.ok().message("Successfully unliked this movie");
-            case "Bad operation":
-                return Result.fail().message("Failed to like or unlike this movie");
+            case "Normal":
+                return Result.ok().message("Successfully marked as normal");
             default:
-                return Result.fail().message("Movie like or unlike failed with server error");
+                return Result.fail().message("Book like or unlike failed with server error");
         }
     }
 }

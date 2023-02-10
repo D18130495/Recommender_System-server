@@ -167,7 +167,7 @@ public class RecommendationServiceImpl implements RecommendationService {
             int[] arr = new int[12];
 
             for(int i = 0; i < arr.length; i++) {
-                arr[i] = ran.nextInt(20) + 1;
+                arr[i] = ran.nextInt(30) + 1;
 
                 for(int j = 0; j < i; j++){
                     if(arr[i] == arr[j]) {

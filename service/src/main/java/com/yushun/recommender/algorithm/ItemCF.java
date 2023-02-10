@@ -22,7 +22,7 @@ public class ItemCF {
     static Map<String, HashMap<String, Double>> userMap = new HashMap<>(); // user rated item list map
 
     static double[][] simMatrix; // item sim matrix
-    static int TOP_K = 20; // select sim item number
+    static int TOP_K = 30; // select sim item number
     static int TOP_N = 20; // top recommendation number
 
     //
@@ -42,7 +42,7 @@ public class ItemCF {
 
     // read all the data from MongoDB(default) and MySQL(system)
     public static void readData(List<UserRatingItemVo> itemList, String type) throws IOException {
-        BufferedReader bufferedReader = CFUtils.readFile2(type);
+        BufferedReader bufferedReader = CFUtils.readFile(type);
         String line;
         String[] SplitLine;
 

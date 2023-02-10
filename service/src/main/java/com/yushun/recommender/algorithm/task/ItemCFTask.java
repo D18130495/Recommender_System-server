@@ -42,10 +42,6 @@ public class ItemCFTask {
     @Autowired
     private BookRatingService bookRatingService;
 
-//    public static void main(String[] args) throws IOException {
-//        itemSimilarity();
-//    }
-
 //    @Scheduled(cron ="*/6 * * * * ?") // 6 second
 //    @Scheduled(cron ="0 0/1 * * * ?") // 1 min
 //    @Scheduled(cron ="0 0 1 * * ?") // every day at 1 am
@@ -54,6 +50,13 @@ public class ItemCFTask {
 
         ItemCF.generateSimilarityItemTxt(systemUserBookList, "book");
         System.out.println("Task finished");
+    }
+
+    public List<UserRatingItemVo> getSystemUserMovieList() {
+        // all the user favourite items set in the system
+        Set<UserRatingItemVo> itemSet = new HashSet<>();
+
+        return new ArrayList<>(itemSet);
     }
 
     public List<UserRatingItemVo> getSystemUserBookList() {
