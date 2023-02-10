@@ -1,10 +1,7 @@
 package com.yushun.recommender.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.yushun.recommender.algorithm.CFUtils;
-import com.yushun.recommender.algorithm.FindUserLikedItem;
-import com.yushun.recommender.algorithm.UserCF;
-import com.yushun.recommender.algorithm.UserRatingItemVo;
+import com.yushun.recommender.algorithm.*;
 import com.yushun.recommender.model.common.mongoEntity.book.Book;
 import com.yushun.recommender.model.common.mongoEntity.book.BookRate;
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
@@ -57,7 +54,7 @@ public class RecommendationServiceImpl implements RecommendationService {
         List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
 
         try {
-//            ItemCF.simUserItemListResult(email, systemUserMovieList, "movie");
+            ItemCF.simUserItemListResult(email, systemUserMovieList, "movie");
         }catch (Exception e) {
             System.out.println(e);
         }
@@ -150,6 +147,8 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     @Override
     public List<Book> getMoviesLikeThis(String movieId) {
+
+
         return null;
     }
 

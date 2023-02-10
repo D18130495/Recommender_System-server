@@ -24,6 +24,9 @@ public class UserDetailReturnVo {
     @TableField("policy")
     private String policy;
 
+    @TableField("type")
+    private String type;
+
     public String getEmail() {
         return email;
     }
@@ -54,5 +57,13 @@ public class UserDetailReturnVo {
 
     public void setPolicy(String policy) {
         this.policy = policy;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

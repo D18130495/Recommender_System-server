@@ -83,21 +83,13 @@ public class UserInterfaceUserDetailController {
 
     @GetMapping("/getUserDetailByEmail")
     public Result getUserDetailByEmail(@PathParam("email") String email) {
-        // find user
-        QueryWrapper userWrapper = new QueryWrapper();
-        userWrapper.eq("email", email);
-
-        User findUser = userService.getOne(userWrapper);
+        UserDetailReturnVo findUser = userService.getUserDetailByEmail(email);
 
         if(findUser == null) {
             return Result.fail().message("Can not find user");
+        }else {
+            return Result.ok(findUser);
         }
-
-        // form return data
-        UserDetailReturnVo userDetailReturnVo = new UserDetailReturnVo();
-        BeanUtils.copyProperties(findUser, userDetailReturnVo);
-
-        return Result.ok(userDetailReturnVo);
     }
 
     // update username, avatar, policy

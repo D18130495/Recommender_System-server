@@ -28,7 +28,7 @@ public class ItemCF {
     //
     public static List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
-        itemSimilarity();
+//        itemSimilarity();
 
         return null;
     }
@@ -37,7 +37,7 @@ public class ItemCF {
     public static void generateSimilarityItemTxt(List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
         itemSimilarity();
-        sameItemList();
+        sameItemList(type);
     }
 
     // read all the data from MongoDB(default) and MySQL(system)
@@ -183,9 +183,16 @@ public class ItemCF {
         }
     }
 
-    public static void sameItemList() throws IOException{
-        String resultFile = "itemSimilarity.txt";
-        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(resultFile)),"UTF-8"));
+    public static void sameItemList(String type) throws IOException{
+        BufferedWriter bufferedWriter;
+
+        if(type.equals("movie")) {
+            String resultFile = "itemMovieSimilarity.txt";
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(resultFile)),"UTF-8"));
+        }else {
+            String resultFile = "itemBookSimilarity.txt";
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(resultFile)),"UTF-8"));
+        }
 
         // base on the item same matrix to find top n same item
         Map<Integer, HashSet<Integer>> nearestItemMap = new HashMap<>();
@@ -231,7 +238,5 @@ public class ItemCF {
 
         bufferedWriter.flush();
         bufferedWriter.close();
-
-        System.out.println("ok");
     }
 }

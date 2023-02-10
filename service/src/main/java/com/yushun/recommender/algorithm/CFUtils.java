@@ -36,9 +36,16 @@ public class CFUtils {
         return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
     }
 
-    // read file
+    // read sim movie file
+    public static BufferedReader readSimMovies() throws IOException {
+        String file = "itemMovieSimilarity.txt";
+
+        return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
+    }
+
+    // read sim book file
     public static BufferedReader readSimBooks() throws IOException {
-        String file = "itemSimilarity.txt";
+        String file = "itemBookSimilarity.txt";
 
         return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
     }
