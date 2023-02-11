@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers("/").permitAll()
+                .antMatchers("/email/sendUserSystemRegisterVerificationCode").permitAll()
                 .antMatchers("/recommendation/**").permitAll()
                 .antMatchers("/authentication/**").permitAll()
                 .antMatchers("/movie/rating/**").hasRole("USER")

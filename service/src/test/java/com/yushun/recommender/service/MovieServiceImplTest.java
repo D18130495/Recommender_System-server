@@ -2,7 +2,6 @@ package com.yushun.recommender.service;
 
 import com.yushun.recommender.RecommenderApplication;
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
-import javafx.application.Application;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 
 public class PasswordChecker {
-    private static String regEx = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9])(.{8,16})$";
+    private static String regEx = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,16}$";
 
     /**
      * The password must contain letters, numbers, and special characters, at least 8 characters, and a maximum of 16 characters

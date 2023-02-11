@@ -3,13 +3,13 @@ package com.yushun.recommender.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yushun.recommender.RecommenderApplication;
 import com.yushun.recommender.model.common.User;
-import com.yushun.recommender.security.exception.JwtAuthenticationException;
 import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.security.user.UserRepository;
 import com.yushun.recommender.security.utils.JwtTokenProvider;
 import com.yushun.recommender.vo.user.user.UserDetailReturnVo;
 import com.yushun.recommender.vo.user.user.UserGoogleLoginVo;
 import com.yushun.recommender.vo.user.user.UserSystemLoginVo;
+import com.yushun.recommender.vo.user.user.UserSystemRegisterVo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
@@ -106,65 +106,65 @@ public class UserServiceImplTest {
         Assert.assertEquals("Incorrect email format", result.getMessage());
     }
 
-//    @Order(4)
-//    @Test(timeout = 30000)
-//    @Transactional
-//    public void systemLogin_passwordFormatWrong_fail() {
-//        UserSystemLoginVo userSystemLoginVo = new UserSystemLoginVo();
-//        userSystemLoginVo.setEmail("990415zys@gmail.com");
-//        userSystemLoginVo.setPassword("123123");
-//
-//        Result result = userService.userSystemLogin(userSystemLoginVo);
-//
-//        Assert.assertEquals("Incorrect password format", result.getMessage());
-//    }
+    @Order(5)
+    @Test(timeout = 30000)
+    @Transactional
+    public void systemLogin_passwordFormatWrong_fail() {
+        UserSystemLoginVo userSystemLoginVo = new UserSystemLoginVo();
+        userSystemLoginVo.setEmail("d18130495@mytudublin.ie");
+        userSystemLoginVo.setPassword("123123");
 
-    @Order(4)
+        Result result = userService.userSystemLogin(userSystemLoginVo);
+
+        Assert.assertEquals("Incorrect password format", result.getMessage());
+    }
+
+    @Order(6)
     @Test(timeout = 30000)
     @Transactional
     public void systemLogin_userNotFind_fail() {
         UserSystemLoginVo userSystemLoginVo = new UserSystemLoginVo();
         userSystemLoginVo.setEmail("990415zys@gmail.c");
-        userSystemLoginVo.setPassword("123123");
+        userSystemLoginVo.setPassword("Qpuur990415#zys");
 
         Result result = userService.userSystemLogin(userSystemLoginVo);
 
         Assert.assertEquals("Email has not been registered", result.getMessage());
     }
 
-    @Order(5)
+    @Order(7)
     @Test(timeout = 30000)
     @Transactional
     public void systemLogin_userRegisterByGoogle_fail() {
         UserSystemLoginVo userSystemLoginVo = new UserSystemLoginVo();
         userSystemLoginVo.setEmail("990415zys@gmail.com");
-        userSystemLoginVo.setPassword("123123");
+        userSystemLoginVo.setPassword("Qpuur990415#zys");
 
         Result result = userService.userSystemLogin(userSystemLoginVo);
 
         Assert.assertEquals("Email registered with Google", result.getMessage());
     }
 
-    @Order(6)
+    @Order(8)
     @Test(timeout = 30000)
     @Transactional
     public void systemLogin_incorrectPassword_fail() {
         UserSystemLoginVo userSystemLoginVo = new UserSystemLoginVo();
-        userSystemLoginVo.setEmail("990415zys@gmail.co");
-        userSystemLoginVo.setPassword("123123123");
+        userSystemLoginVo.setEmail("d18130495@mytudublin.ie");
+        userSystemLoginVo.setPassword("Qpuur990415#zy");
 
         Result result = userService.userSystemLogin(userSystemLoginVo);
 
         Assert.assertEquals("Incorrect password", result.getMessage());
     }
 
-    @Order(7)
+    @Order(9)
     @Test(timeout = 30000)
     @Transactional
     public void systemLogin_validUser_success() {
         UserSystemLoginVo userSystemLoginVo = new UserSystemLoginVo();
-        userSystemLoginVo.setEmail("990415zys@gmail.co");
-        userSystemLoginVo.setPassword("123123");
+        userSystemLoginVo.setEmail("d18130495@mytudublin.ie");
+        userSystemLoginVo.setPassword("Qpuur990415#zys");
 
         Result result = userService.userSystemLogin(userSystemLoginVo);
 
@@ -172,9 +172,113 @@ public class UserServiceImplTest {
     }
 
     /**
+     * test system register
+     */
+    @Order(10)
+    @Test(timeout = 30000)
+    @Transactional
+    public void userSystemRegister_validInformation_success() {
+        UserSystemRegisterVo userSystemRegisterVo = new UserSystemRegisterVo();
+        userSystemRegisterVo.setEmail("d18130495@mytudublin.com");
+        userSystemRegisterVo.setPassword("Qpuur990415#zys");
+        userSystemRegisterVo.setUsername("Test");
+        userSystemRegisterVo.setVerification("123456");
+
+        Result result = userService.userSystemRegister(userSystemRegisterVo);
+
+        Assert.assertEquals("Successfully registered, will automatically login with in 3 second", result.getMessage());
+    }
+
+    @Order(11)
+    @Test(timeout = 30000)
+    @Transactional
+    public void userSystemRegister_emailFormatWrong_fail() {
+        UserSystemRegisterVo userSystemRegisterVo = new UserSystemRegisterVo();
+        userSystemRegisterVo.setEmail("990415zysgmail.com");
+
+        Result result = userService.userSystemRegister(userSystemRegisterVo);
+
+        Assert.assertEquals("Incorrect email format", result.getMessage());
+    }
+
+    @Order(12)
+    @Test(timeout = 30000)
+    @Transactional
+    public void userSystemRegister_passwordFormatWrong_fail() {
+        UserSystemRegisterVo userSystemRegisterVo = new UserSystemRegisterVo();
+        userSystemRegisterVo.setEmail("990415zys@gmail.com");
+        userSystemRegisterVo.setPassword("qpuur990415#zys");
+
+        Result result = userService.userSystemRegister(userSystemRegisterVo);
+        Assert.assertEquals("Incorrect password format", result.getMessage());
+
+        userSystemRegisterVo.setPassword("Qpuur#zys");
+        Result result2 = userService.userSystemRegister(userSystemRegisterVo);
+        Assert.assertEquals("Incorrect password format", result.getMessage());
+
+        userSystemRegisterVo.setPassword("Qpuur990415zys");
+        Result result3 = userService.userSystemRegister(userSystemRegisterVo);
+        Assert.assertEquals("Incorrect password format", result.getMessage());
+    }
+
+    @Order(13)
+    @Test(timeout = 30000)
+    @Transactional
+    public void userSystemRegister_userAlreadyRegisteredWithSystem_fail() {
+        UserSystemRegisterVo userSystemRegisterVo = new UserSystemRegisterVo();
+        userSystemRegisterVo.setEmail("990415zys@gmail.co");
+        userSystemRegisterVo.setPassword("Qpuur990415#zys");
+
+        Result result = userService.userSystemRegister(userSystemRegisterVo);
+
+        Assert.assertEquals("Email address already been used for register with System", result.getMessage());
+    }
+
+    @Order(14)
+    @Test(timeout = 30000)
+    @Transactional
+    public void userSystemRegister_userAlreadyRegisteredWithGoogle_fail() {
+        UserSystemRegisterVo userSystemRegisterVo = new UserSystemRegisterVo();
+        userSystemRegisterVo.setEmail("990415zys@gmail.com");
+        userSystemRegisterVo.setPassword("Qpuur990415#zys");
+
+        Result result = userService.userSystemRegister(userSystemRegisterVo);
+
+        Assert.assertEquals("Email address already been used for register with Google", result.getMessage());
+    }
+
+    @Order(15)
+    @Test(timeout = 30000)
+    @Transactional
+    public void userSystemRegister_verificationCodeIncorrect_fail() {
+        UserSystemRegisterVo userSystemRegisterVo = new UserSystemRegisterVo();
+        userSystemRegisterVo.setEmail("d18130495@mytudublin.com");
+        userSystemRegisterVo.setPassword("Qpuur990415#zys");
+        userSystemRegisterVo.setVerification("12345");
+
+        Result result = userService.userSystemRegister(userSystemRegisterVo);
+
+        Assert.assertEquals("Verification code is incorrect", result.getMessage());
+    }
+
+    @Order(16)
+    @Test(timeout = 30000)
+    @Transactional
+    public void userSystemRegister_verificationCodeExpired_fail() {
+        UserSystemRegisterVo userSystemRegisterVo = new UserSystemRegisterVo();
+        userSystemRegisterVo.setEmail("d18130495@mytudublin.co");
+        userSystemRegisterVo.setPassword("Qpuur990415#zys");
+        userSystemRegisterVo.setVerification("123456");
+
+        Result result = userService.userSystemRegister(userSystemRegisterVo);
+
+        Assert.assertEquals("Verification is expired", result.getMessage());
+    }
+
+    /**
      * test get user detail by token
      */
-    @Order(4)
+    @Order(17)
     @Test(timeout = 30000)
     @Transactional
     public void getUserDetailByToken_googleValidToken_success() {
@@ -190,7 +294,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Successfully refresh login time", result.getMessage());
     }
 
-    @Order(5)
+    @Order(18)
     @Test(timeout = 30000)
     @Transactional
     public void getUserDetailByToken_systemValidToken_success() {
@@ -211,7 +315,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Successfully refresh login time", result.getMessage());
     }
 
-    @Order(6)
+    @Order(19)
     @Test(timeout = 30000)
     @Transactional
     public void getUserDetailByToken_invalidToken_exception() {
@@ -224,7 +328,7 @@ public class UserServiceImplTest {
     /**
      * test get user detail by email
      */
-    @Order(7)
+    @Order(20)
     @Test(timeout = 30000)
     @Transactional
     public void getUserDetailByEmail_userFind_UserDetailReturnVo() {
@@ -233,7 +337,7 @@ public class UserServiceImplTest {
         Assert.assertEquals(userDetailByEmail.getUsername(), "Yushun Zeng");
     }
 
-    @Order(8)
+    @Order(21)
     @Test(timeout = 30000)
     @Transactional
     public void getUserDetailByEmail_userNotFind_null() {
@@ -241,6 +345,4 @@ public class UserServiceImplTest {
 
         Assert.assertNull(userDetailByEmail);
     }
-
-
 }

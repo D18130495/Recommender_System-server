@@ -6,6 +6,7 @@ import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.vo.user.user.UserDetailReturnVo;
 import com.yushun.recommender.vo.user.user.UserGoogleLoginVo;
 import com.yushun.recommender.vo.user.user.UserSystemLoginVo;
+import com.yushun.recommender.vo.user.user.UserSystemRegisterVo;
 
 /**
  * <p>
@@ -20,6 +21,8 @@ public interface UserService extends IService<User> {
     Result googleLogin(UserGoogleLoginVo userGoogleLoginVo);
 
     Result userSystemLogin(UserSystemLoginVo userSystemLoginVo);
+
+    Result userSystemRegister(UserSystemRegisterVo userSystemRegisterVo);
 
     Result getUserDetailByToken(String token);
 

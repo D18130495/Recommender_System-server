@@ -21,6 +21,8 @@ public class UserSystemRegisterVo {
     @TableField("password")
     private String password;
 
+    private String verification;
+
     public String getUsername() {
         return username;
     }
@@ -43,5 +45,13 @@ public class UserSystemRegisterVo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getVerification() {
+        return verification;
+    }
+
+    public void setVerification(String verification) {
+        this.verification = verification;
     }
 }
