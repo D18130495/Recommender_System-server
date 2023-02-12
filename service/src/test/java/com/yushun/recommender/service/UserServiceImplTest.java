@@ -318,17 +318,37 @@ public class UserServiceImplTest {
     @Order(19)
     @Test(timeout = 30000)
     @Transactional
+    public void getUserDetailByToken_userNotFound_fail() {
+        // add user to spring security
+        userRepository.addGoogleUser(new User("990415zys@gmail.c",
+                "990415zys@gmail.c"));
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("990415zys@gmail.c", "990415zys@gmail.c"));
+
+        String newToken = jwtTokenProvider.createToken("990415zys@gmail.c",
+                userRepository.findByUsername("990415zys@gmail.c")
+                        .orElseThrow(() -> new UsernameNotFoundException("User " + "990415zys@gmail.c" + "not found")).getRoles()
+        );
+
+        Result result = userService.getUserDetailByToken(newToken);
+
+        Assert.assertEquals("Can not find user", result.getMessage());
+    }
+
+    @Order(20)
+    @Test(timeout = 30000)
+    @Transactional
     public void getUserDetailByToken_invalidToken_exception() {
         Result result = userService.getUserDetailByToken("1234567890");
 
-        Assert.assertEquals(result.getMessage(), "Invalid token");
+        Assert.assertEquals("Invalid token", result.getMessage());
 //        assertThrows(JwtAuthenticationException.class, () -> userService.getUserDetailByToken("1234567890"));
     }
 
     /**
      * test get user detail by email
      */
-    @Order(20)
+    @Order(21)
     @Test(timeout = 30000)
     @Transactional
     public void getUserDetailByEmail_userFind_UserDetailReturnVo() {
@@ -337,7 +357,7 @@ public class UserServiceImplTest {
         Assert.assertEquals(userDetailByEmail.getUsername(), "Yushun Zeng");
     }
 
-    @Order(21)
+    @Order(22)
     @Test(timeout = 30000)
     @Transactional
     public void getUserDetailByEmail_userNotFind_null() {

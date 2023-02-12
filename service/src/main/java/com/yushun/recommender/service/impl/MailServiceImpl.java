@@ -5,6 +5,7 @@ import com.yushun.recommender.email.EmailSender;
 import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.security.result.Result;
 import com.yushun.recommender.security.utils.EmailChecker;
+import com.yushun.recommender.security.utils.PasswordGenerator;
 import com.yushun.recommender.security.utils.RandomUtil;
 import com.yushun.recommender.service.MailService;
 import com.yushun.recommender.service.UserService;
@@ -51,7 +52,7 @@ public class MailServiceImpl implements MailService {
             String code = redisTemplate.opsForValue().get(email);
 
             if(code != null) {
-                return Result.fail().message("Please check you email, the Verification Code is still valid");
+                return Result.fail().message("Please check your email, the Verification Code is still valid");
             }
 
             // generate random Verification Code
@@ -69,6 +70,49 @@ public class MailServiceImpl implements MailService {
             }
         }else {
             return Result.fail().message("This email has already been registered");
+        }
+    }
+
+    @Override
+    public Result sendUserResetPassword(String email) {
+        // check email
+        boolean isValidEmail = EmailChecker.check(email);
+
+        if(!isValidEmail) return Result.fail().message("Incorrect email format");
+
+        // find if user exist
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) {
+            return Result.fail().message("This email has not been registered");
+        }else if (findUser.getType().equals("G")){
+            return Result.fail().message("This email registered with Google");
+        }else {
+            String passwordExist = redisTemplate.opsForValue().get(email + " password");
+
+            if(passwordExist != null) {
+                return Result.fail().message("Please check your email, the new password already send");
+            }
+
+            // generate random Verification Code
+            String newPassword = PasswordGenerator.getRandomPassword(16);
+
+            // send email
+            boolean isSend = emailSender.sendMail(email, newPassword);
+
+            if(isSend) {
+                redisTemplate.opsForValue().set(email + " password", newPassword, 30, TimeUnit.MINUTES);
+
+                // TODO
+                // update user password
+
+                return Result.ok().message("Successfully send new password");
+            }else {
+                return Result.fail().message("Email send failed");
+            }
         }
     }
 }

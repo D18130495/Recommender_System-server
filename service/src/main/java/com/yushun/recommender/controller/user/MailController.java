@@ -33,4 +33,9 @@ public class MailController {
     public Result sendUserSystemRegisterVerificationCode(@RequestParam("email") String email) {
         return mailService.sendUserSystemRegisterVerificationCode(email);
     }
+
+    @GetMapping("/sendUserResetPassword")
+    public Result sendUserResetPassword(@RequestParam("email") String email) {
+        return mailService.sendUserResetPassword(email);
+    }
 }
