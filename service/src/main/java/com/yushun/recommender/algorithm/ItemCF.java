@@ -1,7 +1,10 @@
 package com.yushun.recommender.algorithm;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
+
+import static com.yushun.recommender.algorithm.CFUtils.*;
 
 /**
  * <p>
@@ -28,9 +31,8 @@ public class ItemCF {
     //
     public static List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
-//        itemSimilarity();
 
-        return null;
+        return recommend(email);
     }
 
     // use for scheduled task, to calculate the item similarity
@@ -188,10 +190,10 @@ public class ItemCF {
 
         if(type.equals("movie")) {
             String resultFile = "itemMovieSimilarity.txt";
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(resultFile)),"UTF-8"));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(new File(resultFile).toPath()),"UTF-8"));
         }else {
             String resultFile = "itemBookSimilarity.txt";
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(resultFile)),"UTF-8"));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(new File(resultFile).toPath()),"UTF-8"));
         }
 
         // base on the item same matrix to find top n same item
@@ -238,5 +240,88 @@ public class ItemCF {
 
         bufferedWriter.flush();
         bufferedWriter.close();
+    }
+
+    public static List<String> recommend(String email) throws IOException{
+        BufferedReader bufferedReader = CFUtils.readSimMovies();
+
+        String line;
+        String[] SplitLine;
+
+        Map<String, HashSet<String>> nearestItemMap = new HashMap<>();
+
+
+        while((line = bufferedReader.readLine()) != null) {
+            SplitLine = line.split(" ");
+
+            HashSet<String> nearestItemSet = new HashSet<>();
+
+            for(int i = 1; i <= 30; i++) {
+                nearestItemSet.add(SplitLine[i]);
+            }
+
+            nearestItemMap.put(SplitLine[0], nearestItemSet);
+        }
+
+        //循环每个用户，循环每个产品,计算用户对没有买过的产品的打分，取TOP_N得分最高的产品进行推荐
+        for(int i = 0; i < userMap.size(); i++) {
+            if(!idToUserMap.get(i).equals(email)) continue;
+
+            // get current user all rated item
+            HashSet<String> currentUserSet = new HashSet<>();
+            Map<String, Double> preRatingMap = new HashMap<>();
+
+            for(Map.Entry<String, Double> entry : userMap.get(idToUserMap.get(i)).entrySet()) {
+                currentUserSet.add(idToItemMap.get(Integer.parseInt(entry.getKey()))); // put rated item to the list by item real id
+            }
+
+            // loop each item in the all item list
+            for(int j = 0; j < itemMap.size(); j++) {
+                double preRating = 0;
+
+                // if this user rated this item skip
+                if(currentUserSet.contains(idToItemMap.get(j)))
+                    continue;
+
+                // find if this item contain in the user rated list
+                Set<String> interSet = stringInterSet(currentUserSet, nearestItemMap.get(idToItemMap.get(j)));//获取当前用户的购买列表与产品相似品的交集
+
+                // if interSet is empty rate as 0
+                if(!interSet.isEmpty()) {
+                    preRating = 0;
+
+                    for(Map.Entry<String, Double> entry : itemMap.get(idToItemMap.get(j)).entrySet()) {
+                        preRating += entry.getValue();
+                    }
+
+                    preRating = preRating / itemMap.get(idToItemMap.get(j)).entrySet().size();
+                    preRating = interSet.size() * preRating;
+                }else
+                    preRating = 0;
+
+                preRatingMap.put(idToItemMap.get(j), preRating);
+            }
+
+            preRatingMap = sortMapByValues(preRatingMap);
+
+            if(!preRatingMap.isEmpty()) {
+//                bfw.append(idToUserMap.get(i)+":");
+            }
+
+            List<String> simUserItemListResult = new ArrayList<>();
+
+            //推荐TOP_N个产品
+            int recCount = 0;
+            for(Map.Entry<String, Double> entry : preRatingMap.entrySet()) {
+                if(recCount < TOP_N) {
+                    simUserItemListResult.add(entry.getKey());
+                    recCount ++;
+                }
+            }
+
+            return simUserItemListResult;
+        }
+
+        return null;
     }
 }

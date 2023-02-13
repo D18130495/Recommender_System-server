@@ -83,4 +83,16 @@ public class CFUtils {
 
         return tempSet;
     }
+
+    public static Set<String> stringInterSet(Set<String> set_a, Set<String> set_b) {
+        Set<String> tempSet = new HashSet<>();
+
+        for(String obj:set_a) {
+            if(set_b.contains(obj)) {
+                tempSet.add(obj);
+            }
+        }
+
+        return tempSet;
+    }
 }

@@ -54,7 +54,33 @@ public class RecommendationServiceImpl implements RecommendationService {
         List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
 
         try {
-            ItemCF.simUserItemListResult(email, systemUserMovieList, "movie");
+            List<String> movie = ItemCF.simUserItemListResult(email, systemUserMovieList, "movie");
+            List<Movie> resultMovieList = new ArrayList<>();
+
+            for(int i = 0; i < 6; i++) {
+                Integer movieId = Integer.parseInt(movie.remove(new Random().nextInt(movie.size())));
+
+                Movie movieDetail = movieRepository.findByMovieId(movieId);
+
+                if(movieDetail == null) {
+                    i = i - 1;
+
+                    continue;
+                }
+
+                float total = 0;
+
+                for(MovieRate movieRate: movieDetail.getRate()) {
+                    total = total + movieRate.getRating();
+                }
+
+                DecimalFormat decimalFormat =new DecimalFormat("#.0");
+                movieDetail.getParam().put("rate", decimalFormat.format(total / movieDetail.getRate().size()));
+
+                resultMovieList.add(movieDetail);
+            }
+
+            return resultMovieList;
         }catch (Exception e) {
             System.out.println(e);
         }
@@ -73,9 +99,6 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         try {
             List<String> simUserItemListResult = UserCF.simUserItemListResult(email, systemUserMovieList, type);
-
-            // get movies by movieId
-//            System.out.println(simUserItemListResult);
 
             return this.getRandomMovieRecommendationList(simUserItemListResult);
         }catch (Exception ignored) {}
