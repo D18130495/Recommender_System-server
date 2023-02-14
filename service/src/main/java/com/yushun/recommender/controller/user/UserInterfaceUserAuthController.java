@@ -41,7 +41,7 @@ public class UserInterfaceUserAuthController {
     }
 
     @GetMapping("/tokenLoginRefresh")
-    public Result getUserDetailByToken(@RequestParam("token") String token) {
-       return userService.getUserDetailByToken(token);
+    public Result tokenLoginRefresh(@RequestParam("token") String token) {
+       return userService.tokenLoginRefresh(token);
     }
 }

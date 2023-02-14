@@ -115,4 +115,44 @@ public class MailServiceImpl implements MailService {
             }
         }
     }
+
+    @Override
+    public Result sendChangePasswordVerificationCode(String email) {
+        // check email
+        boolean isValidEmail = EmailChecker.check(email);
+
+        if(!isValidEmail) return Result.fail().message("Incorrect email format");
+
+        // find if the email is already registered
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) {
+            return Result.fail().message("This email has not been registered");
+        }else if (findUser.getType().equals("G")){
+            return Result.fail().message("This email registered with Google");
+        }else {
+            String passwordExist = redisTemplate.opsForValue().get(email + " changePassword");
+
+            if(passwordExist != null) {
+                return Result.fail().message("Please check your email, the Verification Code is still valid");
+            }
+
+            // generate random Verification Code
+            String newCode = RandomUtil.getSixBitRandom();
+
+            // send email
+            boolean isSend = emailSender.sendMail(email, newCode);
+
+            if(isSend) {
+                redisTemplate.opsForValue().set(email  + " changePassword", newCode, 30, TimeUnit.MINUTES);
+
+                return Result.ok().message("Successfully send Verification Code");
+            }else {
+                return Result.fail().message("Email send failed");
+            }
+        }
+    }
 }

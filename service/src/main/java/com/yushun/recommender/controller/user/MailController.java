@@ -38,4 +38,9 @@ public class MailController {
     public Result sendUserResetPassword(@RequestParam("email") String email) {
         return mailService.sendUserResetPassword(email);
     }
+
+    @GetMapping("/sendChangePasswordVerificationCode")
+    public Result sendChangePasswordVerificationCode(@RequestParam("email") String email) {
+        return mailService.sendChangePasswordVerificationCode(email);
+    }
 }

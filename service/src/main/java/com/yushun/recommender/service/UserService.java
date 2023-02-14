@@ -3,10 +3,10 @@ package com.yushun.recommender.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.security.result.Result;
-import com.yushun.recommender.vo.user.user.UserDetailReturnVo;
-import com.yushun.recommender.vo.user.user.UserGoogleLoginVo;
-import com.yushun.recommender.vo.user.user.UserSystemLoginVo;
-import com.yushun.recommender.vo.user.user.UserSystemRegisterVo;
+import com.yushun.recommender.vo.user.user.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -24,7 +24,18 @@ public interface UserService extends IService<User> {
 
     Result userSystemRegister(UserSystemRegisterVo userSystemRegisterVo);
 
+    Result tokenLoginRefresh(String token);
+
+
     Result getUserDetailByToken(String token);
 
     UserDetailReturnVo getUserDetailByEmail(String email);
+
+    Result updateUserDetail(User user);
+
+    Result updateUserAvatar(MultipartFile file, HttpServletRequest request);
+
+    Result updateSystemUserPassword(UserUpdatePasswordVo userUpdatePasswordVo);
+
+    boolean updateUserPassword(String username, String password, String email);
 }
