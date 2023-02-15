@@ -30,7 +30,7 @@ public class UserInterfaceBookController {
     @GetMapping("/getRandomBookList")
     public Result getRandomBookList() {
         // initial random book list
-        List<Book> randomBookList = bookService.getRandomBook();
+        List<Book> randomBookList = bookService.getRandomBookList();
 
         // result variable
         List<BookReturnVo> bookReturnList;

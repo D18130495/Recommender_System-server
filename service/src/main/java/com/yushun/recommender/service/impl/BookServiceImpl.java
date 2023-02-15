@@ -1,6 +1,7 @@
 package com.yushun.recommender.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.model.common.mongoEntity.book.Book;
 import com.yushun.recommender.model.common.mongoEntity.book.BookRate;
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
@@ -12,6 +13,7 @@ import com.yushun.recommender.repository.BookRepository;
 import com.yushun.recommender.service.BookFavouriteService;
 import com.yushun.recommender.service.BookRatingService;
 import com.yushun.recommender.service.BookService;
+import com.yushun.recommender.service.UserService;
 import com.yushun.recommender.vo.user.book.BookLikeListReturnVo;
 import com.yushun.recommender.vo.user.book.BookRatingListReturnVo;
 import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
@@ -44,13 +46,16 @@ public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private BookFavouriteService bookFavouriteService;
 
     @Autowired
     private BookRatingService bookRatingService;
 
     @Override
-    public List<Book> getRandomBook() {
+    public List<Book> getRandomBookList() {
         // aggregate and find results
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.sample(6)
@@ -68,8 +73,20 @@ public class BookServiceImpl implements BookService {
                 total = total + bookRate.getRating();
             }
 
+            // find system user rating
+            QueryWrapper bookRateQueryWrapper = new QueryWrapper();
+            bookRateQueryWrapper.eq("isbn", book.getISBN());
+
+            List<BookRating> systemBookRatingList = bookRatingService.list(bookRateQueryWrapper);
+
+            if(systemBookRatingList.size() != 0) {
+                for(BookRating systemBookRating:systemBookRatingList) {
+                    total = total + systemBookRating.getRating();
+                }
+            }
+
             DecimalFormat decimalFormat =new DecimalFormat("#.0");
-            book.getParam().put("rate", decimalFormat.format(total / book.getRate().size()));
+            book.getParam().put("rate", decimalFormat.format(total / (book.getRate().size() + systemBookRatingList.size())));
         }
 
         return bookList;
@@ -77,7 +94,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getBookByISBN(String isbn) {
-        // find book
+        // find book by isbn
         Book book = bookRepository.findByISBN(isbn);
 
         if(book == null) {
@@ -90,8 +107,20 @@ public class BookServiceImpl implements BookService {
                 total = total + bookRate.getRating();
             }
 
+            // find system user rating
+            QueryWrapper bookRateQueryWrapper = new QueryWrapper();
+            bookRateQueryWrapper.eq("isbn", book.getISBN());
+
+            List<BookRating> systemBookRatingList = bookRatingService.list(bookRateQueryWrapper);
+
+            if(systemBookRatingList.size() != 0) {
+                for(BookRating systemBookRating:systemBookRatingList) {
+                    total = total + systemBookRating.getRating();
+                }
+            }
+
             DecimalFormat decimalFormat =new DecimalFormat("#.0");
-            book.getParam().put("rate", decimalFormat.format(total / book.getRate().size()));
+            book.getParam().put("rate", decimalFormat.format(total / (book.getRate().size() + systemBookRatingList.size())));
         }
 
         return book;
@@ -101,24 +130,32 @@ public class BookServiceImpl implements BookService {
     public Integer getUserLikeAndRatingBookCount(String email) {
         int bookCount = 0;
 
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return -1;
+
         // find user book like list
         QueryWrapper bookLikeListWrapper = new QueryWrapper();
         bookLikeListWrapper.eq("email", email);
         bookLikeListWrapper.eq("favourite", "T");
 
         List<BookFavourite> bookFavouriteList = bookFavouriteService.list(bookLikeListWrapper);
-
+        System.out.println(bookFavouriteList);
         // find user book rating list
         QueryWrapper bookRatingListWrapper = new QueryWrapper();
         bookRatingListWrapper.eq("email", email);
 
         List<BookRating> bookRatingList = bookRatingService.list(bookRatingListWrapper);
 
-        if(bookFavouriteList == null && bookRatingList == null) {
+        if(bookFavouriteList.size() == 0 && bookRatingList.size() == 0) {
             return 0;
-        }else if(bookFavouriteList == null && bookRatingList != null) {
-            return bookFavouriteList.size();
-        }else if(bookFavouriteList != null && bookRatingList == null) {
+        }else if(bookFavouriteList.size() == 0) {
+            return bookRatingList.size();
+        }else if(bookRatingList.size() == 0) {
             return bookFavouriteList.size();
         }else {
             bookCount = bookFavouriteList.size() + bookRatingList.size();
@@ -137,6 +174,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookLikeListReturnVo> getUserBookLikeList(String email) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return null;
+
         // find user book like list
         QueryWrapper bookLikeListWrapper = new QueryWrapper();
         bookLikeListWrapper.eq("email", email);
@@ -144,7 +189,7 @@ public class BookServiceImpl implements BookService {
 
         List<BookFavourite> findBookLikeList = bookFavouriteService.list(bookLikeListWrapper);
 
-        if(findBookLikeList != null) {
+        if(findBookLikeList.size() != 0) {
             // return list
             ArrayList<BookLikeListReturnVo> bookLikeListReturnVoList = new ArrayList<>();
 
@@ -185,13 +230,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookRatingListReturnVo> getUserBookRatingList(String email) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return null;
+
         // find user rated book list
         QueryWrapper bookRatingListWrapper = new QueryWrapper();
         bookRatingListWrapper.eq("email", email);
 
         List<BookRating> findBookRatingList = bookRatingService.list(bookRatingListWrapper);
 
-        if(findBookRatingList != null) {
+        if(findBookRatingList.size() != 0) {
             // return list
             ArrayList<BookRatingListReturnVo> bookRatingListReturnVoList = new ArrayList<>();
 
