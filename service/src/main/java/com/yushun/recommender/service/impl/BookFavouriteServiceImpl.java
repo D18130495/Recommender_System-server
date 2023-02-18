@@ -32,9 +32,9 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
         BookFavourite findBookFavourite = baseMapper.selectOne(bookFavouriteWrapper);
 
         // return favourite if exist
-        if (findBookFavourite == null) {
+        if(findBookFavourite == null) {
             return null;
-        } else {
+        }else {
             BookFavouriteReturnVo bookFavouriteReturnVo = new BookFavouriteReturnVo();
             BeanUtils.copyProperties(findBookFavourite, bookFavouriteReturnVo);
 
@@ -85,7 +85,7 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
                 }
             }
         }else {
-            switch (bookFavourite.getFavourite()) {
+            switch(bookFavourite.getFavourite()) {
                 case "1": { // do not like
                     findBookFavourite.setFavourite("F");
 

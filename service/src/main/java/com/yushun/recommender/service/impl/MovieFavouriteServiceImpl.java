@@ -84,7 +84,7 @@ public class MovieFavouriteServiceImpl extends ServiceImpl<MovieFavouriteMapper,
                 }
             }
         } else {
-            switch (movieFavourite.getFavourite()) {
+            switch(movieFavourite.getFavourite()) {
                 case "1": { // do not like
                     findMovieFavourite.setFavourite("F");
 

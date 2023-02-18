@@ -144,7 +144,7 @@ public class BookServiceImpl implements BookService {
         bookLikeListWrapper.eq("favourite", "T");
 
         List<BookFavourite> bookFavouriteList = bookFavouriteService.list(bookLikeListWrapper);
-        System.out.println(bookFavouriteList);
+
         // find user book rating list
         QueryWrapper bookRatingListWrapper = new QueryWrapper();
         bookRatingListWrapper.eq("email", email);
@@ -182,10 +182,10 @@ public class BookServiceImpl implements BookService {
 
         if(findUser == null) return null;
 
-        // find user book like list
+        // find user book like and unlike list
         QueryWrapper bookLikeListWrapper = new QueryWrapper();
         bookLikeListWrapper.eq("email", email);
-        bookLikeListWrapper.eq("favourite", "T");
+        bookLikeListWrapper.in("favourite", "T", "F");
 
         List<BookFavourite> findBookLikeList = bookFavouriteService.list(bookLikeListWrapper);
 
@@ -216,6 +216,7 @@ public class BookServiceImpl implements BookService {
 
                     if(findBookRating != null) bookLikeListReturnVo.setRating(findBookRating.getRating());
 
+                    bookLikeListReturnVo.setFavourite(bookFavourite.getFavourite());
                     bookLikeListReturnVo.setUpdateDate(bookFavourite.getUpdateTime());
 
                     bookLikeListReturnVoList.add(bookLikeListReturnVo);

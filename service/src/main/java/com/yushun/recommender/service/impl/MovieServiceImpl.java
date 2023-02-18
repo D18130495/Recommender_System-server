@@ -1,6 +1,7 @@
 package com.yushun.recommender.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.yushun.recommender.model.common.User;
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
 import com.yushun.recommender.model.common.mongoEntity.movie.MovieRate;
 import com.yushun.recommender.model.user.MovieFavourite;
@@ -9,6 +10,7 @@ import com.yushun.recommender.repository.MovieRepository;
 import com.yushun.recommender.service.MovieFavouriteService;
 import com.yushun.recommender.service.MovieRatingService;
 import com.yushun.recommender.service.MovieService;
+import com.yushun.recommender.service.UserService;
 import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
 import com.yushun.recommender.vo.user.movie.MovieRatingListReturnVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class MovieServiceImpl implements MovieService {
     private MovieRepository movieRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private MovieFavouriteService movieFavouriteService;
 
     @Autowired
@@ -63,8 +68,20 @@ public class MovieServiceImpl implements MovieService {
                 total = total + movieRate.getRating();
             }
 
+            // find system user rating
+            QueryWrapper movieRateQueryWrapper = new QueryWrapper();
+            movieRateQueryWrapper.eq("movieId", movie.getMovieId());
+
+            List<MovieRating> systemMovieRatingList = movieRatingService.list(movieRateQueryWrapper);
+
+            if(systemMovieRatingList.size() != 0) {
+                for(MovieRating systemMovieRating:systemMovieRatingList) {
+                    total = total + systemMovieRating.getRating();
+                }
+            }
+
             DecimalFormat decimalFormat =new DecimalFormat("#.0");
-            movie.getParam().put("rate", decimalFormat.format(total / movie.getRate().size()));
+            movie.getParam().put("rate", decimalFormat.format(total / (movie.getRate().size() + systemMovieRatingList.size())));
         }
 
         return movieList;
@@ -85,8 +102,20 @@ public class MovieServiceImpl implements MovieService {
                 total = total + movieRate.getRating();
             }
 
+            // find system user rating
+            QueryWrapper movieRateQueryWrapper = new QueryWrapper();
+            movieRateQueryWrapper.eq("movieId", movie.getMovieId());
+
+            List<MovieRating> systemMovieRatingList = movieRatingService.list(movieRateQueryWrapper);
+
+            if(systemMovieRatingList.size() != 0) {
+                for(MovieRating systemMovieRating:systemMovieRatingList) {
+                    total = total + systemMovieRating.getRating();
+                }
+            }
+
             DecimalFormat decimalFormat =new DecimalFormat("#.0");
-            movie.getParam().put("rate", decimalFormat.format(total / movie.getRate().size()));
+            movie.getParam().put("rate", decimalFormat.format(total / (movie.getRate().size() + systemMovieRatingList.size())));
         }
 
         return movie;
@@ -95,6 +124,14 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Integer getUserLikeAndRatingMovieCount(String email) {
         int movieCount = 0;
+
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return -1;
 
         // find user movie like list
         QueryWrapper movieLikeListWrapper = new QueryWrapper();
@@ -109,11 +146,11 @@ public class MovieServiceImpl implements MovieService {
 
         List<MovieRating> movieRatingList = movieRatingService.list(movieRatingListWrapper);
 
-        if(movieFavouriteList == null && movieRatingList == null) {
+        if(movieFavouriteList.size() == 0 && movieRatingList.size() == 0) {
             return 0;
-        }else if(movieFavouriteList == null && movieRatingList != null) {
+        }else if(movieFavouriteList.size() == 0) {
             return movieRatingList.size();
-        }else if(movieFavouriteList != null && movieRatingList == null) {
+        }else if(movieRatingList.size() == 0) {
             return movieFavouriteList.size();
         }else {
             movieCount = movieFavouriteList.size() + movieRatingList.size();
@@ -132,14 +169,22 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<MovieLikeListReturnVo> getUserMovieLikeList(String email) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return null;
+
         // find user movie like list movieId
         QueryWrapper movieLikeListWrapper = new QueryWrapper();
         movieLikeListWrapper.eq("email", email);
-        movieLikeListWrapper.eq("favourite", "T");
+        movieLikeListWrapper.in("favourite", "T", "F");
 
         List<MovieFavourite> findMovieLikeList = movieFavouriteService.list(movieLikeListWrapper);
 
-        if(findMovieLikeList != null) {
+        if(findMovieLikeList.size() != 0) {
             // return list
             ArrayList<MovieLikeListReturnVo> movieLikeListReturnVoList = new ArrayList<>();
 
@@ -166,6 +211,7 @@ public class MovieServiceImpl implements MovieService {
 
                     if(findMovieRating != null) movieLikeListReturnVo.setRating(findMovieRating.getRating());
 
+                    movieLikeListReturnVo.setFavourite(movieFavourite.getFavourite());
                     movieLikeListReturnVo.setUpdateDate(movieFavourite.getUpdateTime());
 
                     movieLikeListReturnVoList.add(movieLikeListReturnVo);
@@ -180,13 +226,21 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<MovieRatingListReturnVo> getUserMovieRatingList(String email) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return null;
+
         // find user rated movie list
         QueryWrapper movieRatingListWrapper = new QueryWrapper();
         movieRatingListWrapper.eq("email", email);
 
         List<MovieRating> findMovieRatingList = movieRatingService.list(movieRatingListWrapper);
 
-        if(findMovieRatingList != null) {
+        if(findMovieRatingList.size() != 0) {
             // return list
             ArrayList<MovieRatingListReturnVo> movieRatingListReturnVoList = new ArrayList<>();
 

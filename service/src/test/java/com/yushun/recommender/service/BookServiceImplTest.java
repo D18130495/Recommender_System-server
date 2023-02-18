@@ -92,7 +92,7 @@ public class BookServiceImplTest {
     @Order(6)
     @Test(timeout = 30000)
     @Transactional
-    public void getUserLikeAndRatingBookCount_userOnlyRateBook_rateListSize() {
+    public void getUserLikeAndRatingBookCount_userOnlyLikeBook_rateListSize() {
         BookFavourite bookFavourite = new BookFavourite();
         bookFavourite.setEmail("d18130495@mytudublin.ie");
         bookFavourite.setIsbn("0345439252");
@@ -108,7 +108,7 @@ public class BookServiceImplTest {
     @Order(7)
     @Test(timeout = 30000)
     @Transactional
-    public void getUserLikeAndRatingBookCount_userOnlyLikeBook_rateListSize() {
+    public void getUserLikeAndRatingBookCount_userOnlyRateBook_rateListSize() {
         BookRating bookRating = new BookRating();
         bookRating.setEmail("d18130495@mytudublin.ie");
         bookRating.setIsbn("0345439252");
@@ -144,7 +144,7 @@ public class BookServiceImplTest {
         Assert.assertEquals(new Integer(1), userLikeAndRatingBookCount);
     }
 
-    @Order(8)
+    @Order(9)
     @Test(timeout = 30000)
     @Transactional
     public void getUserLikeAndRatingBookCount_userLikeAndRateDifferentBook_likeAndRateListSize() {
@@ -170,7 +170,7 @@ public class BookServiceImplTest {
     /**
      * get user book like list
      */
-    @Order(9)
+    @Order(10)
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookLikeList_userNotFind_null() {
@@ -179,16 +179,16 @@ public class BookServiceImplTest {
         Assert.assertNull(userBookLikeList);
     }
 
-    @Order(10)
+    @Order(11)
     @Test(timeout = 30000)
     @Transactional
-    public void getUserBookLikeList_userNotLike_null() {
+    public void getUserBookLikeList_userNotLikeOrUnlike_null() {
         List<BookLikeListReturnVo> userBookLikeList = bookService.getUserBookLikeList("d18130495@mytudublin.ie");
 
         Assert.assertNull(userBookLikeList);
     }
 
-    @Order(11)
+    @Order(12)
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookLikeList_userNotRateThisBook_rateIsNull() {
@@ -204,7 +204,7 @@ public class BookServiceImplTest {
         Assert.assertNull(userBookLikeList.get(0).getRating());
     }
 
-    @Order(12)
+    @Order(13)
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookLikeList_userRateThisBook_rateIsNotNull() {
@@ -230,7 +230,7 @@ public class BookServiceImplTest {
     /**
      * get user book rating list
      */
-    @Order(13)
+    @Order(14)
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookRatingList_userNotFind_null() {
@@ -239,7 +239,7 @@ public class BookServiceImplTest {
         Assert.assertNull(userBookRatingList);
     }
 
-    @Order(14)
+    @Order(15)
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookRatingList_userNotRateBook_null() {
@@ -248,7 +248,7 @@ public class BookServiceImplTest {
         Assert.assertNull(userBookRatingList);
     }
 
-    @Order(15)
+    @Order(16)
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookRatingList_userRateBook_bookRateListIsNotNull() {

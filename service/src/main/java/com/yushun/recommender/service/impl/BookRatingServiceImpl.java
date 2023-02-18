@@ -22,6 +22,7 @@ import java.util.Date;
 
 @Service
 public class BookRatingServiceImpl extends ServiceImpl<BookRatingMapper, BookRating> implements BookRatingService {
+
     @Override
     public BookRatingReturnVo getUserBookRating(String isbn, String email) {
         // find rating

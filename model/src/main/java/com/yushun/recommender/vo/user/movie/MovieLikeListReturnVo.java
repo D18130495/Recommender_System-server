@@ -28,6 +28,8 @@ public class MovieLikeListReturnVo {
 
     private Float rating;
 
+    private String favourite;
+
     private Date updateDate;
 
     public Integer getMovieId() {
@@ -76,6 +78,14 @@ public class MovieLikeListReturnVo {
 
     public void setRating(Float rating) {
         this.rating = rating;
+    }
+
+    public String getFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(String favourite) {
+        this.favourite = favourite;
     }
 
     public Date getUpdateDate() {

@@ -24,6 +24,8 @@ public class BookLikeListReturnVo {
 
     private Float rating;
 
+    private String favourite;
+
     private Date updateDate;
 
     public String getIsbn() {
@@ -72,6 +74,14 @@ public class BookLikeListReturnVo {
 
     public void setRating(Float rating) {
         this.rating = rating;
+    }
+
+    public String getFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(String favourite) {
+        this.favourite = favourite;
     }
 
     public Date getUpdateDate() {

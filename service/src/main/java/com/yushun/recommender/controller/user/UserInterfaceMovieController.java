@@ -30,9 +30,6 @@ public class UserInterfaceMovieController {
     @Autowired
     private MovieService movieService;
 
-    @Autowired
-    private MovieRepository movieRepository;
-
     @GetMapping("/getRandomMovieList")
     public Result getRandomMovieList() {
         // initial random movie list
