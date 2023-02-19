@@ -16,5 +16,5 @@ import com.yushun.recommender.vo.user.book.BookRatingReturnVo;
 public interface BookRatingService extends IService<BookRating> {
     BookRatingReturnVo getUserBookRating(String isbn, String email);
 
-    boolean addOrUpdateUserBookRating(BookRating bookRating);
+    String addOrUpdateUserBookRating(BookRating bookRating);
 }

@@ -16,8 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RecommenderApplication.class)
 @ExtendWith(SpringExtension.class)
@@ -27,36 +25,9 @@ public class BookFavouriteServiceImplTest {
     private BookFavouriteService bookFavouriteService;
 
     /**
-     * get random book list(size 6)
+     * get user book like status
      */
     @Order(1)
-    @Test(timeout = 30000)
-    @Transactional
-    public void getUserBookFavourite_findBookFavourite_doNotLike() {
-        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0451197003", "990415zys@gmail.com");
-
-        Assert.assertEquals("1", userBookFavourite.getFavourite());
-    }
-
-    @Order(2)
-    @Test(timeout = 30000)
-    @Transactional
-    public void getUserBookFavourite_findBookFavourite_normal() {
-        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0872203948", "990415zys@gmail.com");
-
-        Assert.assertEquals("2", userBookFavourite.getFavourite());
-    }
-
-    @Order(3)
-    @Test(timeout = 30000)
-    @Transactional
-    public void getUserBookFavourite_findBookFavourite_favourite() {
-        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("067174139X", "990415zys@gmail.com");
-
-        Assert.assertEquals("3", userBookFavourite.getFavourite());
-    }
-
-    @Order(4)
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookFavourite_userNotFind_null() {
@@ -65,7 +36,7 @@ public class BookFavouriteServiceImplTest {
         Assert.assertNull(userBookFavourite);
     }
 
-    @Order(5)
+    @Order(2)
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookFavourite_bookNotFind_null() {
@@ -74,13 +45,40 @@ public class BookFavouriteServiceImplTest {
         Assert.assertNull(userBookFavourite);
     }
 
-    @Order(6)
+    @Order(3)
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookFavourite_userNotFavouriteThisBook_null() {
-        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0001714600", "990415zys@gmail.com");
+        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0001714600", "d18130495@mytudublin.ie");
 
         Assert.assertNull(userBookFavourite);
+    }
+
+    @Order(4)
+    @Test(timeout = 30000)
+    @Transactional
+    public void getUserBookFavourite_findBookFavourite_doNotLike() {
+        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0451197003", "990415zys@gmail.com");
+
+        Assert.assertEquals("1", userBookFavourite.getFavourite());
+    }
+
+    @Order(5)
+    @Test(timeout = 30000)
+    @Transactional
+    public void getUserBookFavourite_findBookFavourite_normal() {
+        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0872203948", "990415zys@gmail.com");
+
+        Assert.assertEquals("2", userBookFavourite.getFavourite());
+    }
+
+    @Order(6)
+    @Test(timeout = 30000)
+    @Transactional
+    public void getUserBookFavourite_findBookFavourite_favourite() {
+        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("067174139X", "990415zys@gmail.com");
+
+        Assert.assertEquals("3", userBookFavourite.getFavourite());
     }
 
     /**
@@ -99,9 +97,9 @@ public class BookFavouriteServiceImplTest {
     @Order(8)
     @Test(timeout = 30000)
     @Transactional
-    public void likeOrUnlikeBook_userNotFind_bookNotFind() {
+    public void likeOrUnlikeBook_bookNotFind_bookNotFind() {
         BookFavourite bookFavourite = new BookFavourite();
-        bookFavourite.setEmail("990415zys@gmail.com");
+        bookFavourite.setEmail("d18130495@mytudublin.ie");
         bookFavourite.setIsbn("0451197004");
 
         Assert.assertEquals("Book not find", bookFavouriteService.likeOrUnlikeBook(bookFavourite));

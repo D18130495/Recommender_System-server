@@ -79,7 +79,7 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
     public String likeOrUnlikeBook(BookFavourite bookFavourite) {
         // find if user is existed
         QueryWrapper userWrapper = new QueryWrapper();
-        userWrapper.eq("email",bookFavourite.getEmail());
+        userWrapper.eq("email", bookFavourite.getEmail());
 
         User findUser = userService.getOne(userWrapper);
 

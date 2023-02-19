@@ -20,11 +20,17 @@ public class BookReturnVo {
 
     private String publisher;
 
+    private String bookImage;
+
     private String bookImageS;
 
     private String bookImageM;
 
     private String bookImageL;
+
+    private String bookLink;
+
+    private String bookDescription;
 
     private float rate;
 
@@ -68,6 +74,14 @@ public class BookReturnVo {
         this.publisher = publisher;
     }
 
+    public String getBookImage() {
+        return bookImage;
+    }
+
+    public void setBookImage(String bookImage) {
+        this.bookImage = bookImage;
+    }
+
     public String getBookImageS() {
         return bookImageS;
     }
@@ -90,6 +104,22 @@ public class BookReturnVo {
 
     public void setBookImageL(String bookImageL) {
         this.bookImageL = bookImageL;
+    }
+
+    public String getBookLink() {
+        return bookLink;
+    }
+
+    public void setBookLink(String bookLink) {
+        this.bookLink = bookLink;
+    }
+
+    public String getBookDescription() {
+        return bookDescription;
+    }
+
+    public void setBookDescription(String bookDescription) {
+        this.bookDescription = bookDescription;
     }
 
     public float getRate() {

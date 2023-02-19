@@ -37,10 +37,19 @@ public class UserInterfaceBookRatingController {
 
     @PostMapping("/addOrUpdateUserBookRating")
     public Result addOrUpdateUserBookRating(@RequestBody BookRating bookRating) {
-        if(bookRatingService.addOrUpdateUserBookRating(bookRating)) {
-            return Result.ok(bookRating).message("Successfully rating the book");
-        }else {
-            return Result.fail().message("Book rating failed with server error");
+        String addOrUpdateState = bookRatingService.addOrUpdateUserBookRating(bookRating);
+
+        switch (addOrUpdateState) {
+            case "User not find":
+                return Result.fail().message("Can not find this user");
+            case "Book not find":
+                return Result.fail().message("This book is not exist in this system");
+            case "Successfully rating this book":
+                return Result.ok(bookRating).message("Successfully rating the book");
+            case "Successfully updated rating":
+                return Result.ok(bookRating).message("Successfully updated rating");
+            default:
+                return Result.fail().message("Book rating failed with server error");
         }
     }
 }

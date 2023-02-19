@@ -3,10 +3,15 @@ package com.yushun.recommender.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yushun.recommender.mapper.BookRatingMapper;
+import com.yushun.recommender.model.common.User;
+import com.yushun.recommender.model.common.mongoEntity.book.Book;
 import com.yushun.recommender.model.user.BookRating;
 import com.yushun.recommender.service.BookRatingService;
+import com.yushun.recommender.service.BookService;
+import com.yushun.recommender.service.UserService;
 import com.yushun.recommender.vo.user.book.BookRatingReturnVo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,9 +27,27 @@ import java.util.Date;
 
 @Service
 public class BookRatingServiceImpl extends ServiceImpl<BookRatingMapper, BookRating> implements BookRatingService {
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private BookService bookService;
 
     @Override
     public BookRatingReturnVo getUserBookRating(String isbn, String email) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return null;
+
+        // find if the book exist
+        Book bookByISBN = bookService.getBookByISBN(isbn);
+
+        if(bookByISBN == null) return null;
+
         // find rating
         QueryWrapper bookRatingWrapper = new QueryWrapper();
         bookRatingWrapper.eq("isbn", isbn);
@@ -44,7 +67,20 @@ public class BookRatingServiceImpl extends ServiceImpl<BookRatingMapper, BookRat
     }
 
     @Override
-    public boolean addOrUpdateUserBookRating(BookRating bookRating) {
+    public String addOrUpdateUserBookRating(BookRating bookRating) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", bookRating.getEmail());
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return "User not find";
+
+        // find if the book exist
+        Book bookByISBN = bookService.getBookByISBN(bookRating.getIsbn());
+
+        if(bookByISBN == null) return "Book not find";
+
         // find rating
         QueryWrapper bookRatingWrapper = new QueryWrapper();
         bookRatingWrapper.eq("isbn", bookRating.getIsbn());
@@ -63,14 +99,14 @@ public class BookRatingServiceImpl extends ServiceImpl<BookRatingMapper, BookRat
 
             int insert = baseMapper.insert(newBookRating);
 
-            return insert > 0;
+            return insert > 0? "Successfully rating this book":"Error";
         }else {
             findBookRating.setRating(bookRating.getRating());
             findBookRating.setUpdateTime(new Date());
 
             int update = baseMapper.update(findBookRating, bookRatingWrapper);
 
-            return update > 0;
+            return update > 0? "Successfully updated rating":"Error";
         }
     }
 }

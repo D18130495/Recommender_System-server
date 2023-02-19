@@ -3,10 +3,16 @@ package com.yushun.recommender.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yushun.recommender.mapper.MovieFavouriteMapper;
+import com.yushun.recommender.model.common.User;
+import com.yushun.recommender.model.common.mongoEntity.book.Book;
+import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
 import com.yushun.recommender.model.user.MovieFavourite;
 import com.yushun.recommender.service.MovieFavouriteService;
+import com.yushun.recommender.service.MovieService;
+import com.yushun.recommender.service.UserService;
 import com.yushun.recommender.vo.user.movie.MovieFavouriteReturnVo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,8 +28,27 @@ import java.util.Date;
 
 @Service
 public class MovieFavouriteServiceImpl extends ServiceImpl<MovieFavouriteMapper, MovieFavourite> implements MovieFavouriteService {
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private MovieService movieService;
+
     @Override
     public MovieFavouriteReturnVo getUserMovieFavourite(Integer movieId, String email) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return null;
+
+        // find if the movie exist
+        Movie movieByMovieId = movieService.getMovieByMovieId(movieId);
+
+        if(movieByMovieId == null) return null;
+
         // find favourite
         QueryWrapper movieFavouriteWrapper = new QueryWrapper();
         movieFavouriteWrapper.eq("movieId", movieId);
@@ -52,6 +77,19 @@ public class MovieFavouriteServiceImpl extends ServiceImpl<MovieFavouriteMapper,
 
     @Override
     public String likeOrUnlikeMovie(MovieFavourite movieFavourite) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", movieFavourite.getEmail());
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return "User not find";
+
+        // find if the movie exist
+        Movie movieByMovieId = movieService.getMovieByMovieId(movieFavourite.getMovieId());
+
+        if(movieByMovieId == null) return "Movie not find";
+
         // find favourite movie
         QueryWrapper movieFavouriteWrapper = new QueryWrapper();
         movieFavouriteWrapper.eq("movieId", movieFavourite.getMovieId());

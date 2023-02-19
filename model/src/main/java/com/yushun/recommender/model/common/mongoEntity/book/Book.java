@@ -38,6 +38,8 @@ public class Book extends BaseMongoEntity {
 
     private String bookLink;
 
+    private String bookDescription;
+
     private List<BookRate> rate;
 
     public String getISBN() {
@@ -118,6 +120,14 @@ public class Book extends BaseMongoEntity {
 
     public void setBookLink(String bookLink) {
         this.bookLink = bookLink;
+    }
+
+    public String getBookDescription() {
+        return bookDescription;
+    }
+
+    public void setBookDescription(String bookDescription) {
+        this.bookDescription = bookDescription;
     }
 
     public List<BookRate> getRate() {
