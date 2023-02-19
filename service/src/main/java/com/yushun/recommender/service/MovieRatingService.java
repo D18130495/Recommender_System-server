@@ -16,5 +16,5 @@ import com.yushun.recommender.vo.user.movie.MovieRatingReturnVo;
 public interface MovieRatingService extends IService<MovieRating> {
     MovieRatingReturnVo getUserMovieRating(Integer movieId, String email);
 
-    boolean addOrUpdateUserMovieRating(MovieRating movieRating);
+    String addOrUpdateUserMovieRating(MovieRating movieRating);
 }

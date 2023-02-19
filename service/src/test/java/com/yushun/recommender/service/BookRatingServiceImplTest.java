@@ -2,7 +2,6 @@ package com.yushun.recommender.service;
 
 import com.yushun.recommender.RecommenderApplication;
 import com.yushun.recommender.model.user.BookRating;
-import com.yushun.recommender.vo.user.book.BookFavouriteReturnVo;
 import com.yushun.recommender.vo.user.book.BookRatingReturnVo;
 import org.junit.Assert;
 import org.junit.Test;

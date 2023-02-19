@@ -37,10 +37,19 @@ public class UserInterfaceMovieRatingController {
 
     @PostMapping("/addOrUpdateUserMovieRating")
     public Result addOrUpdateUserMovieRating(@RequestBody MovieRating movieRating) {
-        if(movieRatingService.addOrUpdateUserMovieRating(movieRating)) {
-            return Result.ok(movieRating).message("Successfully rating the movie");
-        }else {
-            return Result.fail().message("Movie rating failed with server error");
+        String addOrUpdateState = movieRatingService.addOrUpdateUserMovieRating(movieRating);
+
+        switch (addOrUpdateState) {
+            case "User not find":
+                return Result.fail().message("Can not find this user");
+            case "Book not find":
+                return Result.fail().message("This book is not exist in this system");
+            case "Successfully rating this movie":
+                return Result.ok(movieRating).message("Successfully rating the movie");
+            case "Successfully updated rating":
+                return Result.ok(movieRating).message("Successfully updated rating");
+            default:
+                return Result.fail().message("Movie rating failed with server error");
         }
     }
 }
