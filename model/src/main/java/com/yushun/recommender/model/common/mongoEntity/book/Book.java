@@ -28,11 +28,15 @@ public class Book extends BaseMongoEntity {
 
     private String publisher;
 
+    private String bookImage;
+
     private String bookImageS;
 
     private String bookImageM;
 
     private String bookImageL;
+
+    private String bookLink;
 
     private List<BookRate> rate;
 
@@ -76,6 +80,14 @@ public class Book extends BaseMongoEntity {
         this.publisher = publisher;
     }
 
+    public String getBookImage() {
+        return bookImage;
+    }
+
+    public void setBookImage(String bookImage) {
+        this.bookImage = bookImage;
+    }
+
     public String getBookImageS() {
         return bookImageS;
     }
@@ -98,6 +110,14 @@ public class Book extends BaseMongoEntity {
 
     public void setBookImageL(String bookImageL) {
         this.bookImageL = bookImageL;
+    }
+
+    public String getBookLink() {
+        return bookLink;
+    }
+
+    public void setBookLink(String bookLink) {
+        this.bookLink = bookLink;
     }
 
     public List<BookRate> getRate() {

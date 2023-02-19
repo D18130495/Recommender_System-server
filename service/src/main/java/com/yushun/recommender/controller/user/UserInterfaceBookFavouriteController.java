@@ -40,6 +40,10 @@ public class UserInterfaceBookFavouriteController {
         String likeOrUnlikeBook = bookFavouriteService.likeOrUnlikeBook(bookFavourite);
 
         switch(likeOrUnlikeBook) {
+            case "User not find":
+                return Result.fail().message("Can not find this user");
+            case "Book not find":
+                return Result.fail().message("This book is not exist in this system");
             case "Favourite":
                 return Result.ok().message("Successfully liked this book");
             case "Don't like":

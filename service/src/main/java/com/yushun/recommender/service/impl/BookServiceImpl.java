@@ -67,6 +67,7 @@ public class BookServiceImpl implements BookService {
         // calculate average rate score
         for(Book book:bookList) {
             List<BookRate> rateList = book.getRate();
+
             float total = 0;
 
             for(BookRate bookRate: rateList) {

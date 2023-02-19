@@ -3,10 +3,16 @@ package com.yushun.recommender.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yushun.recommender.mapper.BookFavouriteMapper;
+import com.yushun.recommender.model.common.User;
+import com.yushun.recommender.model.common.mongoEntity.book.Book;
 import com.yushun.recommender.model.user.BookFavourite;
 import com.yushun.recommender.service.BookFavouriteService;
+import com.yushun.recommender.service.BookService;
+import com.yushun.recommender.service.UserService;
 import com.yushun.recommender.vo.user.book.BookFavouriteReturnVo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,8 +28,27 @@ import java.util.Date;
 
 @Service
 public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, BookFavourite> implements BookFavouriteService {
+    @Autowired
+    private  UserService userService;
+
+    @Autowired
+    private BookService bookService;
+
     @Override
     public BookFavouriteReturnVo getUserBookFavourite(String isbn, String email) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email", email);
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return null;
+
+        // find if the book exist
+        Book bookByISBN = bookService.getBookByISBN(isbn);
+
+        if(bookByISBN == null) return null;
+
         // find favourite
         QueryWrapper bookFavouriteWrapper = new QueryWrapper();
         bookFavouriteWrapper.eq("isbn", isbn);
@@ -52,6 +77,19 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
 
     @Override
     public String likeOrUnlikeBook(BookFavourite bookFavourite) {
+        // find if user is existed
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("email",bookFavourite.getEmail());
+
+        User findUser = userService.getOne(userWrapper);
+
+        if(findUser == null) return "User not find";
+
+        // find if the book exist
+        Book bookByISBN = bookService.getBookByISBN(bookFavourite.getIsbn());
+
+        if(bookByISBN == null) return "Book not find";
+
         // find favourite book
         QueryWrapper bookFavouriteWrapper = new QueryWrapper();
         bookFavouriteWrapper.eq("isbn", bookFavourite.getIsbn());
@@ -85,7 +123,7 @@ public class BookFavouriteServiceImpl extends ServiceImpl<BookFavouriteMapper, B
                 }
             }
         }else {
-            switch(bookFavourite.getFavourite()) {
+            switch (bookFavourite.getFavourite()) {
                 case "1": { // do not like
                     findBookFavourite.setFavourite("F");
 
