@@ -52,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/email/sendUserSystemRegisterVerificationCode").permitAll()
                 .antMatchers("/email/sendUserResetPassword").permitAll()
+                .antMatchers("/search/**").permitAll()
                 .antMatchers("/recommendation/**").permitAll()
                 .antMatchers("/authentication/**").permitAll()
                 .antMatchers("/movie/rating/**").hasRole("USER")
