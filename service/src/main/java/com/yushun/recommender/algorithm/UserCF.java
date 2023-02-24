@@ -13,14 +13,14 @@ import java.util.*;
  */
 
 public class UserCF {
-    static Map<String,Integer> itemIDMap = new HashMap<String,Integer>();// itemId list
-    static Map<Integer,String> idToItemMap = new HashMap<Integer,String>();// fake id to the item real id
-    static Map<String,Integer> userIDMap = new HashMap<String,Integer>();// userId list
-    static Map<Integer,String> idToUserMap = new HashMap<Integer,String>();// fake id to the user real name
-    static Map<String,HashMap<String,Double>> userMap = new HashMap<String,HashMap<String, Double>>(); // user rate for the item
+    static Map<String,Integer> itemIDMap = new HashMap<>(); // itemId list
+    static Map<Integer,String> idToItemMap = new HashMap<>(); // fake id to the item real id
+    static Map<String,Integer> userIDMap = new HashMap<>(); // userId list
+    static Map<Integer,String> idToUserMap = new HashMap<>(); // fake id to the user real name
+    static Map<String,HashMap<String,Double>> userMap = new HashMap<>(); // user rate for the item
 
     static double[][] simMatrix; // user sim matrix
-    static int TOP_K = 20;  // top sim user
+    static int TOP_K = 12;  // top sim user
 
     public static List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
@@ -29,7 +29,7 @@ public class UserCF {
         return simUserItemList(email);
     }
 
-    public List<String> simUserListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
+    public static List<String> simUserListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
         userDistance();
 
@@ -65,7 +65,7 @@ public class UserCF {
                 userId++;
 
                 // user rate map
-                HashMap<String, Double> curentUserMap = new HashMap<String,Double>();
+                HashMap<String, Double> curentUserMap = new HashMap<>();
                 // add current user rate to the rate list
                 curentUserMap.put(SplitLine[1], Double.parseDouble(SplitLine[2]));
                 userMap.put(SplitLine[0], curentUserMap);
@@ -75,7 +75,6 @@ public class UserCF {
                 userMap.put(SplitLine[0], curentUserMap);
             }
         }
-
 
         // for system user
         for(UserRatingItemVo newItem:itemList) {
@@ -93,7 +92,7 @@ public class UserCF {
 
                 userId++;
 
-                HashMap<String, Double> curentUserMap = new HashMap<String,Double>();
+                HashMap<String, Double> curentUserMap = new HashMap<>();
 
                 curentUserMap.put(newItem.getItemId(), Double.parseDouble(newItem.getRate()));
                 userMap.put(newItem.getUserId(), curentUserMap);
@@ -124,9 +123,10 @@ public class UserCF {
                 // skip if the userId less than previous
                 if(userIDMap.get(userEntry_2.getKey())>userIDMap.get(userEntry_1.getKey())) {
                     // get user rate list and convert to the rate array
-                    double[] ratings_2 = new double[itemIDMap.size()]; //初始化评分数组，长度为所有item的数量
+                    double[] ratings_2 = new double[itemIDMap.size()];
+
                     for(Map.Entry<String, Double> itemEntry : userEntry_2.getValue().entrySet()) {
-                        ratings_2[itemIDMap.get(itemEntry.getKey())] = itemEntry.getValue();//用评分进行赋值
+                        ratings_2[itemIDMap.get(itemEntry.getKey())] = itemEntry.getValue();
                     }
 
                     // use rate array to find user sim, use euclidean
@@ -149,18 +149,19 @@ public class UserCF {
     public static List<String> simUserList(String email) {
         // put the user sim in the map. and sort, find the top k sim user
         for(int i = 0; i < userMap.size(); i++) {
-            Map<Integer,Double> simMap = new HashMap<Integer,Double>();
-            Map<String,Double> preRatingMap = new HashMap<String,Double>();
+            Map<Integer,Double> simMap = new HashMap<>();
+            Map<String,Double> preRatingMap = new HashMap<>();
 
-            for(int j = 0;j<userMap.size();j++) {
+            for(int j = 0; j < userMap.size(); j++) {
                 simMap.put(j, simMatrix[i][j]);
             }
+
             simMap = CFUtils.sortMapByValues(simMap);
 
             // find top k sim user
             int userCount = 0;
 
-            ArrayList<Integer> simUserList = new ArrayList<Integer>();
+            ArrayList<Integer> simUserList = new ArrayList<>();
 
             for(Map.Entry<Integer, Double> entry : simMap.entrySet()) {
                 if(userCount < 60) {
@@ -173,7 +174,7 @@ public class UserCF {
             // find this user
             if(!idToUserMap.get(i).equals(email)) continue;
 
-            List<String> simUserListResult = new ArrayList();
+            List<String> simUserListResult = new ArrayList<>();
 
             for(Integer fakeUserId:simUserList) {
                 simUserListResult.add(idToUserMap.get(fakeUserId));
@@ -181,6 +182,7 @@ public class UserCF {
 
             return simUserListResult;
         }
+
         return null;
     }
 
@@ -188,18 +190,18 @@ public class UserCF {
     public static List<String> simUserItemList(String email) {
         // put the user sim in the map. and sort, find the top k sim user
         for(int i = 0; i < userMap.size(); i++) {
-            Map<Integer,Double> simMap = new HashMap<Integer,Double>();
-            Map<String,Double> preRatingMap = new HashMap<String,Double>();
+            Map<Integer,Double> simMap = new HashMap<>();
+            Map<String,Double> preRatingMap = new HashMap<>();
 
             for(int j = 0;j<userMap.size();j++) {
                 simMap.put(j, simMatrix[i][j]);
             }
+
             simMap = CFUtils.sortMapByValues(simMap);
 
-            // find top k sim user
             int userCount = 0;
 
-            ArrayList<Integer> simUserList = new ArrayList<Integer>();
+            ArrayList<Integer> simUserList = new ArrayList<>();
 
             for(Map.Entry<Integer, Double> entry : simMap.entrySet()) {
                 if(userCount < TOP_K) {
@@ -212,7 +214,7 @@ public class UserCF {
             // find this user
             if(!idToUserMap.get(i).equals(email)) continue;
 
-            HashSet<String> currentUserSet = new HashSet<String>();
+            HashSet<String> currentUserSet = new HashSet<>();
 
             for(Map.Entry<String, Double> entry :userMap.get(idToUserMap.get(i)).entrySet()) {
                 currentUserSet.add(entry.getKey());
@@ -264,7 +266,7 @@ public class UserCF {
                 }
             }
 
-            List<String> simUserItemListResult = new ArrayList();
+            List<String> simUserItemListResult = new ArrayList<>();
 
             // sort result
             preRatingMap = CFUtils.sortMapByValues(preRatingMap);

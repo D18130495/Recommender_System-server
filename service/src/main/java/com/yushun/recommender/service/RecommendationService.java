@@ -27,7 +27,7 @@ public interface RecommendationService {
 
     List<Book> getBookRecommendationData_byMovie_userCF(String email, String type);
 
-    List<Book> getMoviesLikeThis(String movieId);
+    List<Movie> getMoviesLikeThis(String movieId);
 
     List<Book> getBooksLikeThis(String isbn);
 }

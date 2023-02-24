@@ -5,25 +5,39 @@ import java.nio.file.Files;
 import java.util.*;
 
 public class ItemCF {
-    static Map<String, Integer> itemIDMap = new HashMap<>();// item id map
-    static Map<Integer, String> idToItemMap = new HashMap<>();// item id to item name map
-    static Map<String, HashMap<String, Double>> itemMap = new HashMap<>(); // item all user rating map
+    static Map<String, Integer> itemIDMap; // item id map
+    static Map<Integer, String> idToItemMap; // item id to item name map
+    static Map<String, HashMap<String, Double>> itemMap; // item all user rating map
 
-    static Map<String, Integer> userIDMap = new HashMap<>();// user id map
-    static Map<Integer, String> idToUserMap = new HashMap<>();// user id to user name map
-    static Map<String, HashMap<String, Double>> userMap = new HashMap<>(); // user rated item list map
+    static Map<String, Integer> userIDMap; // user id map
+    static Map<Integer, String> idToUserMap; // user id to user name map
+    static Map<String, HashMap<String, Double>> userMap; // user rated item list map
 
     static double[][] simMatrix; // item sim matrix
     static int TOP_K = 12; // select sim item number
     static int TOP_N = 18; // top recommendation number
 
+    public static void initial() {
+        itemIDMap = new HashMap<>();
+        idToItemMap = new HashMap<>();
+        itemMap = new HashMap<>();
+        userIDMap = new HashMap<>();
+        idToUserMap = new HashMap<>();
+        userMap = new HashMap<>();
+    }
+
     public static List<String> simItemResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
+        initial();
+
         readData(itemList, type);
         itemSimilarity();
+
         return recommend(email);
     }
 
     public static void generateSimilarityItemTxt(List<UserRatingItemVo> itemList, String type) throws IOException {
+        initial();
+
         readData(itemList, type);
         itemSimilarity();
         sameItemList(type);
@@ -112,7 +126,7 @@ public class ItemCF {
 
                 userId++;
 
-                HashMap<String, Double> currentUserMap = new HashMap<String,Double>();
+                HashMap<String, Double> currentUserMap = new HashMap<>();
 
                 currentUserMap.put(newItem.getItemId(), Double.parseDouble(newItem.getRate()));
                 userMap.put(newItem.getUserId(), currentUserMap);
