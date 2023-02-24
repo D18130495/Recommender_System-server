@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FindUserLikedItem {
     public static List<String> simUserRatedItemList(List<String> simUserListResult, String type) throws IOException {
-        BufferedReader bufferedReader = CFUtils.readFile2(type);
+        BufferedReader bufferedReader = CFUtils.readFile(type);
         String line;
         String[] SplitLine;
 

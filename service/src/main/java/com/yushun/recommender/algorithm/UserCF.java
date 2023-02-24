@@ -37,7 +37,7 @@ public class UserCF {
     }
 
     public static void readData(List<UserRatingItemVo> itemList, String type) throws IOException {
-        BufferedReader bufferedReader = CFUtils.readFile2(type);
+        BufferedReader bufferedReader = CFUtils.readFile(type);
         String line;
         String[] SplitLine;
 
@@ -134,7 +134,7 @@ public class UserCF {
                     double similarity = 0;
 
                     for(int i = 0; i < ratings_1.length; i++) {
-                        square_sum += Math.pow((ratings_1[i]-ratings_2[i]), 2);
+                        square_sum += Math.pow((ratings_1[i] - ratings_2[i]), 2);
                     }
 
                     similarity = 1 / (1 + Math.sqrt(square_sum));
@@ -211,7 +211,7 @@ public class UserCF {
 
             // find this user
             if(!idToUserMap.get(i).equals(email)) continue;
-//
+
             HashSet<String> currentUserSet = new HashSet<String>();
 
             for(Map.Entry<String, Double> entry :userMap.get(idToUserMap.get(i)).entrySet()) {
@@ -252,7 +252,7 @@ public class UserCF {
                     // get current user rate list
                     for(Map.Entry<String, Double> entry : userMap.get(idToUserMap.get(user)).entrySet()) {
                         if(entry.getKey() == item) {
-                            totalRating += entry.getValue()*simMatrix[i][user];
+                            totalRating += entry.getValue() * simMatrix[i][user];
                             totalSim += simMatrix[i][user];
                         }
                     }

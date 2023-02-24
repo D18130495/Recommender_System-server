@@ -1,9 +1,6 @@
 package com.yushun.recommender.algorithm;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
@@ -15,22 +12,9 @@ public class CFUtils {
         String file = "";
 
         if(type.equals("movie")) {
-            file = "movie.txt";
+            file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\movie.txt";
         }else if(type.equals("book")) {
-            file = "book.txt";
-        }
-
-        return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
-    }
-
-    // read file
-    public static BufferedReader readFile2(String type) throws IOException {
-        String file = "";
-
-        if(type.equals("movie")) {
-            file = "movie2.txt";
-        }else if(type.equals("book")) {
-            file = "book2.txt";
+            file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\book.txt";
         }
 
         return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
@@ -38,14 +22,14 @@ public class CFUtils {
 
     // read sim movie file
     public static BufferedReader readSimMovies() throws IOException {
-        String file = "itemMovieSimilarity.txt";
+        String file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\itemMovieSimilarity.txt";
 
         return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
     }
 
     // read sim book file
     public static BufferedReader readSimBooks() throws IOException {
-        String file = "itemBookSimilarity.txt";
+        String file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\itemBookSimilarity.txt";
 
         return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
     }

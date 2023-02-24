@@ -4,17 +4,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 
-import static com.yushun.recommender.algorithm.CFUtils.*;
-
-/**
- * <p>
- * Item-Based CF
- * </p>
- *
- * @author yushun zeng
- * @since 2023-1-29
- */
-
 public class ItemCF {
     static Map<String, Integer> itemIDMap = new HashMap<>();// item id map
     static Map<Integer, String> idToItemMap = new HashMap<>();// item id to item name map
@@ -25,17 +14,15 @@ public class ItemCF {
     static Map<String, HashMap<String, Double>> userMap = new HashMap<>(); // user rated item list map
 
     static double[][] simMatrix; // item sim matrix
-    static int TOP_K = 30; // select sim item number
-    static int TOP_N = 20; // top recommendation number
+    static int TOP_K = 12; // select sim item number
+    static int TOP_N = 18; // top recommendation number
 
-    //
-    public static List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
+    public static List<String> simItemResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
-
+        itemSimilarity();
         return recommend(email);
     }
 
-    // use for scheduled task, to calculate the item similarity
     public static void generateSimilarityItemTxt(List<UserRatingItemVo> itemList, String type) throws IOException {
         readData(itemList, type);
         itemSimilarity();
@@ -125,15 +112,15 @@ public class ItemCF {
 
                 userId++;
 
-                HashMap<String, Double> curentUserMap = new HashMap<String,Double>();
+                HashMap<String, Double> currentUserMap = new HashMap<String,Double>();
 
-                curentUserMap.put(newItem.getItemId(), Double.parseDouble(newItem.getRate()));
-                userMap.put(newItem.getUserId(), curentUserMap);
+                currentUserMap.put(newItem.getItemId(), Double.parseDouble(newItem.getRate()));
+                userMap.put(newItem.getUserId(), currentUserMap);
             }else {
-                HashMap<String, Double> curentUserMap = userMap.get(newItem.getUserId());
+                HashMap<String, Double> currentUserMap = userMap.get(newItem.getUserId());
 
-                curentUserMap.put(newItem.getItemId(), Double.parseDouble(newItem.getRate()));
-                userMap.put(newItem.getUserId(), curentUserMap);
+                currentUserMap.put(newItem.getItemId(), Double.parseDouble(newItem.getRate()));
+                userMap.put(newItem.getUserId(), currentUserMap);
             }
         }
     }
@@ -142,60 +129,146 @@ public class ItemCF {
         // initial item similarity matrix
         simMatrix = new double[itemMap.size()][itemMap.size()];
 
-        int itemCount = 0;
-
         // loop each item and find similarity by Jaccard
-        for(Map.Entry<String, HashMap<String, Double>> itemEntry1 : itemMap.entrySet()) {
-
+        for(Map.Entry<String, HashMap<String, Double>> itemEntry_1 : itemMap.entrySet()) {
             // get all the user who rated this item
-            Set<String> ratedUserSet1 = new HashSet<>();
+            Set<String> ratedUserSet_1 = new HashSet<>();
 
-            for(Map.Entry<String, Double> userEntry : itemEntry1.getValue().entrySet()) {
+            for(Map.Entry<String, Double> userEntry : itemEntry_1.getValue().entrySet()) {
                 // store all the rating user in the set
-                ratedUserSet1.add(userEntry.getKey());
+                ratedUserSet_1.add(userEntry.getKey());
             }
 
-            int ratedUserSize1 = ratedUserSet1.size(); // all rating for the first item
+            // all rating for the first item
+            int ratedUserSize_1 = ratedUserSet_1.size();
 
             // loop other items
-            for(Map.Entry<String, HashMap<String, Double>> itemEntry2 : itemMap.entrySet()) {
+            for(Map.Entry<String, HashMap<String, Double>> itemEntry_2 : itemMap.entrySet()) {
                 // skip the calculated item
-                if(itemIDMap.get(itemEntry2.getKey()) > itemIDMap.get(itemEntry1.getKey())) {
+                if(itemIDMap.get(itemEntry_2.getKey())>itemIDMap.get(itemEntry_1.getKey())) {
                     // get all the user who rated this item
-                    Set<String> ratedUserSet2 = new HashSet<>();
+                    Set<String> ratedUserSet_2 = new HashSet<>();
 
-                    for(Map.Entry<String, Double> userEntry : itemEntry2.getValue().entrySet()) {
-                        ratedUserSet2.add(userEntry.getKey());
+                    for(Map.Entry<String, Double> userEntry : itemEntry_2.getValue().entrySet()) {
+                        ratedUserSet_2.add(userEntry.getKey());
                     }
 
-                    int ratedUserSize2 = ratedUserSet2.size(); // all rating for the second item
+                    int ratedUserSize_2 = ratedUserSet_2.size(); // all rating for the second item
+                    int sameUerSize = CFUtils.interCount(ratedUserSet_1,ratedUserSet_2); // get inter Set number count
 
                     // calculate item similarity by using Jaccard
-                    int sameUerSize = CFUtils.interCount(ratedUserSet1, ratedUserSet2); // get inter Set number count
+                    double similarity = sameUerSize/(Math.sqrt(ratedUserSize_1*ratedUserSize_2));
 
-                    double similarity = sameUerSize / (ratedUserSize1 + ratedUserSize2 - sameUerSize);
-//                    double similarity = sameUerSize / (Math.sqrt(ratedUserSize1 * ratedUserSize2));
                     // put sim in the matrix
-                    simMatrix[itemIDMap.get(itemEntry1.getKey())][itemIDMap.get(itemEntry2.getKey())] = similarity;
-                    simMatrix[itemIDMap.get(itemEntry2.getKey())][itemIDMap.get(itemEntry1.getKey())] = similarity;
+                    simMatrix[itemIDMap.get(itemEntry_1.getKey())][itemIDMap.get(itemEntry_2.getKey())] = similarity;
+                    simMatrix[itemIDMap.get(itemEntry_2.getKey())][itemIDMap.get(itemEntry_1.getKey())] = similarity;
                 }
             }
-
-            itemCount++;
         }
     }
 
     public static void sameItemList(String type) throws IOException{
         BufferedWriter bufferedWriter;
+        String resultFile;
 
         if(type.equals("movie")) {
-            String resultFile = "itemMovieSimilarity.txt";
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(new File(resultFile).toPath()),"UTF-8"));
+            resultFile = "itemMovieSimilarity.txt";
         }else {
-            String resultFile = "itemBookSimilarity.txt";
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(new File(resultFile).toPath()),"UTF-8"));
+            resultFile = "itemBookSimilarity.txt";
         }
 
+        bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(new File(resultFile).toPath()),"UTF-8"));
+
+        // calculate nearestItemList
+        Map<Integer, HashSet<Integer>> nearestItemMap = findNearestItem();
+
+        // write the same item map to the itemSimilarity.txt
+        for(Integer itemId:nearestItemMap.keySet()) {
+            bufferedWriter.append(idToItemMap.get(itemId)).append(" ");
+
+            for(Integer simItemId:nearestItemMap.get(itemId)) {
+                bufferedWriter.append(idToItemMap.get(simItemId)).append(" ");
+            }
+
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+        }
+
+        bufferedWriter.flush();
+        bufferedWriter.close();
+    }
+
+    public static List<String> recommend(String email) {
+        Map<Integer, HashSet<Integer>> nearestItemMap = findNearestItem();
+
+        for(int i = 0; i < userMap.size(); i++) {
+            // find current user
+            if(!idToUserMap.get(i).equals(email)) continue;
+
+            // get current user all rated item
+            HashSet<Integer> currentUserSet = new HashSet<>();
+            Map<String,Double> preRatingMap = new HashMap<>();
+
+            for(Map.Entry<String, Double> entry :userMap.get(idToUserMap.get(i)).entrySet()) {
+                // put all the user rated item fake id in the set
+                currentUserSet.add(itemIDMap.get(entry.getKey()));
+            }
+
+            // each item
+            for(int j = 0; j < itemMap.size(); j++) {
+                double preRating = 0;
+                double sumSim = 0;
+
+                // if current user already rated current item, skip
+                if(currentUserSet.contains(j))
+                    continue;
+
+                // find current item sim list and curren user rated list intersection
+                Set<Integer> interSet = CFUtils.interSet(currentUserSet, nearestItemMap.get(j));
+
+                // have intersection, start predict rate
+                if(!interSet.isEmpty()) {
+                    for(int item:interSet) {
+                        // weighted arithmetic mean
+                        sumSim += simMatrix[j][item];
+                        preRating += simMatrix[j][item] * userMap.get(idToUserMap.get(i)).get(idToItemMap.get(item));
+                    }
+
+                    if(sumSim != 0) {
+                        preRating = preRating / sumSim;
+                    }else { // if same sum is 0, the predict rate is 0
+                        preRating = 0;
+                    }
+                }else { // if no intersection, the predict rate is 0
+                    preRating = 0;
+                }
+
+                preRatingMap.put(idToItemMap.get(j), preRating);
+            }
+
+            // sort the predict rate
+            preRatingMap = CFUtils.sortMapByValues(preRatingMap);
+
+            // result list
+            List<String> simUserItemListResult = new ArrayList<>();
+
+            // recommend top N item
+            int recommendationCount = 0;
+
+            for(Map.Entry<String, Double> entry:preRatingMap.entrySet()) {
+                if(recommendationCount < TOP_N) {
+                    simUserItemListResult.add(entry.getKey());
+                    recommendationCount ++;
+                }
+            }
+
+            return simUserItemListResult;
+        }
+
+        return null;
+    }
+
+    public static Map<Integer, HashSet<Integer>> findNearestItem() {
         // base on the item same matrix to find top n same item
         Map<Integer, HashSet<Integer>> nearestItemMap = new HashMap<>();
 
@@ -226,102 +299,6 @@ public class ItemCF {
             nearestItemMap.put(i, nearestItemSet);
         }
 
-        // write the same item map to the itemSimilarity.txt
-        for(Integer itemId:nearestItemMap.keySet()) {
-            bufferedWriter.append(idToItemMap.get(itemId) + " ");
-
-            for(Integer simItemId:nearestItemMap.get(itemId)) {
-                bufferedWriter.append(idToItemMap.get(simItemId) + " ");
-            }
-
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
-        }
-
-        bufferedWriter.flush();
-        bufferedWriter.close();
-    }
-
-    public static List<String> recommend(String email) throws IOException{
-        BufferedReader bufferedReader = CFUtils.readSimMovies();
-
-        String line;
-        String[] SplitLine;
-
-        Map<String, HashSet<String>> nearestItemMap = new HashMap<>();
-
-
-        while((line = bufferedReader.readLine()) != null) {
-            SplitLine = line.split(" ");
-
-            HashSet<String> nearestItemSet = new HashSet<>();
-
-            for(int i = 1; i <= 30; i++) {
-                nearestItemSet.add(SplitLine[i]);
-            }
-
-            nearestItemMap.put(SplitLine[0], nearestItemSet);
-        }
-
-        //循环每个用户，循环每个产品,计算用户对没有买过的产品的打分，取TOP_N得分最高的产品进行推荐
-        for(int i = 0; i < userMap.size(); i++) {
-            if(!idToUserMap.get(i).equals(email)) continue;
-
-            // get current user all rated item
-            HashSet<String> currentUserSet = new HashSet<>();
-            Map<String, Double> preRatingMap = new HashMap<>();
-
-            for(Map.Entry<String, Double> entry : userMap.get(idToUserMap.get(i)).entrySet()) {
-                currentUserSet.add(idToItemMap.get(Integer.parseInt(entry.getKey()))); // put rated item to the list by item real id
-            }
-
-            // loop each item in the all item list
-            for(int j = 0; j < itemMap.size(); j++) {
-                double preRating = 0;
-
-                // if this user rated this item skip
-                if(currentUserSet.contains(idToItemMap.get(j)))
-                    continue;
-
-                // find if this item contain in the user rated list
-                Set<String> interSet = stringInterSet(currentUserSet, nearestItemMap.get(idToItemMap.get(j)));//获取当前用户的购买列表与产品相似品的交集
-
-                // if interSet is empty rate as 0
-                if(!interSet.isEmpty()) {
-                    preRating = 0;
-
-                    for(Map.Entry<String, Double> entry : itemMap.get(idToItemMap.get(j)).entrySet()) {
-                        preRating += entry.getValue();
-                    }
-
-                    preRating = preRating / itemMap.get(idToItemMap.get(j)).entrySet().size();
-                    preRating = interSet.size() * preRating;
-                }else
-                    preRating = 0;
-
-                preRatingMap.put(idToItemMap.get(j), preRating);
-            }
-
-            preRatingMap = sortMapByValues(preRatingMap);
-
-            if(!preRatingMap.isEmpty()) {
-//                bfw.append(idToUserMap.get(i)+":");
-            }
-
-            List<String> simUserItemListResult = new ArrayList<>();
-
-            //推荐TOP_N个产品
-            int recCount = 0;
-            for(Map.Entry<String, Double> entry : preRatingMap.entrySet()) {
-                if(recCount < TOP_N) {
-                    simUserItemListResult.add(entry.getKey());
-                    recCount ++;
-                }
-            }
-
-            return simUserItemListResult;
-        }
-
-        return null;
+        return nearestItemMap;
     }
 }

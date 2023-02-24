@@ -2,6 +2,7 @@ package com.yushun.recommender.service.impl;
 
 import com.yushun.recommender.model.common.mongoEntity.book.Book;
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
+import com.yushun.recommender.model.common.mongoEntity.movie.MovieActor;
 import com.yushun.recommender.model.common.mongoEntity.search.Count;
 import com.yushun.recommender.service.SearchService;
 import com.yushun.recommender.vo.user.search.FuzzySearchReturnVo;
@@ -16,19 +17,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * <p>
+ * Search Service Implementation
+ * </p>
+ *
+ * @author yushun zeng
+ * @since 2023-2-20
+ */
+
 @Service
 public class SearchServiceImpl implements SearchService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
     @Override
-    public HashMap<String, Object> fuzzySearchMovieAndBookByTitle(String titleSubstring) {
+    public HashMap<String, Object> fuzzySearchMovieAndBookByTitleOrYear(String substring, String type) {
         // fuzzy search return vo list
         List<FuzzySearchReturnVo> fuzzySearchReturnVoList = new ArrayList<>();
 
         // find movie
         Criteria criteriaMovie = new Criteria();
-        criteriaMovie.and("title").regex(".*?" + titleSubstring + ".*", "i");
+        criteriaMovie.and(type).regex(".*?" + substring + ".*", "i");
 
         Aggregation aggregationMovie = Aggregation.newAggregation(
                 Aggregation.match(criteriaMovie), Aggregation.sample(5)
@@ -44,7 +54,25 @@ public class SearchServiceImpl implements SearchService {
             fuzzySearchReturnVo.setMovieId(movie.getMovieId());
             fuzzySearchReturnVo.setTitle(movie.getTitle());
             fuzzySearchReturnVo.setImage(movie.getMovieImage());
-            fuzzySearchReturnVo.setActorList(movie.getActor());
+
+            if(movie.getDirector().getDirectorName() != null) {
+                fuzzySearchReturnVo.setDirector(movie.getDirector().getDirectorName());
+            }else {
+                fuzzySearchReturnVo.setDirector("Currently not available");
+            }
+
+            StringBuilder actorString = new StringBuilder();
+
+            if(movie.getActor() != null) {
+                for(MovieActor movieActor:movie.getActor()) {
+                    actorString.append(movieActor.getActorName()).append(", ");
+                }
+
+                fuzzySearchReturnVo.setActorList(actorString.substring(0, actorString.length() - 2));
+            }else {
+                fuzzySearchReturnVo.setActorList("Currently not available");
+            }
+
             fuzzySearchReturnVo.setType("movie");
 
             fuzzySearchReturnVoList.add(fuzzySearchReturnVo);
@@ -52,7 +80,7 @@ public class SearchServiceImpl implements SearchService {
 
         // find book
         Criteria criteriaBook = new Criteria();
-        criteriaBook.and("title").regex(".*?" + titleSubstring + ".*", "i");
+        criteriaBook.and(type).regex(".*?" + substring + ".*", "i");
 
         Aggregation aggregationBook = Aggregation.newAggregation(
                 Aggregation.match(criteriaMovie), Aggregation.sample(5)

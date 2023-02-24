@@ -1,7 +1,6 @@
 package com.yushun.recommender.vo.user.search;
 
 import com.yushun.recommender.model.common.mongoEntity.movie.MovieActor;
-import io.swagger.models.auth.In;
 
 import java.util.List;
 
@@ -25,7 +24,9 @@ public class FuzzySearchReturnVo {
 
     private String year;
 
-    private List<MovieActor> actorList;
+    private String director;
+
+    private String actorList;
 
     private String author;
 
@@ -71,11 +72,19 @@ public class FuzzySearchReturnVo {
         this.year = year;
     }
 
-    public List<MovieActor> getActorList() {
+    public String getDirector() {
+        return director;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public String getActorList() {
         return actorList;
     }
 
-    public void setActorList(List<MovieActor> actorList) {
+    public void setActorList(String actorList) {
         this.actorList = actorList;
     }
 

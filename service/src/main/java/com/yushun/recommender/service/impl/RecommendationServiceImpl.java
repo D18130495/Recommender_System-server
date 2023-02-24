@@ -51,162 +51,196 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     @Override
     public List<Movie> getMovieRecommendationData_byMovie_itemCF(String email) {
-        List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
-
-        try {
-            List<String> movie = ItemCF.simUserItemListResult(email, systemUserMovieList, "movie");
-            List<Movie> resultMovieList = new ArrayList<>();
-
-            for(int i = 0; i < 6; i++) {
-                Integer movieId = Integer.parseInt(movie.remove(new Random().nextInt(movie.size())));
-
-                Movie movieDetail = movieRepository.findByMovieId(movieId);
-
-                if(movieDetail == null) {
-                    i = i - 1;
-
-                    continue;
-                }
-
-                float total = 0;
-
-                for(MovieRate movieRate: movieDetail.getRate()) {
-                    total = total + movieRate.getRating();
-                }
-
-                DecimalFormat decimalFormat =new DecimalFormat("#.0");
-                movieDetail.getParam().put("rate", decimalFormat.format(total / movieDetail.getRate().size()));
-
-                resultMovieList.add(movieDetail);
-            }
-
-            return resultMovieList;
-        }catch (Exception e) {
-            System.out.println(e);
-        }
+//        List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
+//
+//        try {
+//            List<String> movie = ItemCF.simItemResult(email, systemUserMovieList, "movie");
+//            List<Movie> resultMovieList = new ArrayList<>();
+//
+//            for(int i = 0; i < 6; i++) {
+//                Integer movieId = Integer.parseInt(movie.remove(new Random().nextInt(movie.size())));
+//
+//                Movie movieDetail = movieRepository.findByMovieId(movieId);
+//
+//                if(movieDetail == null) {
+//                    i = i - 1;
+//
+//                    continue;
+//                }
+//
+//                float total = 0;
+//
+//                for(MovieRate movieRate: movieDetail.getRate()) {
+//                    total = total + movieRate.getRating();
+//                }
+//
+//                DecimalFormat decimalFormat =new DecimalFormat("#.0");
+//                movieDetail.getParam().put("rate", decimalFormat.format(total / movieDetail.getRate().size()));
+//
+//                resultMovieList.add(movieDetail);
+//            }
+//
+//            return resultMovieList;
+//        }catch (Exception e) {
+//            System.out.println(e);
+//        }
 
         return null;
     }
 
     @Override
     public List<Book> getBookRecommendationData_byBook_itemCF(String email) {
+        List<UserRatingItemVo> systemUserBookList = this.getSystemUserBookList(email);
+
+        try {
+            List<String> book = ItemCF.simItemResult(email, systemUserBookList, "book");
+            List<Book> resultBookList = new ArrayList<>();
+
+            for(int i = 0; i < 6; i++) {
+                String isbn = book.remove(new Random().nextInt(book.size()));
+
+                Book bookDetail = bookRepository.findByISBN(isbn.substring(1));
+
+                if(bookDetail == null) {
+                    i = i - 1;
+                    continue;
+                }
+
+                float total = 0;
+
+                for(BookRate bookRate: bookDetail.getRate()) {
+                    total = total + bookRate.getRating();
+                }
+
+                DecimalFormat decimalFormat =new DecimalFormat("#.0");
+                bookDetail.getParam().put("rate", decimalFormat.format(total / bookDetail.getRate().size()));
+
+                resultBookList.add(bookDetail);
+            }
+
+            return resultBookList;
+        }catch (Exception e) {
+            System.out.println("getBookRecommendationData_byBook_itemCF " + e);
+        }
+
         return null;
     }
 
     @Override
     public List<Movie> getMovieRecommendationData_byMovie_userCF(String email, String type) {
-        List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
-
-        try {
-            List<String> simUserItemListResult = UserCF.simUserItemListResult(email, systemUserMovieList, type);
-
-            return this.getRandomMovieRecommendationList(simUserItemListResult);
-        }catch (Exception ignored) {}
+//        List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
+//
+//        try {
+//            List<String> simUserItemListResult = UserCF.simUserItemListResult(email, systemUserMovieList, type);
+//
+//            return this.getRandomMovieRecommendationList(simUserItemListResult);
+//        }catch (Exception ignored) {}
 
         return null;
     }
 
     @Override
     public List<Movie> getMovieRecommendationData_byBook_userCF(String email, String type) {
-        List<UserRatingItemVo> systemUserBookList = this.getSystemUserBookList(email);
+//        List<UserRatingItemVo> systemUserBookList = this.getSystemUserBookList(email);
+//
+//        try {
+//            UserCF userCF = new UserCF();
+//            List<String> simUserListResult = userCF.simUserListResult(email, systemUserBookList, type);
+//
+//            // sim user list find movie recommendation,  sim user get by book
+////            System.out.println(simUserListResult);
+//
+//            List<String> movieRecommendationList = FindUserLikedItem.simUserRatedItemList(simUserListResult, "movie");
+//
+//            // sim movie recommendation
+////            System.out.println(movieRecommendationList);
+//
+//            return this.getRandomMovieRecommendationList(movieRecommendationList);
+//        }catch (Exception e) {
+//            System.out.println(e);
+//        }
 
-        try {
-            UserCF userCF = new UserCF();
-            List<String> simUserListResult = userCF.simUserListResult(email, systemUserBookList, type);
-
-            // sim user list find movie recommendation,  sim user get by book
-//            System.out.println(simUserListResult);
-
-            List<String> movieRecommendationList = FindUserLikedItem.simUserRatedItemList(simUserListResult, "movie");
-
-            // sim movie recommendation
-//            System.out.println(movieRecommendationList);
-
-            return this.getRandomMovieRecommendationList(movieRecommendationList);
-        }catch (Exception e) {
-            System.out.println(e);
-        }
         return null;
     }
 
     @Override
     public List<Book> getBookRecommendationData_byBook_userCF(String email, String type) {
-        List<UserRatingItemVo> systemUserBookList = this.getSystemUserBookList(email);
-
-        try {
-            List<String> simUserItemListResult = UserCF.simUserItemListResult(email, systemUserBookList, type);
-
-            // get books isbn by book
-//            System.out.println(simUserItemListResult);
-
-            return this.getRandomBookRecommendationList(simUserItemListResult);
-        }catch (Exception ignored) {}
+//        List<UserRatingItemVo> systemUserBookList = this.getSystemUserBookList(email);
+//
+//        try {
+//            List<String> simUserItemListResult = UserCF.simUserItemListResult(email, systemUserBookList, type);
+//
+//            // get books isbn by book
+////            System.out.println(simUserItemListResult);
+//
+//            return this.getRandomBookRecommendationList(simUserItemListResult);
+//        }catch (Exception ignored) {}
 
         return null;
     }
 
     @Override
     public List<Book> getBookRecommendationData_byMovie_userCF(String email, String type) {
-        List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
+//        List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
+//
+//        try {
+//            UserCF userCF = new UserCF();
+//            List<String> simUserListResult = userCF.simUserListResult(email, systemUserMovieList, type);
+//
+//            // sim user list find book recommendation,  sim user get by movie
+////            System.out.println(simUserListResult);
+//
+//            List<String> bookRecommendationList = FindUserLikedItem.simUserRatedItemList(simUserListResult, "book");
+//
+//            // sim book recommendation
+////            System.out.println(bookRecommendationList);
+//
+//            return this.getRandomBookRecommendationList(bookRecommendationList);
+//        }catch (Exception e) {
+//            System.out.println(e);
+//        }
 
-        try {
-            UserCF userCF = new UserCF();
-            List<String> simUserListResult = userCF.simUserListResult(email, systemUserMovieList, type);
-
-            // sim user list find book recommendation,  sim user get by movie
-//            System.out.println(simUserListResult);
-
-            List<String> bookRecommendationList = FindUserLikedItem.simUserRatedItemList(simUserListResult, "book");
-
-            // sim book recommendation
-//            System.out.println(bookRecommendationList);
-
-            return this.getRandomBookRecommendationList(bookRecommendationList);
-        }catch (Exception e) {
-            System.out.println(e);
-        }
         return null;
     }
 
     @Override
     public List<Book> getMoviesLikeThis(String movieId) {
+        try(BufferedReader bufferedReader = CFUtils.readSimMovies();) {
+            String line;
+            String[] SplitLine;
 
+            List<Movie> moviesLikeThis = new ArrayList<>();
+
+            // random number 1 - 12
+            randomArray();
+
+
+        }catch (Exception e) {
+            System.out.println("getMoviesLikeThis " + e);
+        }
 
         return null;
     }
 
     @Override
     public List<Book> getBooksLikeThis(String isbn) {
-        try {
-            BufferedReader bufferedReader = CFUtils.readSimBooks();
-
+        try(BufferedReader bufferedReader = CFUtils.readSimBooks();) {
             String line;
             String[] SplitLine;
 
             List<Book> booksLikeThis = new ArrayList<>();
 
-            Random ran = new Random();
-            int[] arr = new int[12];
-
-            for(int i = 0; i < arr.length; i++) {
-                arr[i] = ran.nextInt(30) + 1;
-
-                for(int j = 0; j < i; j++){
-                    if(arr[i] == arr[j]) {
-                        i--;
-                        break;
-                    }
-                }
-            }
+            // random number 1 - 12
+            int[] array = randomArray();
 
             while((line = bufferedReader.readLine()) != null) {
                 SplitLine = line.split(" ");
 
-                if(SplitLine[0].equals("y" + isbn)) {
+                if(SplitLine[0].equals("Y" + isbn)) {
                     int j = 0;
 
                     for(int i = 0; i < 6; i++) {
-                        Book simBook = bookRepository.findByISBN(SplitLine[arr[j]].substring(1));
+                        Book simBook = bookRepository.findByISBN(SplitLine[array[j]].substring(1));
 
                         j = j + 1;
 
@@ -230,60 +264,76 @@ public class RecommendationServiceImpl implements RecommendationService {
             }
 
             return booksLikeThis;
-        }catch (Exception e) {}
+        }catch (Exception e) {
+            System.out.println("getBooksLikeThis " + e);
+        }
 
         return null;
     }
 
-    public List<UserRatingItemVo> getSystemUserMovieList(String email) {
-        // TODO
-        // all the user in the system
+    public int[] randomArray() {
+        Random random = new Random();
+        int[] array = new int[12];
 
-        // user rating set
-        Set<UserRatingItemVo> itemSet = new HashSet<>();
+        for(int i = 0; i < array.length; i++) {
+            array[i] = random.nextInt(12) + 1;
 
-        // find user favourite list
-        QueryWrapper movieFavouriteWrapper = new QueryWrapper();
-        movieFavouriteWrapper.eq("email", email);
-        movieFavouriteWrapper.eq("favourite", "T");
-
-        List<MovieFavourite> movieFavouriteList = movieFavouriteService.list(movieFavouriteWrapper);
-
-        if(movieFavouriteList != null) {
-            for(MovieFavourite movie:movieFavouriteList) {
-                UserRatingItemVo userRatingItemVo = new UserRatingItemVo();
-                userRatingItemVo.setUserId(email);
-                userRatingItemVo.setItemId(movie.getMovieId().toString());
-                userRatingItemVo.setRate("4.0");
-
-                itemSet.add(userRatingItemVo);
+            for(int j = 0; j < i; j++){
+                if(array[i] == array[j]) {
+                    i--;
+                    break;
+                }
             }
         }
 
-        // find user rating list
-        QueryWrapper movieRatingWrapper = new QueryWrapper();
-        movieRatingWrapper.eq("email", email);
-
-        List<MovieRating> movieRatingList = movieRatingService.list(movieRatingWrapper);
-
-        if(movieRatingList != null) {
-            for(MovieRating movie:movieRatingList) {
-                UserRatingItemVo userRatingItemVo =new UserRatingItemVo();
-                userRatingItemVo.setUserId(email);
-                userRatingItemVo.setItemId(movie.getMovieId().toString());
-                userRatingItemVo.setRate(movie.getRating().toString());
-
-                itemSet.add(userRatingItemVo);
-            }
-        }
-
-        return new ArrayList<>(itemSet);
+        return array;
     }
 
-    public List<UserRatingItemVo> getSystemUserBookList(String email) {
-        // TODO
-        // all the user in the system
+//    public List<UserRatingItemVo> getSystemUserMovieList(String email) {
+//        // all the user in the system
+//        // user rating set
+//        Set<UserRatingItemVo> itemSet = new HashSet<>();
+//
+//        // find user favourite list
+//        QueryWrapper movieFavouriteWrapper = new QueryWrapper();
+//        movieFavouriteWrapper.eq("email", email);
+//        movieFavouriteWrapper.eq("favourite", "T");
+//
+//        List<MovieFavourite> movieFavouriteList = movieFavouriteService.list(movieFavouriteWrapper);
+//
+//        if(movieFavouriteList != null) {
+//            for(MovieFavourite movie:movieFavouriteList) {
+//                UserRatingItemVo userRatingItemVo = new UserRatingItemVo();
+//                userRatingItemVo.setUserId(email);
+//                userRatingItemVo.setItemId(movie.getMovieId().toString());
+//                userRatingItemVo.setRate("4.0");
+//
+//                itemSet.add(userRatingItemVo);
+//            }
+//        }
+//
+//        // find user rating list
+//        QueryWrapper movieRatingWrapper = new QueryWrapper();
+//        movieRatingWrapper.eq("email", email);
+//
+//        List<MovieRating> movieRatingList = movieRatingService.list(movieRatingWrapper);
+//
+//        if(movieRatingList != null) {
+//            for(MovieRating movie:movieRatingList) {
+//                UserRatingItemVo userRatingItemVo =new UserRatingItemVo();
+//                userRatingItemVo.setUserId(email);
+//                userRatingItemVo.setItemId(movie.getMovieId().toString());
+//                userRatingItemVo.setRate(movie.getRating().toString());
+//
+//                itemSet.add(userRatingItemVo);
+//            }
+//        }
+//
+//        return new ArrayList<>(itemSet);
+//    }
 
+    public List<UserRatingItemVo> getSystemUserBookList(String email) {
+        // all the user in the system
         // user rating set
         Set<UserRatingItemVo> itemSet = new HashSet<>();
 
@@ -298,7 +348,7 @@ public class RecommendationServiceImpl implements RecommendationService {
             for(BookFavourite book:bookFavouriteList) {
                 UserRatingItemVo userRatingItemVo = new UserRatingItemVo();
                 userRatingItemVo.setUserId(email);
-                userRatingItemVo.setItemId(book.getIsbn());
+                userRatingItemVo.setItemId("Y" + book.getIsbn());
                 userRatingItemVo.setRate("4.0");
 
                 itemSet.add(userRatingItemVo);
@@ -315,7 +365,7 @@ public class RecommendationServiceImpl implements RecommendationService {
             for(BookRating book:bookRatingList) {
                 UserRatingItemVo userRatingItemVo =new UserRatingItemVo();
                 userRatingItemVo.setUserId(email);
-                userRatingItemVo.setItemId(book.getIsbn());
+                userRatingItemVo.setItemId("Y" + book.getIsbn());
                 userRatingItemVo.setRate(book.getRating().toString());
 
                 itemSet.add(userRatingItemVo);
@@ -325,61 +375,61 @@ public class RecommendationServiceImpl implements RecommendationService {
         return new ArrayList<>(itemSet);
     }
 
-    public List<Movie> getRandomMovieRecommendationList(List<String> movieRecommendationList) {
-        List<Movie> recommendationResultList = new ArrayList<>();
+//    public List<Movie> getRandomMovieRecommendationList(List<String> movieRecommendationList) {
+//        List<Movie> recommendationResultList = new ArrayList<>();
+//
+//        for(int i = 0; i < 6; i++) {
+//            Integer movieId = Integer.parseInt(movieRecommendationList.remove(new Random().nextInt(movieRecommendationList.size())));
+//
+//            Movie movie = movieRepository.findByMovieId(movieId);
+//
+//            if(movie == null) {
+//                i = i - 1;
+//
+//                continue;
+//            }
+//
+//            float total = 0;
+//
+//            for(MovieRate movieRate: movie.getRate()) {
+//                total = total + movieRate.getRating();
+//            }
+//
+//            DecimalFormat decimalFormat =new DecimalFormat("#.0");
+//            movie.getParam().put("rate", decimalFormat.format(total / movie.getRate().size()));
+//
+//            recommendationResultList.add(movie);
+//        }
+//
+//        return recommendationResultList;
+//    }
 
-        for(int i = 0; i < 6; i++) {
-            Integer movieId = Integer.parseInt(movieRecommendationList.remove(new Random().nextInt(movieRecommendationList.size())));
-
-            Movie movie = movieRepository.findByMovieId(movieId);
-
-            if(movie == null) {
-                i = i - 1;
-
-                continue;
-            }
-
-            float total = 0;
-
-            for(MovieRate movieRate: movie.getRate()) {
-                total = total + movieRate.getRating();
-            }
-
-            DecimalFormat decimalFormat =new DecimalFormat("#.0");
-            movie.getParam().put("rate", decimalFormat.format(total / movie.getRate().size()));
-
-            recommendationResultList.add(movie);
-        }
-
-        return recommendationResultList;
-    }
-
-    public List<Book> getRandomBookRecommendationList(List<String> bookRecommendationList) {
-        List<Book> recommendationResultList = new ArrayList<>();
-
-        for(int i = 0; i < 6; i++) {
-            String isbn = bookRecommendationList.remove(new Random().nextInt(bookRecommendationList.size()));
-
-            Book book = bookRepository.findByISBN(isbn.substring(1));
-
-            if(book == null) {
-                i = i - 1;
-
-                continue;
-            }
-
-            float total = 0;
-
-            for(BookRate bookRate: book.getRate()) {
-                total = total + bookRate.getRating();
-            }
-
-            DecimalFormat decimalFormat =new DecimalFormat("#.0");
-            book.getParam().put("rate", decimalFormat.format(total / book.getRate().size()));
-
-            recommendationResultList.add(book);
-        }
-
-        return recommendationResultList;
-    }
+//    public List<Book> getRandomBookRecommendationList(List<String> bookRecommendationList) {
+//        List<Book> recommendationResultList = new ArrayList<>();
+//
+//        for(int i = 0; i < 6; i++) {
+//            String isbn = bookRecommendationList.remove(new Random().nextInt(bookRecommendationList.size()));
+//
+//            Book book = bookRepository.findByISBN(isbn.substring(1));
+//
+//            if(book == null) {
+//                i = i - 1;
+//
+//                continue;
+//            }
+//
+//            float total = 0;
+//
+//            for(BookRate bookRate: book.getRate()) {
+//                total = total + bookRate.getRating();
+//            }
+//
+//            DecimalFormat decimalFormat =new DecimalFormat("#.0");
+//            book.getParam().put("rate", decimalFormat.format(total / book.getRate().size()));
+//
+//            recommendationResultList.add(book);
+//        }
+//
+//        return recommendationResultList;
+//    }
 }

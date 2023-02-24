@@ -2,12 +2,8 @@ package com.yushun.recommender.service;
 
 import com.yushun.recommender.RecommenderApplication;
 import com.yushun.recommender.model.common.mongoEntity.movie.Movie;
-import com.yushun.recommender.model.user.BookFavourite;
-import com.yushun.recommender.model.user.BookRating;
 import com.yushun.recommender.model.user.MovieFavourite;
 import com.yushun.recommender.model.user.MovieRating;
-import com.yushun.recommender.vo.user.book.BookLikeListReturnVo;
-import com.yushun.recommender.vo.user.book.BookRatingListReturnVo;
 import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
 import com.yushun.recommender.vo.user.movie.MovieRatingListReturnVo;
 import org.junit.Assert;

@@ -1,10 +1,16 @@
 package com.yushun.recommender.service;
 
-import com.yushun.recommender.vo.user.search.FuzzySearchReturnVo;
-
 import java.util.HashMap;
-import java.util.List;
+
+/**
+ * <p>
+ * Search Service Mapper
+ * </p>
+ *
+ * @author yushun zeng
+ * @since 2023-2-20
+ */
 
 public interface SearchService {
-    HashMap<String, Object> fuzzySearchMovieAndBookByTitle(String titleSubstring);
+    HashMap<String, Object> fuzzySearchMovieAndBookByTitleOrYear(String substring, String type);
 }

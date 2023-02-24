@@ -35,6 +35,12 @@ public class UserInterfaceRecommendationController {
     @Autowired
     private RecommendationService recommendationService;
 
+    @GetMapping("/getMoviesLikeThis")
+    public Result getMoviesLikeThis(@PathParam("movieId") Integer movieId) {
+
+        return null;
+    }
+
     @GetMapping("/getBooksLikeThis")
     public Result getBooksLikeThis(@PathParam("isbn") String isbn) {
         List<Book> booksLikeThis = recommendationService.getBooksLikeThis(isbn);
@@ -96,11 +102,24 @@ public class UserInterfaceRecommendationController {
         return Result.ok(movieReturnList);
     }
 
+    // ok
     @GetMapping("/getRecommendBookListByItemCF")
     public Result getRecommendBookListByItemCF(@PathParam("email") String email) {
+        List<Book> recommendedBook = new ArrayList<>();
 
+        recommendedBook = recommendationService.getBookRecommendationData_byBook_itemCF(email);
 
-        return Result.ok();
+        // result variable
+        List<BookReturnVo> bookReturnList;
+
+        if(recommendedBook != null) {
+            // form result
+            bookReturnList = recommendedBook.stream().map(this::formBookResult).collect(Collectors.toList());
+        }else {
+            bookReturnList = null;
+        }
+
+        return Result.ok(bookReturnList);
     }
 
     @GetMapping("/getRecommendBookListByUserCF")

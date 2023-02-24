@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 /**
  * <p>
- * Email Controller
+ * Search Controller
  * </p>
  *
  * @author yushun zeng
@@ -23,9 +23,10 @@ public class searchController {
     @Autowired
     private SearchService searchService;
 
-    @GetMapping("/fuzzySearchMovieAndBookByTitle")
-    public Result fuzzySearchMovieAndBookByTitle(@RequestParam("titleSubstring") String titleSubstring) {
-        HashMap<String, Object> resultMap = searchService.fuzzySearchMovieAndBookByTitle(titleSubstring);
+    @GetMapping("/fuzzySearchMovieAndBookByTitleOrYear")
+    public Result fuzzySearchMovieAndBookByTitleOrYear(@RequestParam("substring") String substring,
+                                                 @RequestParam("type") String type) {
+        HashMap<String, Object> resultMap = searchService.fuzzySearchMovieAndBookByTitleOrYear(substring, type);
 
         if(resultMap.get("count").equals(0)) {
             return Result.ok(resultMap).message("No result find");
