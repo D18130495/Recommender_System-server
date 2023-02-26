@@ -13,16 +13,26 @@ import java.util.*;
  */
 
 public class UserCF {
-    static Map<String,Integer> itemIDMap = new HashMap<>(); // itemId list
-    static Map<Integer,String> idToItemMap = new HashMap<>(); // fake id to the item real id
-    static Map<String,Integer> userIDMap = new HashMap<>(); // userId list
-    static Map<Integer,String> idToUserMap = new HashMap<>(); // fake id to the user real name
-    static Map<String,HashMap<String,Double>> userMap = new HashMap<>(); // user rate for the item
+    static Map<String,Integer> itemIDMap; // itemId list
+    static Map<Integer,String> idToItemMap; // fake id to the item real id
+    static Map<String,Integer> userIDMap; // userId list
+    static Map<Integer,String> idToUserMap; // fake id to the user real name
+    static Map<String,HashMap<String,Double>> userMap; // user rate for the item
 
     static double[][] simMatrix; // user sim matrix
     static int TOP_K = 12;  // top sim user
 
+    public static void initial() {
+        itemIDMap = new HashMap<>();
+        idToItemMap = new HashMap<>();
+        userIDMap = new HashMap<>();
+        idToUserMap = new HashMap<>();
+        userMap = new HashMap<>();
+    }
+
     public static List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
+        initial();
+
         readData(itemList, type);
         userDistance();
 
@@ -30,6 +40,8 @@ public class UserCF {
     }
 
     public static List<String> simUserListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
+        initial();
+
         readData(itemList, type);
         userDistance();
 
