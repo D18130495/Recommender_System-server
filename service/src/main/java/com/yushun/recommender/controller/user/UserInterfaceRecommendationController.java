@@ -37,8 +37,19 @@ public class UserInterfaceRecommendationController {
 
     @GetMapping("/getMoviesLikeThis")
     public Result getMoviesLikeThis(@PathParam("movieId") Integer movieId) {
+        List<Movie> movieLikeThis = recommendationService.getMoviesLikeThis(movieId.toString());
 
-        return null;
+        // result variable
+        List<MovieReturnVo> movieReturnList;
+
+        if(movieLikeThis != null) {
+            // form result
+            movieReturnList = movieLikeThis.stream().map(this::formMovieResult).collect(Collectors.toList());
+        }else {
+            movieReturnList = null;
+        }
+
+        return Result.ok(movieReturnList);
     }
 
     @GetMapping("/getBooksLikeThis")

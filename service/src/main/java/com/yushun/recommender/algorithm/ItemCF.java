@@ -23,8 +23,8 @@ public class ItemCF {
     static Map<String, HashMap<String, Double>> userMap; // user rated item list map
 
     static double[][] simMatrix; // item sim matrix
-    static int TOP_K = 12; // select sim item number
-    static int TOP_N = 18; // top recommendation number
+    static int TOP_K = 60; // select sim item number
+    static int TOP_N = 60; // top recommendation number
 
     public static void initial() {
         itemIDMap = new HashMap<>();
@@ -232,7 +232,7 @@ public class ItemCF {
             HashSet<Integer> currentUserSet = new HashSet<>();
             Map<String,Double> preRatingMap = new HashMap<>();
 
-            for(Map.Entry<String, Double> entry :userMap.get(idToUserMap.get(i)).entrySet()) {
+            for(Map.Entry<String, Double> entry:userMap.get(idToUserMap.get(i)).entrySet()) {
                 // put all the user rated item fake id in the set
                 currentUserSet.add(itemIDMap.get(entry.getKey()));
             }
@@ -309,7 +309,7 @@ public class ItemCF {
 
             HashSet<Integer> nearestItemSet = new HashSet<>();
 
-            for(Map.Entry<Integer, Double> entry : simMap.entrySet()) {
+            for(Map.Entry<Integer, Double> entry:simMap.entrySet()) {
                 if(simItemCount < TOP_K) {
                     nearestItemSet.add(entry.getKey()); // get same item ID
                     simItemCount++;

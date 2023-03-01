@@ -36,6 +36,8 @@ public class Movie extends BaseMongoEntity {
 
     private String movieImage;
 
+    private String moviePhoto;
+
     private String movieVideo;
 
     private String description;
@@ -116,6 +118,14 @@ public class Movie extends BaseMongoEntity {
 
     public void setMovieImage(String movieImage) {
         this.movieImage = movieImage;
+    }
+
+    public String getMoviePhoto() {
+        return moviePhoto;
+    }
+
+    public void setMoviePhoto(String moviePhoto) {
+        this.moviePhoto = moviePhoto;
     }
 
     public String getMovieVideo() {

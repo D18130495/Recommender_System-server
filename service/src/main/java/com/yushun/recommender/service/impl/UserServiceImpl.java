@@ -112,7 +112,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         userReturnVo.setType("G");
 
-        return Result.ok(userReturnVo).message("Successfully login");
+        return Result.ok(userReturnVo).message("Welcome back " + findUser.getUsername());
     }
 
     @Override
@@ -164,7 +164,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             userReturnVo.setPolicy(findUser.getPolicy());
             userReturnVo.setType(findUser.getType());
 
-            return Result.ok(userReturnVo).message("Successfully login");
+            return Result.ok(userReturnVo).message("Welcome back " + findUser.getUsername());
         }
     }
 

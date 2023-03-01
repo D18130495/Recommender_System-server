@@ -52,6 +52,7 @@ public class SearchServiceImpl implements SearchService {
         for(Movie movie:movieList) {
             FuzzySearchReturnVo fuzzySearchReturnVo = new FuzzySearchReturnVo();
             fuzzySearchReturnVo.setMovieId(movie.getMovieId());
+            fuzzySearchReturnVo.setYear(movie.getYear());
             fuzzySearchReturnVo.setTitle(movie.getTitle());
             fuzzySearchReturnVo.setImage(movie.getMovieImage());
 
