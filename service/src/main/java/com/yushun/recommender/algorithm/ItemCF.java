@@ -23,6 +23,7 @@ public class ItemCF {
     static Map<String, HashMap<String, Double>> userMap; // user rated item list map
 
     static double[][] simMatrix; // item sim matrix
+    // TODO
     static int TOP_K = 60; // select sim item number
     static int TOP_N = 60; // top recommendation number
 

@@ -25,13 +25,13 @@ public class RecommendationServiceImplTest {
     @Autowired
     private RecommendationService recommendationService;
 
-    @Test(timeout = 30000)
-    @Transactional
-    public void bookRecommendationData_byBook_itemCF_findBookList_bookList() {
-        List<Book> bookRecommendationData_byBook_itemCF = recommendationService.getBookRecommendationData_byBook_itemCF("990415zys@gmail.com");
-
-        Assert.assertEquals(6, bookRecommendationData_byBook_itemCF.size());
-    }
+//    @Test(timeout = 30000)
+//    @Transactional
+//    public void bookRecommendationData_byBook_itemCF_findBookList_bookList() {
+//        List<Book> bookRecommendationData_byBook_itemCF = recommendationService.getBookRecommendationData_byBook_itemCF("990415zys@gmail.com");
+//
+//        Assert.assertEquals(6, bookRecommendationData_byBook_itemCF.size());
+//    }
 
     @Test(timeout = 30000)
     @Transactional

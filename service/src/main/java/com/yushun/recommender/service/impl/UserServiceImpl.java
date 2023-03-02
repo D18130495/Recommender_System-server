@@ -106,13 +106,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         if(findUser == null) {
             userReturnVo.setPolicy("U");
+            userReturnVo.setType("G");
+
+            return Result.ok(userReturnVo).message("Welcome " + userGoogleLoginVo.getUsername());
         }else {
             userReturnVo.setPolicy(findUser.getPolicy());
+            userReturnVo.setType("G");
+
+            return Result.ok(userReturnVo).message("Welcome back " + findUser.getUsername());
         }
-
-        userReturnVo.setType("G");
-
-        return Result.ok(userReturnVo).message("Welcome back " + findUser.getUsername());
     }
 
     @Override

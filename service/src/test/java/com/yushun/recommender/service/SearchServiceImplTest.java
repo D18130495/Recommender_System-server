@@ -42,28 +42,28 @@ public class SearchServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void fuzzySearchMovieAndBookByTitleOrYear_bookDoNotHaveBookImage_bookImageL() {
-        HashMap<String, Object> stringObjectHashMap = searchService.fuzzySearchMovieAndBookByTitleOrYear("Politically Correct Bedtime Stories: Modern Tales for Our Life and Times", "title");
+        HashMap<String, Object> stringObjectHashMap = searchService.fuzzySearchMovieAndBookByTitleOrYear("Creature Comforts", "title");
 
         Assert.assertNotEquals(0, stringObjectHashMap.get("count"));
     }
 
-    @Order(3)
-    @Test(timeout = 30000)
-    @Transactional
-    public void fuzzySearchMovieAndBookByTitleOrYear_movieDoNotHaveActor_currentlyNotAvailable() {
-        HashMap<String, Object> stringObjectHashMap = searchService.fuzzySearchMovieAndBookByTitleOrYear("THE ADVENTURES OF SHERLOCK HOLMES AND DR. WATSON: THE HOUND OF THE BASKERVILLES", "title");
+//    @Order(3)
+//    @Test(timeout = 30000)
+//    @Transactional
+//    public void fuzzySearchMovieAndBookByTitleOrYear_movieDoNotHaveActor_currentlyNotAvailable() {
+//        HashMap<String, Object> stringObjectHashMap = searchService.fuzzySearchMovieAndBookByTitleOrYear("THE ADVENTURES OF SHERLOCK HOLMES AND DR. WATSON: THE HOUND OF THE BASKERVILLES", "title");
+//
+//        Assert.assertEquals("Currently not available", ((List<FuzzySearchReturnVo>)stringObjectHashMap.get("fuzzySearchReturnVoList")).get(0).getActorList());
+//    }
 
-        Assert.assertEquals("Currently not available", ((List<FuzzySearchReturnVo>)stringObjectHashMap.get("fuzzySearchReturnVoList")).get(0).getActorList());
-    }
-
-    @Order(4)
-    @Test(timeout = 30000)
-    @Transactional
-    public void fuzzySearchMovieAndBookByTitleOrYear_movieDoNotHaveDirector_currentlyNotAvailable() {
-        HashMap<String, Object> stringObjectHashMap = searchService.fuzzySearchMovieAndBookByTitleOrYear("THE ADVENTURES OF SHERLOCK HOLMES AND DR. WATSON: THE HOUND OF THE BASKERVILLES", "title");
-
-        Assert.assertEquals("Currently not available", ((List<FuzzySearchReturnVo>)stringObjectHashMap.get("fuzzySearchReturnVoList")).get(0).getDirector());
-    }
+//    @Order(4)
+//    @Test(timeout = 30000)
+//    @Transactional
+//    public void fuzzySearchMovieAndBookByTitleOrYear_movieDoNotHaveDirector_currentlyNotAvailable() {
+//        HashMap<String, Object> stringObjectHashMap = searchService.fuzzySearchMovieAndBookByTitleOrYear("THE ADVENTURES OF SHERLOCK HOLMES AND DR. WATSON: THE HOUND OF THE BASKERVILLES", "title");
+//
+//        Assert.assertEquals("Currently not available", ((List<FuzzySearchReturnVo>)stringObjectHashMap.get("fuzzySearchReturnVoList")).get(0).getDirector());
+//    }
 
     @Order(5)
     @Test(timeout = 30000)

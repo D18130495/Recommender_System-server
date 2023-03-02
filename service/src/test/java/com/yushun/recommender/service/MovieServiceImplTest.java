@@ -84,7 +84,7 @@ public class MovieServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserLikeAndRatingMovieCount_userNotLikeOrRateMovie_zero() {
-        Integer userLikeAndRatingMovieCount = movieService.getUserLikeAndRatingMovieCount("d18130495@mytudublin.ie");
+        Integer userLikeAndRatingMovieCount = movieService.getUserLikeAndRatingMovieCount("990415zys@gmail.co");
 
         Assert.assertEquals(new Integer(0), userLikeAndRatingMovieCount);
     }
@@ -92,15 +92,15 @@ public class MovieServiceImplTest {
     @Order(6)
     @Test(timeout = 30000)
     @Transactional
-    public void getUserLikeAndRatingMovieCount_userOnlyListMovie_rateListSize() {
+    public void getUserLikeAndRatingMovieCount_userOnlyLikeMovie_rateListSize() {
         MovieFavourite movieFavourite = new MovieFavourite();
-        movieFavourite.setEmail("d18130495@mytudublin.ie");
+        movieFavourite.setEmail("990415zys@gmail.co");
         movieFavourite.setMovieId(1);
         movieFavourite.setFavourite("3");
 
         movieFavouriteService.likeOrUnlikeMovie(movieFavourite);
 
-        Integer userLikeAndRatingMovieCount = movieService.getUserLikeAndRatingMovieCount("d18130495@mytudublin.ie");
+        Integer userLikeAndRatingMovieCount = movieService.getUserLikeAndRatingMovieCount("990415zys@gmail.co");
 
         Assert.assertEquals(new Integer(1), userLikeAndRatingMovieCount);
     }
@@ -110,13 +110,13 @@ public class MovieServiceImplTest {
     @Transactional
     public void getUserLikeAndRatingMovieCount_userOnlyRateMovie_rateListSize() {
         MovieRating movieRating = new MovieRating();
-        movieRating.setEmail("d18130495@mytudublin.ie");
+        movieRating.setEmail("990415zys@gmail.co");
         movieRating.setMovieId(1);
         movieRating.setRating(3F);
 
         movieRatingService.addOrUpdateUserMovieRating(movieRating);
 
-        Integer userLikeAndRatingMovieCount = movieService.getUserLikeAndRatingMovieCount("d18130495@mytudublin.ie");
+        Integer userLikeAndRatingMovieCount = movieService.getUserLikeAndRatingMovieCount("990415zys@gmail.co");
 
         Assert.assertEquals(new Integer(1), userLikeAndRatingMovieCount);
     }
@@ -126,20 +126,20 @@ public class MovieServiceImplTest {
     @Transactional
     public void getUserLikeAndRatingMovieCount_userLikeAndRateSameMovie_likeAndRateListSize() {
         MovieFavourite movieFavourite = new MovieFavourite();
-        movieFavourite.setEmail("d18130495@mytudublin.ie");
+        movieFavourite.setEmail("990415zys@gmail.co");
         movieFavourite.setMovieId(1);
         movieFavourite.setFavourite("3");
 
         movieFavouriteService.likeOrUnlikeMovie(movieFavourite);
 
         MovieRating movieRating = new MovieRating();
-        movieRating.setEmail("d18130495@mytudublin.ie");
+        movieRating.setEmail("990415zys@gmail.co");
         movieRating.setMovieId(1);
         movieRating.setRating(3F);
 
         movieRatingService.addOrUpdateUserMovieRating(movieRating);
 
-        Integer userLikeAndRatingMovieCount = movieService.getUserLikeAndRatingMovieCount("d18130495@mytudublin.ie");
+        Integer userLikeAndRatingMovieCount = movieService.getUserLikeAndRatingMovieCount("990415zys@gmail.co");
 
         Assert.assertEquals(new Integer(1), userLikeAndRatingMovieCount);
     }
@@ -149,14 +149,14 @@ public class MovieServiceImplTest {
     @Transactional
     public void getUserLikeAndRatingMovieCount_userLikeAndRateDifferentMovie_likeAndRateListSize() {
         MovieFavourite movieFavourite = new MovieFavourite();
-        movieFavourite.setEmail("d18130495@mytudublin.ie");
+        movieFavourite.setEmail("990415zys@gmail.co");
         movieFavourite.setMovieId(1);
         movieFavourite.setFavourite("3");
 
         movieFavouriteService.likeOrUnlikeMovie(movieFavourite);
 
         MovieRating movieRating = new MovieRating();
-        movieRating.setEmail("d18130495@mytudublin.ie");
+        movieRating.setEmail("990415zys@gmail.co");
         movieRating.setMovieId(2);
         movieRating.setRating(3F);
 
@@ -183,7 +183,7 @@ public class MovieServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserMovieLikeList_userNotLikeOrUnlike_null() {
-        List<MovieLikeListReturnVo> userMovieLikeList = movieService.getUserMovieLikeList("d18130495@mytudublin.ie");
+        List<MovieLikeListReturnVo> userMovieLikeList = movieService.getUserMovieLikeList("990415zys@gmail.co");
 
         Assert.assertNull(userMovieLikeList);
     }
@@ -193,13 +193,13 @@ public class MovieServiceImplTest {
     @Transactional
     public void getUserMovieLikeList_userNotRateThisMovie_rateIsNull() {
         MovieFavourite movieFavourite = new MovieFavourite();
-        movieFavourite.setEmail("d18130495@mytudublin.ie");
+        movieFavourite.setEmail("990415zys@gmail.co");
         movieFavourite.setMovieId(1);
         movieFavourite.setFavourite("3");
 
         movieFavouriteService.likeOrUnlikeMovie(movieFavourite);
 
-        List<MovieLikeListReturnVo> userMovieLikeList = movieService.getUserMovieLikeList("d18130495@mytudublin.ie");
+        List<MovieLikeListReturnVo> userMovieLikeList = movieService.getUserMovieLikeList("990415zys@gmail.co");
 
         Assert.assertNull(userMovieLikeList.get(0).getRating());
     }
@@ -243,7 +243,7 @@ public class MovieServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserMovieRatingList_userNotRateMovie_null() {
-        List<MovieRatingListReturnVo> userMovieRatingList = movieService.getUserMovieRatingList("d18130495@mytudublin.ie");
+        List<MovieRatingListReturnVo> userMovieRatingList = movieService.getUserMovieRatingList("990415zys@gmail.co");
 
         Assert.assertNull(userMovieRatingList);
     }

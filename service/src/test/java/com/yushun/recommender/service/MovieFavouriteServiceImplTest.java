@@ -49,7 +49,7 @@ public class MovieFavouriteServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserMovieFavourite_userNotFavouriteThisBook_null() {
-        MovieFavouriteReturnVo userMovieFavourite = movieFavouriteService.getUserMovieFavourite(1, "d18130495@mytudublin.ie");
+        MovieFavouriteReturnVo userMovieFavourite = movieFavouriteService.getUserMovieFavourite(200, "d18130495@mytudublin.ie");
 
         Assert.assertNull(userMovieFavourite);
     }
@@ -58,7 +58,7 @@ public class MovieFavouriteServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserMovieFavourite_findMovieFavourite_doNotLike() {
-        MovieFavouriteReturnVo userMovieFavourite = movieFavouriteService.getUserMovieFavourite(1544, "990415zys@gmail.com");
+        MovieFavouriteReturnVo userMovieFavourite = movieFavouriteService.getUserMovieFavourite(1, "d18130495@mytudublin.ie");
 
         Assert.assertEquals("1", userMovieFavourite.getFavourite());
     }
@@ -67,7 +67,7 @@ public class MovieFavouriteServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserMovieFavourite_findMovieFavourite_normal() {
-        MovieFavouriteReturnVo userMovieFavourite = movieFavouriteService.getUserMovieFavourite(1792, "990415zys@gmail.com");
+        MovieFavouriteReturnVo userMovieFavourite = movieFavouriteService.getUserMovieFavourite(2, "d18130495@mytudublin.ie");
 
         Assert.assertEquals("2", userMovieFavourite.getFavourite());
     }
@@ -76,7 +76,7 @@ public class MovieFavouriteServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserMovieFavourite_findMovieFavourite_favourite() {
-        MovieFavouriteReturnVo userMovieFavourite = movieFavouriteService.getUserMovieFavourite(1, "990415zys@gmail.com");
+        MovieFavouriteReturnVo userMovieFavourite = movieFavouriteService.getUserMovieFavourite(3, "d18130495@mytudublin.ie");
 
         Assert.assertEquals("3", userMovieFavourite.getFavourite());
     }

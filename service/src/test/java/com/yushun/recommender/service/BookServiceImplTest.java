@@ -54,7 +54,7 @@ public class BookServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getBookByISBN_findBook_book() {
-        Book bookByISBN = bookService.getBookByISBN("0345439252");
+        Book bookByISBN = bookService.getBookByISBN("0451458443");
 
         Assert.assertNotNull(bookByISBN);
     }
@@ -84,7 +84,7 @@ public class BookServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserLikeAndRatingBookCount_userNotLikeOrRateBook_zero() {
-        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("d18130495@mytudublin.ie");
+        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("990415zys@gmail.co");
 
         Assert.assertEquals(new Integer(0), userLikeAndRatingBookCount);
     }
@@ -94,13 +94,13 @@ public class BookServiceImplTest {
     @Transactional
     public void getUserLikeAndRatingBookCount_userOnlyLikeBook_rateListSize() {
         BookFavourite bookFavourite = new BookFavourite();
-        bookFavourite.setEmail("d18130495@mytudublin.ie");
-        bookFavourite.setIsbn("0345439252");
+        bookFavourite.setEmail("990415zys@gmail.co");
+        bookFavourite.setIsbn("0451458443");
         bookFavourite.setFavourite("3");
 
         bookFavouriteService.likeOrUnlikeBook(bookFavourite);
 
-        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("d18130495@mytudublin.ie");
+        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("990415zys@gmail.co");
 
         Assert.assertEquals(new Integer(1), userLikeAndRatingBookCount);
     }
@@ -110,13 +110,13 @@ public class BookServiceImplTest {
     @Transactional
     public void getUserLikeAndRatingBookCount_userOnlyRateBook_rateListSize() {
         BookRating bookRating = new BookRating();
-        bookRating.setEmail("d18130495@mytudublin.ie");
-        bookRating.setIsbn("0345439252");
+        bookRating.setEmail("990415zys@gmail.co");
+        bookRating.setIsbn("0451458443");
         bookRating.setRating(3F);
 
         bookRatingService.addOrUpdateUserBookRating(bookRating);
 
-        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("d18130495@mytudublin.ie");
+        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("990415zys@gmail.co");
 
         Assert.assertEquals(new Integer(1), userLikeAndRatingBookCount);
     }
@@ -126,20 +126,20 @@ public class BookServiceImplTest {
     @Transactional
     public void getUserLikeAndRatingBookCount_userLikeAndRateSameBook_likeAndRateListSize() {
         BookFavourite bookFavourite = new BookFavourite();
-        bookFavourite.setEmail("d18130495@mytudublin.ie");
-        bookFavourite.setIsbn("0345439252");
+        bookFavourite.setEmail("990415zys@gmail.co");
+        bookFavourite.setIsbn("0451458443");
         bookFavourite.setFavourite("3");
 
         bookFavouriteService.likeOrUnlikeBook(bookFavourite);
 
         BookRating bookRating = new BookRating();
-        bookRating.setEmail("d18130495@mytudublin.ie");
-        bookRating.setIsbn("0345439252");
+        bookRating.setEmail("990415zys@gmail.co");
+        bookRating.setIsbn("0451458443");
         bookRating.setRating(3F);
 
         bookRatingService.addOrUpdateUserBookRating(bookRating);
 
-        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("d18130495@mytudublin.ie");
+        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("990415zys@gmail.co");
 
         Assert.assertEquals(new Integer(1), userLikeAndRatingBookCount);
     }
@@ -149,20 +149,20 @@ public class BookServiceImplTest {
     @Transactional
     public void getUserLikeAndRatingBookCount_userLikeAndRateDifferentBook_likeAndRateListSize() {
         BookFavourite bookFavourite = new BookFavourite();
-        bookFavourite.setEmail("d18130495@mytudublin.ie");
-        bookFavourite.setIsbn("0345439252");
+        bookFavourite.setEmail("990415zys@gmail.co");
+        bookFavourite.setIsbn("0451458443");
         bookFavourite.setFavourite("3");
 
         bookFavouriteService.likeOrUnlikeBook(bookFavourite);
 
         BookRating bookRating = new BookRating();
-        bookRating.setEmail("d18130495@mytudublin.ie");
-        bookRating.setIsbn("0380787814");
+        bookRating.setEmail("990415zys@gmail.co");
+        bookRating.setIsbn("0451458923");
         bookRating.setRating(3F);
 
         bookRatingService.addOrUpdateUserBookRating(bookRating);
 
-        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("d18130495@mytudublin.ie");
+        Integer userLikeAndRatingBookCount = bookService.getUserLikeAndRatingBookCount("990415zys@gmail.co");
 
         Assert.assertEquals(new Integer(2), userLikeAndRatingBookCount);
     }
@@ -183,7 +183,7 @@ public class BookServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookLikeList_userNotLikeOrUnlike_null() {
-        List<BookLikeListReturnVo> userBookLikeList = bookService.getUserBookLikeList("d18130495@mytudublin.ie");
+        List<BookLikeListReturnVo> userBookLikeList = bookService.getUserBookLikeList("990415zys@gmail.co");
 
         Assert.assertNull(userBookLikeList);
     }
@@ -194,7 +194,7 @@ public class BookServiceImplTest {
     public void getUserBookLikeList_userNotRateThisBook_rateIsNull() {
         BookFavourite bookFavourite = new BookFavourite();
         bookFavourite.setEmail("d18130495@mytudublin.ie");
-        bookFavourite.setIsbn("0345439252");
+        bookFavourite.setIsbn("0451458443");
         bookFavourite.setFavourite("3");
 
         bookFavouriteService.likeOrUnlikeBook(bookFavourite);
@@ -209,20 +209,20 @@ public class BookServiceImplTest {
     @Transactional
     public void getUserBookLikeList_userRateThisBook_rateIsNotNull() {
         BookFavourite bookFavourite = new BookFavourite();
-        bookFavourite.setEmail("d18130495@mytudublin.ie");
-        bookFavourite.setIsbn("0345439252");
+        bookFavourite.setEmail("990415zys@gmail.co");
+        bookFavourite.setIsbn("0451458443");
         bookFavourite.setFavourite("3");
 
         bookFavouriteService.likeOrUnlikeBook(bookFavourite);
 
         BookRating bookRating = new BookRating();
-        bookRating.setEmail("d18130495@mytudublin.ie");
-        bookRating.setIsbn("0345439252");
+        bookRating.setEmail("990415zys@gmail.co");
+        bookRating.setIsbn("0451458443");
         bookRating.setRating(3F);
 
         bookRatingService.addOrUpdateUserBookRating(bookRating);
 
-        List<BookLikeListReturnVo> userBookLikeList = bookService.getUserBookLikeList("d18130495@mytudublin.ie");
+        List<BookLikeListReturnVo> userBookLikeList = bookService.getUserBookLikeList("990415zys@gmail.co");
 
         Assert.assertEquals(new Float(3), userBookLikeList.get(0).getRating());
     }
@@ -243,7 +243,7 @@ public class BookServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookRatingList_userNotRateBook_null() {
-        List<BookRatingListReturnVo> userBookRatingList = bookService.getUserBookRatingList("d18130495@mytudublin.ie");
+        List<BookRatingListReturnVo> userBookRatingList = bookService.getUserBookRatingList("990415zys@gmail.co");
 
         Assert.assertNull(userBookRatingList);
     }
@@ -254,7 +254,7 @@ public class BookServiceImplTest {
     public void getUserBookRatingList_userRateBook_bookRateListIsNotNull() {
         BookRating bookRating = new BookRating();
         bookRating.setEmail("d18130495@mytudublin.ie");
-        bookRating.setIsbn("0345439252");
+        bookRating.setIsbn("0451458443");
         bookRating.setRating(3F);
 
         bookRatingService.addOrUpdateUserBookRating(bookRating);

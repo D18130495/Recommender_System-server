@@ -225,7 +225,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 
             List<Book> booksLikeThis = new ArrayList<>();
 
-            // random number 1 - 12
+            // random number 1 - 22
             int[] array = randomArray();
 
             while((line = bufferedReader.readLine()) != null) {
@@ -282,10 +282,10 @@ public class RecommendationServiceImpl implements RecommendationService {
     // Done
     public int[] randomArray() {
         Random random = new Random();
-        int[] array = new int[12];
+        int[] array = new int[22];
 
         for(int i = 0; i < array.length; i++) {
-            array[i] = random.nextInt(12) + 1;
+            array[i] = random.nextInt(22) + 1;
 
             for(int j = 0; j < i; j++){
                 if(array[i] == array[j]) {

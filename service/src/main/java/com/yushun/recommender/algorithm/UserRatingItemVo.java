@@ -13,7 +13,9 @@ import com.yushun.recommender.model.common.User;
 
 public class UserRatingItemVo {
     private String userId;
+
     private String itemId;
+
     private String rate;
 
     public String getUserId() {

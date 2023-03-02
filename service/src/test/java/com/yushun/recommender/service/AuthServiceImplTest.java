@@ -62,7 +62,7 @@ public class AuthServiceImplTest {
 
         Result result = userService.googleLogin(userGoogleLoginVo);
 
-        Assert.assertEquals("Successfully login", result.getMessage());
+        Assert.assertEquals("Welcome back Yushun Zeng", result.getMessage());
     }
 
     @Order(2)
@@ -76,7 +76,7 @@ public class AuthServiceImplTest {
 
         Result result = userService.googleLogin(userGoogleLoginVo);
 
-        Assert.assertEquals("Successfully login", result.getMessage());
+        Assert.assertEquals("Welcome Test", result.getMessage());
     }
 
     @Order(3)
@@ -171,7 +171,7 @@ public class AuthServiceImplTest {
 
         Result result = userService.userSystemLogin(userSystemLoginVo);
 
-        Assert.assertEquals("Successfully login", result.getMessage());
+        Assert.assertEquals("Welcome back Yushun Zeng", result.getMessage());
     }
 
     /**

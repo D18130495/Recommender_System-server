@@ -61,7 +61,7 @@ public class MovieRatingServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserMovieRating_findMovieRating_movieRatingReturnVo() {
-        MovieRatingReturnVo userMovieRating = movieRatingService.getUserMovieRating(1, "990415zys@gmail.com");
+        MovieRatingReturnVo userMovieRating = movieRatingService.getUserMovieRating(1, "d18130495@mytudublin.ie");
 
         Assert.assertNotNull(userMovieRating.getRating());
     }
@@ -100,7 +100,7 @@ public class MovieRatingServiceImplTest {
     public void addOrUpdateUserMovieRating_addNewRating_successfullyRatingThisMovie() {
         MovieRating movieRating = new MovieRating();
         movieRating.setEmail("d18130495@mytudublin.ie");
-        movieRating.setMovieId(1);
+        movieRating.setMovieId(2);
 
         String addOrUpdateState = movieRatingService.addOrUpdateUserMovieRating(movieRating);
 
@@ -112,8 +112,9 @@ public class MovieRatingServiceImplTest {
     @Transactional
     public void addOrUpdateUserMovieRating_updateRating_successfullyUpdatedRating() {
         MovieRating movieRating = new MovieRating();
-        movieRating.setEmail("990415zys@gmail.com");
+        movieRating.setEmail("d18130495@mytudublin.ie");
         movieRating.setMovieId(1);
+        movieRating.setRating(5F);
 
         String addOrUpdateState = movieRatingService.addOrUpdateUserMovieRating(movieRating);
 

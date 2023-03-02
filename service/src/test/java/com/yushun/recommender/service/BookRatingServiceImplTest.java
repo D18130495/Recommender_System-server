@@ -58,8 +58,7 @@ public class BookRatingServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookRating_findBookRating_bookRatingReturnVo() {
-        bookRatingService.getUserBookRating("0345439252", "990415zys@gmail.com");
-        BookRatingReturnVo userBookRating = bookRatingService.getUserBookRating("0451197003", "990415zys@gmail.com");
+        BookRatingReturnVo userBookRating = bookRatingService.getUserBookRating("0805076557", "d18130495@mytudublin.ie");
 
         Assert.assertNotNull(userBookRating.getRating());
     }
@@ -98,7 +97,7 @@ public class BookRatingServiceImplTest {
     public void addOrUpdateUserBookRating_addNewRating_successfullyRatingThisBook() {
         BookRating bookRating = new BookRating();
         bookRating.setEmail("d18130495@mytudublin.ie");
-        bookRating.setIsbn("0451197003");
+        bookRating.setIsbn("8865437162");
 
         String addOrUpdateState = bookRatingService.addOrUpdateUserBookRating(bookRating);
 
@@ -110,8 +109,9 @@ public class BookRatingServiceImplTest {
     @Transactional
     public void addOrUpdateUserBookRating_updateRating_successfullyUpdatedRating() {
         BookRating bookRating = new BookRating();
-        bookRating.setEmail("990415zys@gmail.com");
-        bookRating.setIsbn("0345439252");
+        bookRating.setEmail("d18130495@mytudublin.ie");
+        bookRating.setIsbn("0805076557");
+        bookRating.setRating(5F);
 
         String addOrUpdateState = bookRatingService.addOrUpdateUserBookRating(bookRating);
 

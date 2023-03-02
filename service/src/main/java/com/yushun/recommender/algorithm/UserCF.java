@@ -20,8 +20,8 @@ public class UserCF {
     static Map<String, HashMap<String, Double>> userMap; // user rate for the item
 
     static double[][] simMatrix; // user sim matrix
-    static int TOP_K = 20; // top sim user
-    static int TOP_N = 30; // top recommendation
+    static int TOP_K = 5; // top sim user
+    static int TOP_N = 18; // top recommendation
 
     public static void initial() {
         itemIDMap = new HashMap<>();
@@ -91,6 +91,7 @@ public class UserCF {
 
         // for system user
         for(UserRatingItemVo newItem:itemList) {
+            // initial item map
             if(!itemIDMap.containsKey(newItem.getItemId())) {
                 itemIDMap.put(newItem.getItemId(), itemId);
                 idToItemMap.put(itemId, newItem.getItemId());
@@ -98,6 +99,7 @@ public class UserCF {
                 itemId ++;
             }
 
+            // initial user map
             if(!userMap.containsKey(newItem.getUserId())) {
 
                 userIDMap.put(newItem.getUserId(), userId);
@@ -105,11 +107,12 @@ public class UserCF {
 
                 userId++;
 
+                // user rate map
                 HashMap<String, Double> curentUserMap = new HashMap<>();
-
+                // add current user rate to the rate list
                 curentUserMap.put(newItem.getItemId(), Double.parseDouble(newItem.getRate()));
                 userMap.put(newItem.getUserId(), curentUserMap);
-            }else {
+            }else { // add additional user rate
                 HashMap<String, Double> curentUserMap = userMap.get(newItem.getUserId());
                 curentUserMap.put(newItem.getItemId(), Double.parseDouble(newItem.getRate()));
                 userMap.put(newItem.getUserId(), curentUserMap);
@@ -123,37 +126,37 @@ public class UserCF {
         simMatrix = new double[userMap.size()][userMap.size()];
 
         // calculate user sim
-        for(Map.Entry<String, HashMap<String,Double>> userEntry_1 : userMap.entrySet()) {
+        for(Map.Entry<String, HashMap<String, Double>> userEntry1:userMap.entrySet()) {
             // get user rate list and convert to the rate array
-            double[] ratings_1 = new double[itemIDMap.size()]; // initial rate array
+            double[] ratings1 = new double[itemIDMap.size()]; // initial rate array
 
-            for(Map.Entry<String, Double> itemEntry : userEntry_1.getValue().entrySet()) {
-                ratings_1[itemIDMap.get(itemEntry.getKey())] = itemEntry.getValue(); // set the rate
+            for(Map.Entry<String, Double> itemEntry:userEntry1.getValue().entrySet()) {
+                ratings1[itemIDMap.get(itemEntry.getKey())] = itemEntry.getValue(); // set the rate
             }
 
             // other user
-            for(Map.Entry<String, HashMap<String,Double>> userEntry_2 : userMap.entrySet()) {
+            for(Map.Entry<String, HashMap<String, Double>> userEntry2:userMap.entrySet()) {
                 // skip if the userId less than previous
-                if(userIDMap.get(userEntry_2.getKey())>userIDMap.get(userEntry_1.getKey())) {
+                if(userIDMap.get(userEntry2.getKey()) > userIDMap.get(userEntry1.getKey())) {
                     // get user rate list and convert to the rate array
-                    double[] ratings_2 = new double[itemIDMap.size()];
+                    double[] ratings2 = new double[itemIDMap.size()];
 
-                    for(Map.Entry<String, Double> itemEntry : userEntry_2.getValue().entrySet()) {
-                        ratings_2[itemIDMap.get(itemEntry.getKey())] = itemEntry.getValue();
+                    for(Map.Entry<String, Double> itemEntry:userEntry2.getValue().entrySet()) {
+                        ratings2[itemIDMap.get(itemEntry.getKey())] = itemEntry.getValue();
                     }
 
                     // use rate array to find user sim, use euclidean
                     double square_sum = 0;
                     double similarity = 0;
 
-                    for(int i = 0; i < ratings_1.length; i++) {
-                        square_sum += Math.pow((ratings_1[i] - ratings_2[i]), 2);
+                    for(int i = 0; i < ratings1.length; i++) {
+                        square_sum += Math.pow((ratings1[i] - ratings2[i]), 2);
                     }
 
                     similarity = 1 / (1 + Math.sqrt(square_sum));
 
-                    simMatrix[userIDMap.get(userEntry_1.getKey())][userIDMap.get(userEntry_2.getKey())] = similarity;
-                    simMatrix[userIDMap.get(userEntry_2.getKey())][userIDMap.get(userEntry_1.getKey())] = similarity;
+                    simMatrix[userIDMap.get(userEntry1.getKey())][userIDMap.get(userEntry2.getKey())] = similarity;
+                    simMatrix[userIDMap.get(userEntry2.getKey())][userIDMap.get(userEntry1.getKey())] = similarity;
                 }
             }
         }
@@ -163,7 +166,6 @@ public class UserCF {
         // put the user sim in the map. and sort, find the top k sim user
         for(int i = 0; i < userMap.size(); i++) {
             Map<Integer,Double> simMap = new HashMap<>();
-            Map<String,Double> preRatingMap = new HashMap<>();
 
             for(int j = 0; j < userMap.size(); j++) {
                 simMap.put(j, simMatrix[i][j]);
@@ -237,7 +239,7 @@ public class UserCF {
             // rated item
             HashSet<String> currentFriendSet = new HashSet<>();
 
-            for(int user : simUserList) {
+            for(int user:simUserList) {
                 for(Map.Entry<String, Double> entry:userMap.get(idToUserMap.get(user)).entrySet()) {
                     currentFriendSet.add(entry.getKey());
                 }
@@ -245,7 +247,8 @@ public class UserCF {
 
             // not rated item
             HashSet<String> unRatingSet = new HashSet<>();
-            for(String item : currentFriendSet) {
+
+            for(String item:currentFriendSet) {
                 if(!currentUserSet.contains(item)) {
                     unRatingSet.add(item);
                 }

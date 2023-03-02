@@ -58,7 +58,7 @@ public class BookFavouriteServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookFavourite_findBookFavourite_doNotLike() {
-        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0451197003", "990415zys@gmail.com");
+        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0545935202", "d18130495@mytudublin.ie");
 
         Assert.assertEquals("1", userBookFavourite.getFavourite());
     }
@@ -67,7 +67,7 @@ public class BookFavouriteServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookFavourite_findBookFavourite_normal() {
-        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0872203948", "990415zys@gmail.com");
+        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("0439226481", "d18130495@mytudublin.ie");
 
         Assert.assertEquals("2", userBookFavourite.getFavourite());
     }
@@ -76,7 +76,7 @@ public class BookFavouriteServiceImplTest {
     @Test(timeout = 30000)
     @Transactional
     public void getUserBookFavourite_findBookFavourite_favourite() {
-        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("067174139X", "990415zys@gmail.com");
+        BookFavouriteReturnVo userBookFavourite = bookFavouriteService.getUserBookFavourite("8865437162", "d18130495@mytudublin.ie");
 
         Assert.assertEquals("3", userBookFavourite.getFavourite());
     }
@@ -111,7 +111,7 @@ public class BookFavouriteServiceImplTest {
     public void likeOrUnlikeBook_addNewFavouriteCase1_doNotLike() {
         BookFavourite bookFavourite = new BookFavourite();
         bookFavourite.setEmail("d18130495@mytudublin.ie");
-        bookFavourite.setIsbn("0451197003");
+        bookFavourite.setIsbn("1897093705");
         bookFavourite.setFavourite("1");
 
         Assert.assertEquals("Don't like", bookFavouriteService.likeOrUnlikeBook(bookFavourite));
@@ -123,7 +123,7 @@ public class BookFavouriteServiceImplTest {
     public void likeOrUnlikeBook_addNewFavouriteCase2_normal() {
         BookFavourite bookFavourite = new BookFavourite();
         bookFavourite.setEmail("d18130495@mytudublin.ie");
-        bookFavourite.setIsbn("0451197003");
+        bookFavourite.setIsbn("1897093705");
         bookFavourite.setFavourite("2");
 
         Assert.assertEquals("Normal", bookFavouriteService.likeOrUnlikeBook(bookFavourite));
@@ -135,7 +135,7 @@ public class BookFavouriteServiceImplTest {
     public void likeOrUnlikeBook_addNewFavouriteCase3_favourite() {
         BookFavourite bookFavourite = new BookFavourite();
         bookFavourite.setEmail("d18130495@mytudublin.ie");
-        bookFavourite.setIsbn("0451197003");
+        bookFavourite.setIsbn("1897093705");
         bookFavourite.setFavourite("3");
 
         Assert.assertEquals("Favourite", bookFavouriteService.likeOrUnlikeBook(bookFavourite));
@@ -146,8 +146,8 @@ public class BookFavouriteServiceImplTest {
     @Transactional
     public void likeOrUnlikeBook_updateFavouriteCase1_favourite() {
         BookFavourite bookFavourite = new BookFavourite();
-        bookFavourite.setEmail("990415zys@gmail.com");
-        bookFavourite.setIsbn("0451197003");
+        bookFavourite.setEmail("d18130495@mytudublin.ie");
+        bookFavourite.setIsbn("8865437162");
         bookFavourite.setFavourite("1");
 
         Assert.assertEquals("Don't like", bookFavouriteService.likeOrUnlikeBook(bookFavourite));
@@ -158,8 +158,8 @@ public class BookFavouriteServiceImplTest {
     @Transactional
     public void likeOrUnlikeBook_updateFavouriteCase2_favourite() {
         BookFavourite bookFavourite = new BookFavourite();
-        bookFavourite.setEmail("990415zys@gmail.com");
-        bookFavourite.setIsbn("0451197003");
+        bookFavourite.setEmail("d18130495@mytudublin.ie");
+        bookFavourite.setIsbn("8865437162");
         bookFavourite.setFavourite("2");
 
         Assert.assertEquals("Normal", bookFavouriteService.likeOrUnlikeBook(bookFavourite));
@@ -170,8 +170,8 @@ public class BookFavouriteServiceImplTest {
     @Transactional
     public void likeOrUnlikeBook_updateFavouriteCase3_favourite() {
         BookFavourite bookFavourite = new BookFavourite();
-        bookFavourite.setEmail("990415zys@gmail.com");
-        bookFavourite.setIsbn("0451197003");
+        bookFavourite.setEmail("d18130495@mytudublin.ie");
+        bookFavourite.setIsbn("8865437162");
         bookFavourite.setFavourite("3");
 
         Assert.assertEquals("Favourite", bookFavouriteService.likeOrUnlikeBook(bookFavourite));
@@ -182,8 +182,8 @@ public class BookFavouriteServiceImplTest {
     @Transactional
     public void likeOrUnlikeBook_defaultCase_error() {
         BookFavourite bookFavourite = new BookFavourite();
-        bookFavourite.setEmail("990415zys@gmail.com");
-        bookFavourite.setIsbn("0451197003");
+        bookFavourite.setEmail("d18130495@mytudublin.ie");
+        bookFavourite.setIsbn("8865437162");
         bookFavourite.setFavourite("4");
 
         Assert.assertEquals("Error", bookFavouriteService.likeOrUnlikeBook(bookFavourite));
