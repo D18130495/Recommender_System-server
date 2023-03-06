@@ -72,6 +72,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         try {
             List<String> book = ItemCF.simItemResult(email, systemUserBookList, "book");
+//            List<String> book = FindUserLikedItem.itemBased(systemUserBookList, "book");
 
             return this.getRandomBookRecommendationList(book);
         }catch (Exception e) {
@@ -87,7 +88,8 @@ public class RecommendationServiceImpl implements RecommendationService {
         List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
 
         try {
-            List<String> simUserItemListResult = UserCF.simUserItemListResult(email, systemUserMovieList, type);
+            UserCF userCF = new UserCF();
+            List<String> simUserItemListResult = userCF.simUserItemListResult(email, systemUserMovieList, type);
 
             return this.getRandomMovieRecommendationList(simUserItemListResult);
         }catch (Exception e) {
@@ -103,11 +105,13 @@ public class RecommendationServiceImpl implements RecommendationService {
         List<UserRatingItemVo> systemUserBookList = this.getSystemUserBookList(email);
 
         try {
-            List<String> simUserListResult = UserCF.simUserList(email, systemUserBookList, type);
+            UserCF userCF = new UserCF();
+            List<String> simUserListResult = userCF.simUserList(email, systemUserBookList, type);
 
             List<UserRatingItemVo> systemUserMovieList = getSystemUserMovieList(email);
 
-            List<String> movieRecommendationList = FindUserLikedItem.simUserRatedItemList(simUserListResult, systemUserMovieList, "movie");
+            FindUserLikedItem findUserLikedItem = new FindUserLikedItem();
+            List<String> movieRecommendationList = findUserLikedItem.simUserRatedItemList(simUserListResult, systemUserMovieList, "movie");
 
             return this.getRandomMovieRecommendationList(movieRecommendationList);
         }catch (Exception e) {
@@ -123,7 +127,8 @@ public class RecommendationServiceImpl implements RecommendationService {
         List<UserRatingItemVo> systemUserBookList = this.getSystemUserBookList(email);
 
         try {
-            List<String> simUserItemListResult = UserCF.simUserItemListResult(email, systemUserBookList, type);
+            UserCF userCF = new UserCF();
+            List<String> simUserItemListResult = userCF.simUserItemListResult(email, systemUserBookList, type);
 
             return this.getRandomBookRecommendationList(simUserItemListResult);
         }catch (Exception e) {
@@ -139,11 +144,13 @@ public class RecommendationServiceImpl implements RecommendationService {
         List<UserRatingItemVo> systemUserMovieList = this.getSystemUserMovieList(email);
 
         try {
-            List<String> simUserListResult = UserCF.simUserList(email, systemUserMovieList, type);
+            UserCF userCF = new UserCF();
+            List<String> simUserListResult = userCF.simUserList(email, systemUserMovieList, type);
 
             List<UserRatingItemVo> systemUserBookList = getSystemUserBookList(email);
 
-            List<String> bookRecommendationList = FindUserLikedItem.simUserRatedItemList(simUserListResult, systemUserBookList, "book");
+            FindUserLikedItem findUserLikedItem = new FindUserLikedItem();
+            List<String> bookRecommendationList = findUserLikedItem.simUserRatedItemList(simUserListResult, systemUserBookList, "book");
 
             return this.getRandomBookRecommendationList(bookRecommendationList);
         }catch (Exception e) {

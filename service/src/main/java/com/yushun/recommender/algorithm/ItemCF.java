@@ -24,8 +24,8 @@ public class ItemCF {
 
     static double[][] simMatrix; // item sim matrix
     // TODO
-    static int TOP_K = 60; // select sim item number
-    static int TOP_N = 60; // top recommendation number
+    static int TOP_K = 36; // select sim item number
+    static int TOP_N = 27; // top recommendation number
 
     public static void initial() {
         itemIDMap = new HashMap<>();
@@ -154,38 +154,38 @@ public class ItemCF {
         simMatrix = new double[itemMap.size()][itemMap.size()];
 
         // loop each item and find similarity by Jaccard
-        for(Map.Entry<String, HashMap<String, Double>> itemEntry_1:itemMap.entrySet()) {
+        for(Map.Entry<String, HashMap<String, Double>> itemEntry1:itemMap.entrySet()) {
             // get all the user who rated this item
-            Set<String> ratedUserSet_1 = new HashSet<>();
+            Set<String> ratedUserSet1 = new HashSet<>();
 
-            for(Map.Entry<String, Double> userEntry:itemEntry_1.getValue().entrySet()) {
+            for(Map.Entry<String, Double> userEntry:itemEntry1.getValue().entrySet()) {
                 // store all the rating user in the set
-                ratedUserSet_1.add(userEntry.getKey());
+                ratedUserSet1.add(userEntry.getKey());
             }
 
             // all rating for the first item
-            int ratedUserSize_1 = ratedUserSet_1.size();
+            int ratedUserSize1 = ratedUserSet1.size();
 
             // loop other items
-            for(Map.Entry<String, HashMap<String, Double>> itemEntry_2:itemMap.entrySet()) {
+            for(Map.Entry<String, HashMap<String, Double>> itemEntry2:itemMap.entrySet()) {
                 // skip the calculated item
-                if(itemIDMap.get(itemEntry_2.getKey())>itemIDMap.get(itemEntry_1.getKey())) {
+                if(itemIDMap.get(itemEntry2.getKey())>itemIDMap.get(itemEntry1.getKey())) {
                     // get all the user who rated this item
-                    Set<String> ratedUserSet_2 = new HashSet<>();
+                    Set<String> ratedUserSet2 = new HashSet<>();
 
-                    for(Map.Entry<String, Double> userEntry:itemEntry_2.getValue().entrySet()) {
-                        ratedUserSet_2.add(userEntry.getKey());
+                    for(Map.Entry<String, Double> userEntry:itemEntry2.getValue().entrySet()) {
+                        ratedUserSet2.add(userEntry.getKey());
                     }
 
-                    int ratedUserSize_2 = ratedUserSet_2.size(); // all rating for the second item
-                    int sameUerSize = CFUtils.interCount(ratedUserSet_1, ratedUserSet_2); // get inter Set number count
+                    int ratedUserSize2 = ratedUserSet2.size(); // all rating for the second item
+                    int sameUerSize = CFUtils.interCount(ratedUserSet1, ratedUserSet2); // get inter Set number count
 
                     // calculate item similarity by using Jaccard
-                    double similarity = sameUerSize / (Math.sqrt(ratedUserSize_1 * ratedUserSize_2));
+                    double similarity = sameUerSize / (Math.sqrt(ratedUserSize1 * ratedUserSize2));
 
                     // put sim in the matrix
-                    simMatrix[itemIDMap.get(itemEntry_1.getKey())][itemIDMap.get(itemEntry_2.getKey())] = similarity;
-                    simMatrix[itemIDMap.get(itemEntry_2.getKey())][itemIDMap.get(itemEntry_1.getKey())] = similarity;
+                    simMatrix[itemIDMap.get(itemEntry1.getKey())][itemIDMap.get(itemEntry2.getKey())] = similarity;
+                    simMatrix[itemIDMap.get(itemEntry2.getKey())][itemIDMap.get(itemEntry1.getKey())] = similarity;
                 }
             }
         }
@@ -247,7 +247,7 @@ public class ItemCF {
                 if(currentUserSet.contains(j))
                     continue;
 
-                // find current item sim list and curren user rated list intersection
+                // find current item sim list and current user rated list intersection
                 Set<Integer> interSet = CFUtils.interSet(currentUserSet, nearestItemMap.get(j));
 
                 // have intersection, start predict rate
@@ -271,7 +271,7 @@ public class ItemCF {
             }
 
             // sort the predict rate
-            preRatingMap = CFUtils.sortMapByValues(preRatingMap);
+//            preRatingMap = CFUtils.sortMapByValues(preRatingMap);
 
             // result list
             List<String> simUserItemListResult = new ArrayList<>();

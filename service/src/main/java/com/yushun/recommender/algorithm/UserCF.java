@@ -13,17 +13,17 @@ import java.util.*;
  */
 
 public class UserCF {
-    static Map<String, Integer> itemIDMap; // itemId map
-    static Map<Integer, String> idToItemMap; // fake id to the item real id
-    static Map<String, Integer> userIDMap; // userId list
-    static Map<Integer, String> idToUserMap; // fake id to the user real name
-    static Map<String, HashMap<String, Double>> userMap; // user rate for the item
+    public Map<String, Integer> itemIDMap; // itemId map
+    public Map<Integer, String> idToItemMap; // fake id to the item real id
+    public Map<String, Integer> userIDMap; // userId list
+    public Map<Integer, String> idToUserMap; // fake id to the user real name
+    public Map<String, HashMap<String, Double>> userMap; // user rate for the item
 
-    static double[][] simMatrix; // user sim matrix
-    static int TOP_K = 5; // top sim user
-    static int TOP_N = 18; // top recommendation
+    public double[][] simMatrix; // user sim matrix
+    public int TOP_K = 5; // top sim user
+    public int TOP_N = 12; // top recommendation
 
-    public static void initial() {
+    public void initial() {
         itemIDMap = new HashMap<>();
         idToItemMap = new HashMap<>();
         userIDMap = new HashMap<>();
@@ -31,7 +31,7 @@ public class UserCF {
         userMap = new HashMap<>();
     }
 
-    public static List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
+    public List<String> simUserItemListResult(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
         initial();
 
         readData(itemList, type);
@@ -40,7 +40,7 @@ public class UserCF {
         return simUserItemList(email);
     }
 
-    public static List<String> simUserList(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
+    public List<String> simUserList(String email, List<UserRatingItemVo> itemList, String type) throws IOException {
         initial();
 
         readData(itemList, type);
@@ -49,7 +49,7 @@ public class UserCF {
         return simUserList(email);
     }
 
-    public static void readData(List<UserRatingItemVo> itemList, String type) throws IOException {
+    public void readData(List<UserRatingItemVo> itemList, String type) throws IOException {
         BufferedReader bufferedReader = CFUtils.readFile(type);
         String line;
         String[] SplitLine;
@@ -121,7 +121,7 @@ public class UserCF {
     }
 
     // user sim
-    public static void userDistance() {
+    public void userDistance() {
         // initial sim matrix
         simMatrix = new double[userMap.size()][userMap.size()];
 
@@ -162,7 +162,7 @@ public class UserCF {
         }
     }
 
-    public static List<String> simUserList(String email) {
+    public List<String> simUserList(String email) {
         // put the user sim in the map. and sort, find the top k sim user
         for(int i = 0; i < userMap.size(); i++) {
             Map<Integer,Double> simMap = new HashMap<>();
@@ -202,7 +202,7 @@ public class UserCF {
         return null;
     }
 
-    public static List<String> simUserItemList(String email) {
+    public List<String> simUserItemList(String email) {
         // put the user sim in the map. and sort, find the top k sim user
         for(int i = 0; i < userMap.size(); i++) {
             Map<Integer, Double> simMap = new HashMap<>();
@@ -266,7 +266,6 @@ public class UserCF {
 
                 // find rated user and rate the item
                 for(int user:simUserList) {
-
                     // get current user rate list
                     for(Map.Entry<String, Double> entry:userMap.get(idToUserMap.get(user)).entrySet()) {
                         if(entry.getKey() == item) {
@@ -276,21 +275,31 @@ public class UserCF {
                     }
 
                     // get predict rate score
-                    preRating = totalRating/totalSim;
+                    preRating = totalRating / totalSim;
                     preRatingMap.put(item, preRating);
-
                 }
             }
 
             List<String> simUserItemListResult = new ArrayList<>();
 
             // sort result
-            preRatingMap = CFUtils.sortMapByValues(preRatingMap);
+//            preRatingMap = CFUtils.sortMapByValues(preRatingMap);
+
+            // random
+            List<Map.Entry<String, Double>> entryList = new ArrayList<>(preRatingMap.entrySet());
+            Collections.shuffle(entryList);
+
+            Map<String, Double> randomizedMap = new LinkedHashMap<>();
+
+            for(Map.Entry<String, Double> entry:entryList) {
+                randomizedMap.put(entry.getKey(), entry.getValue());
+            }
 
             // top k items
             int recCount = 0;
 
-            for(Map.Entry<String, Double> entry:preRatingMap.entrySet()) {
+            // find top N
+            for(Map.Entry<String, Double> entry:randomizedMap.entrySet()) {
                 if(recCount < TOP_N) {
                     simUserItemListResult.add(entry.getKey());
                     recCount ++;
