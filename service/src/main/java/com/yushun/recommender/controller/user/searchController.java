@@ -25,7 +25,7 @@ public class searchController {
 
     @GetMapping("/fuzzySearchMovieAndBookByTitleOrYear")
     public Result fuzzySearchMovieAndBookByTitleOrYear(@RequestParam("substring") String substring,
-                                                 @RequestParam("type") String type) {
+                                                       @RequestParam("type") String type) {
         HashMap<String, Object> resultMap = searchService.fuzzySearchMovieAndBookByTitleOrYear(substring, type);
 
         if(resultMap.get("count").equals(0)) {
