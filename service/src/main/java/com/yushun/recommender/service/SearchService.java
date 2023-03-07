@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 /**
  * <p>
- * Search Service Mapper
+ * Search Service
  * </p>
  *
  * @author yushun zeng
