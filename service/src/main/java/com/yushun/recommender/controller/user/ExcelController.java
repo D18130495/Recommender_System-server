@@ -1,14 +1,11 @@
 package com.yushun.recommender.controller.user;
 
 import com.yushun.recommender.service.ExcelService;
-import com.yushun.recommender.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 
 /**
  * <p>
@@ -26,7 +23,8 @@ public class ExcelController {
     private ExcelService excelService;
 
     @GetMapping("/exportUserData")
-    public void exportUserData(HttpServletResponse response) {
-        excelService.exportUserData(response);
+    public void exportUserData(HttpServletResponse response,
+                               @PathParam("email") String email) {
+        excelService.exportUserData(response, email);
     }
 }

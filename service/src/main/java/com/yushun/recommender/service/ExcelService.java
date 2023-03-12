@@ -11,5 +11,5 @@ import javax.servlet.http.HttpServletResponse;
  * @since 2023-3-7
  */
 public interface ExcelService {
-    void exportUserData(HttpServletResponse response);
+    void exportUserData(HttpServletResponse response, String email);
 }
