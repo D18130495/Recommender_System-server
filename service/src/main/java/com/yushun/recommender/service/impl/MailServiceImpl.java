@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,7 +37,7 @@ public class MailServiceImpl implements MailService {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public Result sendUserSystemRegisterVerificationCode(String email) {
+    public Result sendUserSystemRegisterVerificationCode(String email) throws MessagingException {
         // check email
         boolean isValidEmail = EmailChecker.check(email);
 
@@ -59,7 +60,7 @@ public class MailServiceImpl implements MailService {
             String newCode = RandomUtil.getSixBitRandom();
 
             // send email
-            boolean isSend = emailSender.sendMail(email, newCode);
+            boolean isSend = emailSender.sendVerificationCode(email, newCode);
 
             if(isSend) {
                 redisTemplate.opsForValue().set(email, newCode, 5, TimeUnit.MINUTES);

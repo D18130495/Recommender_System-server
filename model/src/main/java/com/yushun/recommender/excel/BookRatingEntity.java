@@ -16,7 +16,7 @@ public class BookRatingEntity implements Serializable {
     @Excel(name = "Book Title", width = 30, isImportField = "true_st")
     private String bookTitle;
 
-    @Excel(name = "Book Rating", width = 15, isImportField = "true_st")
+    @Excel(name = "Rating", width = 10, isImportField = "true_st")
     private String bookRating;
 
     public BookRatingEntity() {

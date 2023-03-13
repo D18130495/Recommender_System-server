@@ -5,6 +5,8 @@ import com.yushun.recommender.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+
 /**
  * <p>
  * Email Controller
@@ -22,7 +24,7 @@ public class MailController {
     private MailService mailService;
 
     @GetMapping("/sendUserSystemRegisterVerificationCode")
-    public Result sendUserSystemRegisterVerificationCode(@RequestParam("email") String email) {
+    public Result sendUserSystemRegisterVerificationCode(@RequestParam("email") String email) throws MessagingException {
         return mailService.sendUserSystemRegisterVerificationCode(email);
     }
 

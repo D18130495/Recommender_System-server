@@ -22,7 +22,7 @@ import java.util.Map;
  */
 
 public class BaseEntity implements Serializable {
-    @ApiModelProperty(value = "User id")
+    @ApiModelProperty(value = "Id")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 

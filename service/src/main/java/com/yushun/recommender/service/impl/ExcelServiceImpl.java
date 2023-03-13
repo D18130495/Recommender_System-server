@@ -3,14 +3,12 @@ package com.yushun.recommender.service.impl;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.yushun.recommender.excel.*;
-import com.yushun.recommender.model.user.BookRating;
 import com.yushun.recommender.service.BookService;
 import com.yushun.recommender.service.ExcelService;
 import com.yushun.recommender.service.MovieService;
 import com.yushun.recommender.service.UserService;
 import com.yushun.recommender.vo.user.book.BookLikeListReturnVo;
 import com.yushun.recommender.vo.user.book.BookRatingListReturnVo;
-import com.yushun.recommender.vo.user.book.BookRatingReturnVo;
 import com.yushun.recommender.vo.user.movie.MovieLikeListReturnVo;
 import com.yushun.recommender.vo.user.movie.MovieRatingListReturnVo;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -42,58 +40,6 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
     private BookService bookService;
-
-//    @Override
-//    public void exportUserData(HttpServletResponse response, String email) {
-//        Workbook workBook = null;
-//
-//        try {
-//            ExportParams userExportParams = new ExportParams();
-//
-//            userExportParams.setSheetName("Your detail");
-//
-//            userExportParams.setTitle("Your detail");
-//
-//            Map<String, Object> userExportMap = new HashMap<>();
-//
-//            userExportMap.put("title", userExportParams);
-//
-//            userExportMap.put("entity", UserDataExportVo.class);
-//
-//            // get username
-//            UserDetailReturnVo userDetailByEmail = userService.getUserDetailByEmail(email);
-//            UserDataExportVo userDataExportVo = new UserDataExportVo();
-//            userDataExportVo.setUsername(userDetailByEmail.getUsername());
-//
-//            List<UserDataExportVo> users = new ArrayList<>();
-//            users.add(userDataExportVo);
-//
-//            userExportMap.put("data", users);
-//
-//            List<Map<String, Object>> sheetsList = new ArrayList<>();
-//            sheetsList.add(userExportMap);
-//
-//            workBook = ExcelExportUtil.exportExcel(sheetsList, ExcelType.HSSF);
-//
-//            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-//
-//            response.setContentType("application/octet-stream");
-//
-//            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(email + ".xls", StandardCharsets.UTF_8.name()));
-//
-//            workBook.write(response.getOutputStream());
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//        }finally {
-//            if(workBook != null) {
-//                try {
-//                    workBook.close();
-//                }catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 
     @Override
     public void exportUserData(HttpServletResponse response, String email) {

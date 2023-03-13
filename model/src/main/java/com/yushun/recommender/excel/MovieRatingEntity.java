@@ -17,7 +17,7 @@ public class MovieRatingEntity implements Serializable {
     @Excel(name = "Movie Title", width = 30, isImportField = "true_st")
     private String movieTitle;
 
-    @Excel(name = "Movie Rating", width = 15, isImportField = "true_st")
+    @Excel(name = "Rating", width = 10, isImportField = "true_st")
     private String movieRating;
 
     public MovieRatingEntity() {
