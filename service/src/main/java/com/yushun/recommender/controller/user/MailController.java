@@ -29,12 +29,12 @@ public class MailController {
     }
 
     @GetMapping("/sendUserResetPassword")
-    public Result sendUserResetPassword(@RequestParam("email") String email) {
+    public Result sendUserResetPassword(@RequestParam("email") String email) throws MessagingException {
         return mailService.sendUserResetPassword(email);
     }
 
     @GetMapping("/sendChangePasswordVerificationCode")
-    public Result sendChangePasswordVerificationCode(@RequestParam("email") String email) {
+    public Result sendChangePasswordVerificationCode(@RequestParam("email") String email) throws MessagingException {
         return mailService.sendChangePasswordVerificationCode(email);
     }
 }

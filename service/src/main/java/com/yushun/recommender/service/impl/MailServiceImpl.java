@@ -60,7 +60,7 @@ public class MailServiceImpl implements MailService {
             String newCode = RandomUtil.getSixBitRandom();
 
             // send email
-            boolean isSend = emailSender.sendVerificationCode(email, newCode);
+            boolean isSend = emailSender.sendRegisterVerificationCode(email, newCode);
 
             if(isSend) {
                 redisTemplate.opsForValue().set(email, newCode, 5, TimeUnit.MINUTES);
@@ -75,7 +75,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public Result sendUserResetPassword(String email) {
+    public Result sendUserResetPassword(String email) throws MessagingException {
         // check email
         boolean isValidEmail = EmailChecker.check(email);
 
@@ -102,7 +102,7 @@ public class MailServiceImpl implements MailService {
             String newPassword = PasswordGenerator.getRandomPassword(16);
 
             // send email
-            boolean isSend = emailSender.sendMail(email, newPassword);
+            boolean isSend = emailSender.sendPassword(email, newPassword);
 
             if(isSend) {
                 redisTemplate.opsForValue().set(email + " password", newPassword, 30, TimeUnit.MINUTES);
@@ -118,7 +118,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public Result sendChangePasswordVerificationCode(String email) {
+    public Result sendChangePasswordVerificationCode(String email) throws MessagingException {
         // check email
         boolean isValidEmail = EmailChecker.check(email);
 
@@ -145,10 +145,10 @@ public class MailServiceImpl implements MailService {
             String newCode = RandomUtil.getSixBitRandom();
 
             // send email
-            boolean isSend = emailSender.sendMail(email, newCode);
+            boolean isSend = emailSender.sendChangePasswordVerificationCode(email, newCode);
 
             if(isSend) {
-                redisTemplate.opsForValue().set(email  + " changePassword", newCode, 30, TimeUnit.MINUTES);
+                redisTemplate.opsForValue().set(email  + " changePassword", newCode, 5, TimeUnit.MINUTES);
 
                 return Result.ok().message("Successfully send Verification Code");
             }else {

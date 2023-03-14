@@ -7,7 +7,7 @@ import javax.mail.MessagingException;
 public interface MailService {
     Result sendUserSystemRegisterVerificationCode(String email) throws MessagingException;
 
-    Result sendUserResetPassword(String email);
+    Result sendUserResetPassword(String email) throws MessagingException;
 
-    Result sendChangePasswordVerificationCode(String email);
+    Result sendChangePasswordVerificationCode(String email) throws MessagingException;
 }
