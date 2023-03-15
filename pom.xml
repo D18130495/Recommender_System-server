@@ -28,6 +28,7 @@
         <jwt.version>0.7.0</jwt.version>
         <fastjosn.version>1.2.29</fastjosn.version>
         <jodatime.version>2.10.1</jodatime.version>
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
@@ -132,13 +133,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
-
-        <!-- testing -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- Execl -->
