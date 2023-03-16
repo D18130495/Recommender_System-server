@@ -97,9 +97,9 @@ public class SearchServiceImpl implements SearchService {
             fuzzySearchReturnVo.setIsbn(book.getISBN());
             fuzzySearchReturnVo.setTitle(book.getTitle());
 
-            if (book.getBookImage() != null) {
+            if(book.getBookImage() != null) {
                 fuzzySearchReturnVo.setImage(book.getBookImage());
-            } else {
+            }else {
                 fuzzySearchReturnVo.setImage(book.getBookImageL());
             }
 

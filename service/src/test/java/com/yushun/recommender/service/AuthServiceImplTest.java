@@ -266,6 +266,8 @@ public class AuthServiceImplTest {
         Result result = userService.userSystemRegister(userSystemRegisterVo);
 
         Assert.assertEquals("Verification code is incorrect", result.getMessage());
+
+        redisTemplate.delete("d18130495@mytudublin.com");
     }
 
     @Order(16)

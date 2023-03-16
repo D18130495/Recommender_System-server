@@ -17,12 +17,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RecommenderApplication.class)
@@ -174,7 +177,6 @@ public class UserServiceImplTest {
     /**
      * test update system user password
      */
-
     @Order(10)
     @Test(timeout = 30000)
     @Transactional
@@ -292,5 +294,57 @@ public class UserServiceImplTest {
         redisTemplate.delete("d18130495@mytudublin.ie changePassword");
 
         Assert.assertEquals("Incorrect old password", result.getMessage());
+    }
+
+    /**
+     * test update user avatar
+     */
+    @Order(18)
+    @Test(timeout = 30000)
+    @Transactional
+    public void updateUserAvatar_incorrectOldPassword_fail() {
+
+    }
+
+    @Order(19)
+    @Test(timeout = 30000)
+    @Transactional
+    public void updateUserAvatar_userNotExist_fail() {
+        MockMultipartFile mockFile = new MockMultipartFile("file", "test.txt", "text/plain", "Hello, World!".getBytes());
+        MultipartFile file = mockFile;
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+
+        String newToken = jwtTokenProvider.createToken("990415zys@gmail.c",
+                userRepository.findByUsername("990415zys@gmail.com")
+                        .orElseThrow(() -> new UsernameNotFoundException("User " + "990415zys@gmail.com" + "not found")).getRoles()
+        );
+
+        request.addHeader("Authorization", "Bearer " + newToken);
+
+        Result result = userService.updateUserAvatar(file, request);
+
+        Assert.assertEquals("Can not find user", result.getMessage());
+    }
+
+    @Order(20)
+    @Test(timeout = 30000)
+    @Transactional
+    public void updateUserAvatar_successUpdatedAvatar_success() {
+        MockMultipartFile mockFile = new MockMultipartFile("file", "test.txt", "text/plain", "Hello, World!".getBytes());
+        MultipartFile file = mockFile;
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+
+        String newToken = jwtTokenProvider.createToken("990415zys@gmail.com",
+                userRepository.findByUsername("990415zys@gmail.com")
+                        .orElseThrow(() -> new UsernameNotFoundException("User " + "990415zys@gmail.com" + "not found")).getRoles()
+        );
+
+        request.addHeader("Authorization", "Bearer " + newToken);
+
+        Result result = userService.updateUserAvatar(file, request);
+
+        Assert.assertEquals("Successfully updated avatar", result.getMessage());
     }
 }
