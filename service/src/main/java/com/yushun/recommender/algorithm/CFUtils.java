@@ -12,11 +12,11 @@ public class CFUtils {
         String file = "";
 
         if(type.equals("movie")) {
-//            file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\movie.txt";
-            file = "/root/app/back-end/data/movie.txt";
+            file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\movie.txt";
+//            file = "/root/app/back-end/data/movie.txt";
         }else if(type.equals("book")) {
-//            file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\book.txt";
-            file = "/root/app/back-end/data/book.txt";
+            file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\book.txt";
+//            file = "/root/app/back-end/data/book.txt";
         }
 
         return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
@@ -24,16 +24,16 @@ public class CFUtils {
 
     // read sim movie file
     public static BufferedReader readSimMovies() throws IOException {
-//        String file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\itemMovieSimilarity.txt";
-        String file = "/root/app/back-end/data/itemMovieSimilarity.txt";
+        String file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\itemMovieSimilarity.txt";
+//        String file = "/root/app/back-end/data/itemMovieSimilarity.txt";
 
         return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
     }
 
     // read sim book file
     public static BufferedReader readSimBooks() throws IOException {
-//        String file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\itemBookSimilarity.txt";
-        String file = "/root/app/back-end/data/itemBookSimilarity.txt";
+        String file = "D:\\Desktop\\D18130495\\4th_sem1\\FYP\\Project\\Recommender_System-server\\itemBookSimilarity.txt";
+//        String file = "/root/app/back-end/data/itemBookSimilarity.txt";
 
         return new BufferedReader(new InputStreamReader(Files.newInputStream(new File(file).toPath()), StandardCharsets.UTF_8));
     }

@@ -44,7 +44,7 @@ public class MovieRatingServiceImpl extends ServiceImpl<MovieRatingMapper, Movie
 
         if(findUser == null) return null;
 
-        // find if the book exist
+        // find if the movie exist
         Movie movieByMovieId = movieService.getMovieByMovieId(movieId);
 
         if(movieByMovieId == null) return null;

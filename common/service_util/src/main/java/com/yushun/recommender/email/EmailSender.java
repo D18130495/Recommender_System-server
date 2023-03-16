@@ -24,8 +24,8 @@ public class EmailSender {
         }
 
         MimeMessage message = javaMailSender.createMimeMessage();
-
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom("Finterest <990415zys@gmail.com>");
         helper.setTo(recipient);
         helper.setSubject("verification-code");
 
@@ -212,8 +212,8 @@ public class EmailSender {
         }
 
         MimeMessage message = javaMailSender.createMimeMessage();
-
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom("Finterest <990415zys@gmail.com>");
         helper.setTo(recipient);
         helper.setSubject("verification-code");
 
@@ -399,8 +399,8 @@ public class EmailSender {
         }
 
         MimeMessage message = javaMailSender.createMimeMessage();
-
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom("Finterest <990415zys@gmail.com>");
         helper.setTo(recipient);
         helper.setSubject("verification-code");
 

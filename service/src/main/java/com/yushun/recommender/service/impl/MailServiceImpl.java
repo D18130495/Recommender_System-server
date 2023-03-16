@@ -107,10 +107,16 @@ public class MailServiceImpl implements MailService {
             if(isSend) {
                 redisTemplate.opsForValue().set(email + " password", newPassword, 30, TimeUnit.MINUTES);
 
-                // TODO
                 // update user password
+                if(userService.updateUserPassword(findUser.getUsername(), newPassword, email)) {
+                    redisTemplate.delete(email + " password");
 
-                return Result.ok().message("Successfully send new password");
+                    return Result.ok().message("Successfully send new password");
+                }else {
+                    redisTemplate.delete(email + " password");
+
+                    return Result.fail().message("Server updated password error");
+                }
             }else {
                 return Result.fail().message("Email send failed");
             }

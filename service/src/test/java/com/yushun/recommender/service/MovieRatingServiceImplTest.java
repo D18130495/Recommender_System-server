@@ -29,7 +29,6 @@ public class MovieRatingServiceImplTest {
     /**
      * get user Movie rate status
      */
-
     @Order(1)
     @Test(timeout = 30000)
     @Transactional
