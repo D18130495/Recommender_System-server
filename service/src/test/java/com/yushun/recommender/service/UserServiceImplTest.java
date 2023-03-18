@@ -152,32 +152,9 @@ public class UserServiceImplTest {
     }
 
     /**
-     * test update user avatar
-     */
-    @Order(8)
-    @Test(timeout = 30000)
-    @Transactional
-    public void updateUserAvatar_validUser_success() {
-
-//        Result result = userService.updateUserAvatar();
-//
-//        Assert.assertEquals("Successfully updated avatar", result.getMessage());
-    }
-
-    @Order(9)
-    @Test(timeout = 30000)
-    @Transactional
-    public void updateUserAvatar_userNotFind_fail() {
-
-//        Result result = userService.updateUserAvatar();
-//
-//        Assert.assertEquals("Can not find user", result.getMessage());
-    }
-
-    /**
      * test update system user password
      */
-    @Order(10)
+    @Order(8)
     @Test(timeout = 30000)
     @Transactional
     public void updateSystemUserPassword_validUser_success() {
@@ -194,7 +171,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Successfully updated password", result.getMessage());
     }
 
-    @Order(11)
+    @Order(9)
     @Test(timeout = 30000)
     @Transactional
     public void updateSystemUserPassword_invalidEmail_fail() {
@@ -206,7 +183,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Incorrect email format", result.getMessage());
     }
 
-    @Order(12)
+    @Order(10)
     @Test(timeout = 30000)
     @Transactional
     public void updateSystemUserPassword_invalidNewPassword_fail() {
@@ -219,7 +196,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Incorrect new password format", result.getMessage());
     }
 
-    @Order(13)
+    @Order(11)
     @Test(timeout = 30000)
     @Transactional
     public void updateSystemUserPassword_userNotFind_fail() {
@@ -232,7 +209,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Can not find user", result.getMessage());
     }
 
-    @Order(14)
+    @Order(12)
     @Test(timeout = 30000)
     @Transactional
     public void updateSystemUserPassword_registerWithGoogle_fail() {
@@ -245,7 +222,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Email registered with Google", result.getMessage());
     }
 
-    @Order(15)
+    @Order(13)
     @Test(timeout = 30000)
     @Transactional
     public void updateSystemUserPassword_incorrectVerificationCode_fail() {
@@ -263,7 +240,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Verification code is incorrect", result.getMessage());
     }
 
-    @Order(16)
+    @Order(14)
     @Test(timeout = 30000)
     @Transactional
     public void updateSystemUserPassword_verificationCodeExpired_fail() {
@@ -277,7 +254,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Verification is expired", result.getMessage());
     }
 
-    @Order(17)
+    @Order(15)
     @Test(timeout = 30000)
     @Transactional
     public void updateSystemUserPassword_incorrectOldPassword_fail() {
@@ -299,14 +276,7 @@ public class UserServiceImplTest {
     /**
      * test update user avatar
      */
-    @Order(18)
-    @Test(timeout = 30000)
-    @Transactional
-    public void updateUserAvatar_incorrectOldPassword_fail() {
-
-    }
-
-    @Order(19)
+    @Order(16)
     @Test(timeout = 30000)
     @Transactional
     public void updateUserAvatar_userNotExist_fail() {
@@ -327,7 +297,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Can not find user", result.getMessage());
     }
 
-    @Order(20)
+    @Order(17)
     @Test(timeout = 30000)
     @Transactional
     public void updateUserAvatar_successUpdatedAvatar_success() {

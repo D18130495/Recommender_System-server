@@ -54,7 +54,7 @@ public class UserInterfaceUserDetailController {
         if(findUser == null) {
             return Result.fail().message("Can not find user");
         }else {
-            return Result.ok(findUser);
+            return Result.ok(findUser).message("Successfully find user");
         }
     }
 

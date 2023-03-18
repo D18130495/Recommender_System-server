@@ -141,6 +141,8 @@ public class UserInterfaceRecommendationController {
             recommendedBook = recommendationService.getBookRecommendationData_byBook_userCF(email, type);
         }else if(type.equals("movie")) {
             recommendedBook = recommendationService.getBookRecommendationData_byMovie_userCF(email, type);
+        }else {
+            return Result.fail().message("Bad operation");
         }
 
         // result variable

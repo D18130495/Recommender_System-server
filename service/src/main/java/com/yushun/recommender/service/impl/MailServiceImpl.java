@@ -99,7 +99,7 @@ public class MailServiceImpl implements MailService {
             }
 
             // generate random Verification Code
-            String newPassword = PasswordGenerator.getRandomPassword(16);
+            String newPassword = PasswordGenerator.getRandomPassword();
 
             // send email
             boolean isSend = emailSender.sendPassword(email, newPassword);

@@ -12,32 +12,33 @@ import java.util.Random;
  */
 
 public class PasswordGenerator {
-    public static void main(String[] args) {
-        String randomPassword = getRandomPassword(16);
-        System.out.println(randomPassword);
-    }
+    private static final String UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String LOWER_CASE_LETTERS = "abcdefghijklmnopqrstuvwxyz";
+    private static final String NUMBERS = "0123456789";
+    private static final String SPECIAL_CHARACTERS = "!@#$%^&*()_-+=?";
 
-    public static String getRandomPassword(int len){
-        String str = null;
-        char charr[] = "abcdefghjkmnprstuvwxyzABCDEFGHJKMNPQRST2345678!@#$%^&*-+=:;<>,?/".toCharArray();
+    public static String getRandomPassword() {
+        Random random = new Random();
         StringBuilder sb = new StringBuilder();
-        Random r = new Random();
-
-        for(int x = 0; x < len; ++x) {
-            sb.append(charr[r.nextInt(charr.length)]);
+        for (int i = 0; i < 4; i++) {
+            int index = random.nextInt(UPPER_CASE_LETTERS.length());
+            sb.append(UPPER_CASE_LETTERS.charAt(index));
+            index = random.nextInt(LOWER_CASE_LETTERS.length());
+            sb.append(LOWER_CASE_LETTERS.charAt(index));
+            index = random.nextInt(NUMBERS.length());
+            sb.append(NUMBERS.charAt(index));
+            index = random.nextInt(SPECIAL_CHARACTERS.length());
+            sb.append(SPECIAL_CHARACTERS.charAt(index));
         }
 
-        str = sb.toString();
-
-        String pattern1 = ".*[a-z]+.*";
-        String pattern2 = ".*[A-Z]+.*";
-        String pattern3 = ".*[0-9]+.*";
-        String pattern4 = ".*[~!@#$%^&*+=:;<>,?/]+.*";
-
-        if(!(str.matches(pattern1) && str.matches(pattern2) && str.matches(pattern3) && str.matches(pattern4))) {
-            str = getRandomPassword(len);
+        char[] chars = sb.toString().toCharArray();
+        for(int i = chars.length - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            char temp = chars[i];
+            chars[i] = chars[j];
+            chars[j] = temp;
         }
 
-        return str;
+        return new String(chars);
     }
 }

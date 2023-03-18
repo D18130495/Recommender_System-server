@@ -26,17 +26,17 @@ public class UserInterfaceUserAuthController {
     private UserService userService;
 
     @PostMapping("/userSystemRegister")
-    public Result userSystemRegister(UserSystemRegisterVo userSystemRegisterVo) {
+    public Result userSystemRegister(@RequestBody UserSystemRegisterVo userSystemRegisterVo) {
         return userService.userSystemRegister(userSystemRegisterVo);
     }
 
     @PostMapping("/userSystemLogin")
-    public Result userSystemLogin(UserSystemLoginVo userSystemLoginVo) {
+    public Result userSystemLogin(@RequestBody UserSystemLoginVo userSystemLoginVo) {
        return userService.userSystemLogin(userSystemLoginVo);
     }
 
     @PostMapping("/googleLogin")
-    public Result googleLogin(UserGoogleLoginVo userGoogleLoginVo) {
+    public Result googleLogin(@RequestBody UserGoogleLoginVo userGoogleLoginVo) {
         return userService.googleLogin(userGoogleLoginVo);
     }
 

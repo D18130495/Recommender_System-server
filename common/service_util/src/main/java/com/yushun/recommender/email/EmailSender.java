@@ -215,7 +215,7 @@ public class EmailSender {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setFrom("Finterest <990415zys@gmail.com>");
         helper.setTo(recipient);
-        helper.setSubject("verification-code");
+        helper.setSubject("new-password");
 
         String html = "<!DOCTYPE HTML>\n" +
                 "<html>\n" +

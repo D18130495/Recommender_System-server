@@ -42,8 +42,8 @@ public class UserInterfaceMovieFavouriteController {
         switch(likeOrUnlikeMovie) {
             case "User not find":
                 return Result.fail().message("Can not find this user");
-            case "Book not find":
-                return Result.fail().message("This book is not exist in this system");
+            case "Movie not find":
+                return Result.fail().message("This movie is not exist in this system");
             case "Favourite":
                 return Result.ok().message("Successfully liked this movie");
             case "Don't like":
@@ -51,7 +51,7 @@ public class UserInterfaceMovieFavouriteController {
             case "Normal":
                 return Result.ok().message("Successfully marked as normal");
             default:
-                return Result.fail().message("Book like or unlike failed with server error");
+                return Result.fail().message("Movie like or unlike failed with server error");
         }
     }
 }

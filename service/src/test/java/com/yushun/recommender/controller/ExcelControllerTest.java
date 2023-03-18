@@ -18,7 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -33,7 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @WebAppConfiguration
 @AutoConfigureMockMvc
-public class SearchControllerTest {
+public class ExcelControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -45,42 +44,20 @@ public class SearchControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 
-    /**
-     * test fuzzySearchMovieAndBookByTitleOrYear
-     */
     @Order(1)
     @Test(timeout = 30000)
     @Transactional
     public void fuzzySearchMovieAndBookByTitleOrYear_findResult_notEmpty() throws Exception {
         MockHttpServletRequestBuilder postRequestBuilder = MockMvcRequestBuilders
-                .get("/search/fuzzySearchMovieAndBookByTitleOrYear")
+                .get("/excel/exportUserData")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("substring", "20")
-                .param("type", "year");
+                .param("email", "d18130495@mytudublin.ie");
 
         MvcResult response =  mockMvc.perform(postRequestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
 
-        Assert.assertTrue(response.getResponse().getContentAsString().contains("Successfully get result map"));
-    }
-
-    @Order(2)
-    @Test(timeout = 30000)
-    @Transactional
-    public void fuzzySearchMovieAndBookByTitleOrYear_noResultFound_empty() throws Exception {
-        MockHttpServletRequestBuilder postRequestBuilder = MockMvcRequestBuilders
-                .get("/search/fuzzySearchMovieAndBookByTitleOrYear")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("substring", "qweqwe")
-                .param("type", "title");
-
-        MvcResult response =  mockMvc.perform(postRequestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn();
-
-        Assert.assertTrue(response.getResponse().getContentAsString().contains("No result find"));
+        Assert.assertNotNull(response.getResponse().getContentAsString());
     }
 }
