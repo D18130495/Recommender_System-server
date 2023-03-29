@@ -23,9 +23,8 @@ public class ItemCF {
     static Map<String, HashMap<String, Double>> userMap; // user rated item list map
 
     static double[][] simMatrix; // item sim matrix
-    // TODO
-    static int TOP_K = 36; // select sim item number
-    static int TOP_N = 27; // top recommendation number
+    static int TOP_K = 40; // select sim item number
+    static int TOP_N = 30; // top recommendation number
 
     public static void initial() {
         itemIDMap = new HashMap<>();
@@ -271,20 +270,27 @@ public class ItemCF {
             }
 
             // sort the predict rate
-//            preRatingMap = CFUtils.sortMapByValues(preRatingMap);
+            preRatingMap = CFUtils.sortMapByValues(preRatingMap);
 
             // result list
             List<String> simUserItemListResult = new ArrayList<>();
 
             // recommend top N item
-            int recommendationCount = 0;
-
             for(Map.Entry<String, Double> entry:preRatingMap.entrySet()) {
-                if(recommendationCount < TOP_N) {
+                if(entry.getValue() >= 0.8) {
                     simUserItemListResult.add(entry.getKey());
-                    recommendationCount ++;
                 }
             }
+
+            // recommend top N item
+//            int recommendationCount = 0;
+//
+//            for(Map.Entry<String, Double> entry:preRatingMap.entrySet()) {
+//                if(recommendationCount < TOP_N) {
+//                    simUserItemListResult.add(entry.getKey());
+//                    recommendationCount ++;
+//                }
+//            }
 
             return simUserItemListResult;
         }

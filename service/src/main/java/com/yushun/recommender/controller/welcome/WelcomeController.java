@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class WelcomeController {
     @GetMapping("")
     public String welcome() {
-        String welcome = "Welcome to yushun's recommender system back-end.";
+        String welcome = "Welcome to Finterest server.";
 
         return welcome;
     }
